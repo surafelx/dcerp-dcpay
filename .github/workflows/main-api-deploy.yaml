@@ -21,7 +21,7 @@ jobs:
       with:
         host: ${{ secrets.SSH_IP_ADDRESS }}
         username: ${{ secrets.SSH_USER_NAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         script: |
           echo "SSH Connection Succesful"
     - name: Pulling from Server
@@ -29,20 +29,20 @@ jobs:
       with:
         host: ${{ secrets.SSH_IP_ADDRESS }}
         username: ${{ secrets.SSH_USER_NAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         script: cd dc-pay 
     - name: Building on Server
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_IP_ADDRESS }}
         username: ${{ secrets.SSH_USER_NAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        password: ${{ secrets.SSH_PASSWORD }}
         script: cd dc-pay/main-api && npm run compile
     - name: Reload pm2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_IP_ADDRESS }}
         username: ${{ secrets.SERVER_USER_NAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}   
+        password: ${{ secrets.SSH_PASSWORD }}   
         script: pm2 reload 1
       
