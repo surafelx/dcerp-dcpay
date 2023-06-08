@@ -1,6 +1,6 @@
 import pool from '../../config/pool'
 
-export const getOrganizationBy = async (organizationId: string) => {
+export const getOrganizationBy = async (organizationId: string): Promise<[]> => {
     const { rows: users } = await pool.query(`
     SELECT 
     *

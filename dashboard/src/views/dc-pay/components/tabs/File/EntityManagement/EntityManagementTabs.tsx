@@ -8,6 +8,7 @@ import DepartmentTable from 'src/views/dc-pay/tables/File/EntityManagement/Depar
 
 const TabsNav = () => {
     const [value, setValue] = useState<string>('1')
+    
 
     const handleChange = (event: SyntheticEvent, newValue: string) => {
         setValue(newValue)

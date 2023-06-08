@@ -252,6 +252,10 @@ const navigation = (): VerticalNavItemsType => {
       title: 'Settings',
       icon: 'AccountOutline',
       children: [
+        {
+            title: 'Account Settings',
+            path: '/apps/settings/account-settings'
+        },
           {
               title: 'General Setup',
               path: '/apps/settings/general-setup'

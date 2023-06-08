@@ -237,10 +237,10 @@ const UserList = () => {
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={4}>
+            <Grid item  xs={12} md={12} lg={4}>
                 <AddPayTransaction formData={formData} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item  xs={12} md={12} lg={4}>
                 <Card>
                     <CardHeader title='Earnings' />
                     <CardContent>
@@ -259,7 +259,7 @@ const UserList = () => {
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item  xs={12} md={12} lg={4}>
                 <Card>
                     <CardHeader title='Deductions' />
                     <CardContent>

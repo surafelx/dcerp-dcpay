@@ -5,7 +5,7 @@ import EntityManagementTabs from 'src/views/dc-pay/components/tabs/File/EntityMa
 const EntityManagement = () => {
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={12} lg={12}>
                 <EntityManagementTabs />
             </Grid>
         </Grid>

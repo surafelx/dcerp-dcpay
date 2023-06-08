@@ -221,10 +221,10 @@ return (
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={4}>
+            <Grid item  xs={12} md={12} lg={4}>
                 <AddMainParameterDefinition formData={formData} />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item  xs={12} md={12} lg={8}>
                 <Card>
                     <CardContent>
                         <Grid container spacing={6}>

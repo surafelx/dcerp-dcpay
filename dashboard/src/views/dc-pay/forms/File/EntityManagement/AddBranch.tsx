@@ -55,12 +55,11 @@ const emptyValues = {
 }
 
 
-const AddBranch = ({ formData }: any) => {
+const AddBranch = ({ formData, setLoading }: any) => {
  
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
-
 
     useEffect(() => {
         dispatch(
@@ -88,18 +87,22 @@ const AddBranch = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        if (data.id) {
-            dispatch(editBranch({ ...data, }))
-        } else {
-            dispatch(addBranch({ ...data, }))
-        }
-        reset(emptyValues)
-
+        setLoading(true)
+        setTimeout(() => {
+            if (data.id) {
+                dispatch(editBranch({ ...data, }))
+            } else {
+                dispatch(addBranch({ ...data, }))
+            }
+            reset(emptyValues)
+            setLoading(false)
+        }, 3000) 
     }
-
+    
     return (
         <Card>
-            <CardHeader title='Add Branch' titleTypographyProps={{ variant: 'h6' }} />
+            
+                <CardHeader title='Add Branch' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                     <FormControl fullWidth sx={{ mb: 4 }}>
@@ -153,7 +156,6 @@ const AddBranch = ({ formData }: any) => {
                     </FormControl>
 
                 </form>
-
             </CardContent>
         </Card >
     )

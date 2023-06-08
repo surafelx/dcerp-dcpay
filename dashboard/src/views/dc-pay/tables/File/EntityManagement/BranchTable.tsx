@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icons Imports
 // import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -57,7 +58,7 @@ const UserList = () => {
     // ** State
     const [value] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-
+    const [loading, setLoading]=useState<boolean>(true)
     const [formData, setFormData] = useState({
         id: '',
         branchCode: '',
@@ -71,6 +72,7 @@ const UserList = () => {
 
         // ** State
         const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+        
 
         const rowOptionsOpen = Boolean(anchorEl)
 
@@ -98,8 +100,13 @@ const UserList = () => {
         }, []);
 
         const handleDelete = () => {
+            setLoading(true)
+        setTimeout(() => {
             dispatch(deleteBranch(id))
             handleRowOptionsClose()
+            setLoading(false)
+        }, 3000) 
+          
         }
 
 
@@ -216,21 +223,32 @@ return (
     const store = useSelector((state: RootState) => state.branches)
 
     useEffect(() => {
-        dispatch(
-            fetchData({
-                q: value
-            })
-        )
+        setLoading(true)
+        setTimeout(() => {
+            dispatch(
+                fetchData({
+                    q: value
+                })
+            )
+            setLoading(false)
+        }, 3000) 
+        
     }, [dispatch, value])
 
 
     return (
+        <>
+        {loading ?    <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                  <CircularProgress sx={{ mb: 4 }} />
+                  <Typography>Loading...</Typography>
+                </Box> : (
         <Grid container spacing={6}>
-            <Grid item xs={4}>
-                <AddBranch formData={formData} />
+            <Grid item  xs={12} md={12} lg={4}>
+                <AddBranch loading={loading} setLoading={setLoading} formData={formData} />
             </Grid>
-            <Grid item xs={8}>
-                <Card>
+            <Grid item  xs={12} md={12} lg={8}>
+         
+             <Card>
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
@@ -246,10 +264,10 @@ return (
                         </Grid>
                     </CardContent>
                 </Card >
-
             </Grid>
-
         </Grid >
+         )}
+         </>
     )
 }
 

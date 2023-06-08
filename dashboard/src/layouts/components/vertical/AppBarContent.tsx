@@ -12,11 +12,14 @@ import { Settings } from 'src/@core/context/settingsContext'
 import Autocomplete from 'src/layouts/components/Autocomplete'
 import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
 import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
-import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
+
+// import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
+
 import NotificationDropdown, {
   NotificationsType
 } from 'src/@core/layouts/components/shared-components/NotificationDropdown'
-import ShortcutsDropdown, { ShortcutsType } from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
+
+// import ShortcutsDropdown, { ShortcutsType } from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
 
 interface Props {
   hidden: boolean
@@ -70,56 +73,56 @@ const notifications: NotificationsType[] = [
   }
 ]
 
-const shortcuts: ShortcutsType[] = [
-  {
-    title: 'Calendar',
-    url: '/apps/calendar',
-    subtitle: 'Appointments',
-    icon: 'mdi:calendar-month-outline'
-  },
-  {
-    title: 'Invoice App',
-    url: '/apps/invoice/list',
-    subtitle: 'Manage Accounts',
-    icon: 'mdi:receipt-text-outline'
-  },
-  {
-    title: 'Users',
-    url: '/apps/user/list',
-    subtitle: 'Manage Users',
-    icon: 'mdi:account-outline'
-  },
-  {
-    url: '/apps/roles',
-    title: 'Role Management',
-    subtitle: 'Permissions',
-    icon: 'mdi:shield-check-outline'
-  },
-  {
-    url: '/',
-    title: 'Dashboard',
-    icon: 'mdi:chart-pie',
-    subtitle: 'User Dashboard'
-  },
-  {
-    title: 'Settings',
-    icon: 'mdi:cog-outline',
-    subtitle: 'Account Settings',
-    url: '/pages/account-settings/account'
-  },
-  {
-    title: 'Help Center',
-    subtitle: 'FAQs & Articles',
-    icon: 'mdi:help-circle-outline',
-    url: '/pages/help-center'
-  },
-  {
-    title: 'Dialogs',
-    subtitle: 'Useful Dialogs',
-    icon: 'mdi:window-maximize',
-    url: '/pages/dialog-examples'
-  }
-]
+// const shortcuts: ShortcutsType[] = [
+//   {
+//     title: 'Calendar',
+//     url: '/apps/calendar',
+//     subtitle: 'Appointments',
+//     icon: 'mdi:calendar-month-outline'
+//   },
+//   {
+//     title: 'Invoice App',
+//     url: '/apps/invoice/list',
+//     subtitle: 'Manage Accounts',
+//     icon: 'mdi:receipt-text-outline'
+//   },
+//   {
+//     title: 'Users',
+//     url: '/apps/user/list',
+//     subtitle: 'Manage Users',
+//     icon: 'mdi:account-outline'
+//   },
+//   {
+//     url: '/apps/roles',
+//     title: 'Role Management',
+//     subtitle: 'Permissions',
+//     icon: 'mdi:shield-check-outline'
+//   },
+//   {
+//     url: '/',
+//     title: 'Dashboard',
+//     icon: 'mdi:chart-pie',
+//     subtitle: 'User Dashboard'
+//   },
+//   {
+//     title: 'Settings',
+//     icon: 'mdi:cog-outline',
+//     subtitle: 'Account Settings',
+//     url: '/pages/account-settings/account'
+//   },
+//   {
+//     title: 'Help Center',
+//     subtitle: 'FAQs & Articles',
+//     icon: 'mdi:help-circle-outline',
+//     url: '/pages/help-center'
+//   },
+//   {
+//     title: 'Dialogs',
+//     subtitle: 'Useful Dialogs',
+//     icon: 'mdi:window-maximize',
+//     url: '/pages/dialog-examples'
+//   }
+// ]
 
 const AppBarContent = (props: Props) => {
   // ** Props
@@ -136,9 +139,13 @@ const AppBarContent = (props: Props) => {
         <Autocomplete hidden={hidden} settings={settings} />
       </Box>
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
-        <LanguageDropdown settings={settings} saveSettings={saveSettings} />
+       
+        {/* <LanguageDropdown settings={settings} saveSettings={saveSettings} /> */}
+        
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-        <ShortcutsDropdown settings={settings} shortcuts={shortcuts} />
+        
+        {/* <ShortcutsDropdown settings={settings} shortcuts={shortcuts} /> */}
+        
         <NotificationDropdown settings={settings} notifications={notifications} />
         <UserDropdown settings={settings} />
       </Box>

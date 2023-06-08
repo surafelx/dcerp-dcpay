@@ -129,7 +129,9 @@ const UserDropdown = (props: Props) => {
           </Box>
         </Box>
         <Divider sx={{ mt: '0 !important' }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
+        
+        
+        {/* <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
           <Box sx={styles}>
             <Icon icon='mdi:account-outline' />
             Profile
@@ -146,15 +148,19 @@ const UserDropdown = (props: Props) => {
             <Icon icon='mdi:message-outline' />
             Chat
           </Box>
-        </MenuItem>
-        <Divider />
+        </MenuItem> */}
+
+
+        {/* <Divider /> */}
+        
         <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/account-settings/account')}>
           <Box sx={styles}>
             <Icon icon='mdi:cog-outline' />
             Settings
           </Box>
         </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/pricing')}>
+
+        {/* <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/pricing')}>
           <Box sx={styles}>
             <Icon icon='mdi:currency-usd' />
             Pricing
@@ -165,7 +171,8 @@ const UserDropdown = (props: Props) => {
             <Icon icon='mdi:help-circle-outline' />
             FAQ
           </Box>
-        </MenuItem>
+        </MenuItem> */}
+
         <Divider />
         <MenuItem
           onClick={handleLogout}

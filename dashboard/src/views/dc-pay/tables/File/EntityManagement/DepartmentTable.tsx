@@ -18,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icons Imports
 // import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -62,7 +63,7 @@ const UserList = () => {
     const [role, setRole] = useState<string>('')
     const [value] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-
+    const [loading, setLoading] = useState<boolean>(true)
     const [formData, setFormData] = useState({
         id: '',
         branchId: '',
@@ -104,9 +105,15 @@ const UserList = () => {
         }, []);
 
         const handleDelete = () => {
-            dispatch(deleteDepartment(id))
-            handleRowOptionsClose()
+            setLoading(true)
+            setTimeout(() => {
+                dispatch(deleteDepartment(id))
+                handleRowOptionsClose()
+                setLoading(false)
+            }, 3000)
+
         }
+
 
 
         return (
@@ -159,8 +166,8 @@ const UserList = () => {
             headerName: 'Branch',
             renderCell: ({ row }: CellType) => {
                 const { branchName } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -183,8 +190,8 @@ return (
             headerName: 'Code',
             renderCell: ({ row }: CellType) => {
                 const { departmentCode } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -207,8 +214,8 @@ return (
             headerName: 'Name',
             renderCell: ({ row }: CellType) => {
                 const { departmentName } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -231,8 +238,8 @@ return (
             headerName: 'Permanent A/C',
             renderCell: ({ row }: CellType) => {
                 const { permanentAccount } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -255,8 +262,8 @@ return (
             headerName: 'Contract A/C',
             renderCell: ({ row }: CellType) => {
                 const { contractAccount } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -297,11 +304,16 @@ return (
     const store = useSelector((state: RootState) => state.department)
 
     useEffect(() => {
-        dispatch(
-            fetchData({
-                q: value
-            })
-        )
+        setLoading(true)
+        setTimeout(() => {
+            dispatch(
+                fetchData({
+                    q: value
+                })
+            )
+            setLoading(false)
+        }, 3000)
+
     }, [dispatch, value])
 
     const handleRoleChange = useCallback((e: SelectChangeEvent) => {
@@ -310,54 +322,61 @@ return (
 
 
     return (
-        <Grid container spacing={6}>
-            <Grid item xs={4}>
-                <AddDepartment formData={formData} />
-            </Grid>
-            <Grid item xs={8}>
-                <Card>
-                    <CardContent>
-                        <Grid container spacing={6}>
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='role-select'>Select Branch</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={role}
-                                        id='select-branch'
-                                        label='Select Branch'
-                                        labelId='branch-select'
-                                        onChange={handleRoleChange}
-                                        inputProps={{ placeholder: 'Select Role' }}
-                                    >
-                                        <MenuItem value=''>Select Role</MenuItem>
-                                        <MenuItem value='admin'>Admin</MenuItem>
-                                        <MenuItem value='author'>Author</MenuItem>
-                                        <MenuItem value='editor'>Editor</MenuItem>
-                                        <MenuItem value='maintainer'>Maintainer</MenuItem>
-                                        <MenuItem value='subscriber'>Subscriber</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+        <>
+            {loading ?
+                <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                    <CircularProgress sx={{ mb: 4 }} />
+                    <Typography>Loading...</Typography>
+                </Box> : (
+                    <Grid container spacing={6}>
+                        <Grid item xs={12} md={12} lg={4}>
+                            <AddDepartment loading={loading} setLoading={setLoading} formData={formData} />
                         </Grid>
-                        <Grid item xs={12}>
-                            <DataGrid
-                                autoHeight
-                                rows={store.data}
-                                columns={columns}
-                                checkboxSelection
-                                pageSize={pageSize}
-                                disableSelectionOnClick
-                                rowsPerPageOptions={[10, 25, 50]}
-                                onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                            />
+                        <Grid item xs={12} md={12} lg={8}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={6}>
+                                        <Grid item sm={4} xs={12}>
+                                            <FormControl fullWidth>
+                                                <InputLabel id='role-select'>Select Branch</InputLabel>
+                                                <Select
+                                                    fullWidth
+                                                    value={role}
+                                                    id='select-branch'
+                                                    label='Select Branch'
+                                                    labelId='branch-select'
+                                                    onChange={handleRoleChange}
+                                                    inputProps={{ placeholder: 'Select Role' }}
+                                                >
+                                                    <MenuItem value=''>Select Role</MenuItem>
+                                                    <MenuItem value='admin'>Admin</MenuItem>
+                                                    <MenuItem value='author'>Author</MenuItem>
+                                                    <MenuItem value='editor'>Editor</MenuItem>
+                                                    <MenuItem value='maintainer'>Maintainer</MenuItem>
+                                                    <MenuItem value='subscriber'>Subscriber</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <DataGrid
+                                            autoHeight
+                                            rows={store.data}
+                                            columns={columns}
+                                            checkboxSelection
+                                            pageSize={pageSize}
+                                            disableSelectionOnClick
+                                            rowsPerPageOptions={[10, 25, 50]}
+                                            onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+                                        />
+                                    </Grid>
+                                </CardContent>
+                            </Card >
+
                         </Grid>
-                    </CardContent>
-                </Card >
-
-            </Grid>
-
-        </Grid >
+                     </Grid >
+                )}
+        </>
     )
 }
 

@@ -54,7 +54,7 @@ const emptyValues = {
 
 
 
-const AddDepartment = ({ formData }: any) => {
+const AddDepartment = ({ formData, setLoading }: any) => {
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -88,13 +88,16 @@ const AddDepartment = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        if (data.id) {
-            dispatch(editDepartment({ ...data, }))
-        } else {
-            dispatch(addDepartment({ ...data, }))
-        }
-        reset(emptyValues)
-
+        setLoading(true)
+        setTimeout(() => {
+            if (data.id) {
+                dispatch(editDepartment({ ...data, }))
+            } else {
+                dispatch(addDepartment({ ...data, }))
+            }
+            reset(emptyValues)
+            setLoading(false)
+        }, 3000) 
     }
 
     return (
