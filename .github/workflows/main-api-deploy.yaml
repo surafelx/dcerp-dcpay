@@ -24,7 +24,7 @@ jobs:
           script: |
             echo "SSH Connection Successful"
       - name: Build
-        run: npm run compile
+        run: cd main-api && npm run compile
       - name: Copy Build to VPS
         uses: appleboy/scp-action@master
         with:
