@@ -41,4 +41,4 @@ jobs:
           username: ${{ secrets.SSH_USER_NAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-           pm2 reload 1
+           pm2 reload 0
