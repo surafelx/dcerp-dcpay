@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.SSH_USER_NAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd dcerp-dcpay/main-api
+            cd projects/dcerp-dcpay/main-api
             git pull origin main
             npm run build
       - name: PM2 Reset
