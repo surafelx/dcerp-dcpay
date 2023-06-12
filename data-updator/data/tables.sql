@@ -3,6 +3,7 @@ CREATE TABLE organizations (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_name TEXT NOT NULL UNIQUE
 	);
+
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
   organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
@@ -14,10 +15,21 @@ CREATE TABLE menu_items (
     REFERENCES menu_items (id)
 );
 
-
 CREATE TABLE periods (
 		id VARCHAR(40) NOT NULL UNIQUE,
-		period_name TEXT NOT NULL UNIQUE
+		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+		period_count TEXT NOT NULL,
+		period_name TEXT NOT NULL,
+		period_year TEXT NOT NULL,
+		month_name TEXT NOT NULL,
+		start_date DATE NOT NULL,
+		end_date DATE NOT NULL,
+		period_paid BOOLEAN NOT NULL,
+		period_current BOOLEAN NOT NULL,
+		period_back BOOLEAN NOT NULL,
+		period_proof BOOLEAN NOT NULL,
+		period_final BOOLEAN NOT NULL,
+		period_report BOOLEAN NOT NULL
 	);
 
 CREATE TABLE branch (

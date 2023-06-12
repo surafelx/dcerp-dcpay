@@ -18,6 +18,8 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import CircularProgress from '@mui/material/CircularProgress'
+
 
 // ** Icons Imports
 // import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -67,6 +69,7 @@ const UserList = () => {
     const [value, setValue] = useState<string>('')
     const [status, setStatus] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
+    const [loading, setLoading]=useState<boolean>(true)
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
 
     const [formData, setFormData] = useState({
@@ -108,9 +111,14 @@ const UserList = () => {
             }
         }, []);
 
+        
         const handleDelete = () => {
+            setLoading(true)
+        setTimeout(() => {
             dispatch(deleteSubParameterDefinition(id))
             handleRowOptionsClose()
+            setLoading(false)
+        }, 3000) 
         }
 
 
@@ -253,9 +261,14 @@ return (
     const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
+        <>
+        {loading ?    <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                  <CircularProgress sx={{ mb: 4 }} />
+                  <Typography>Loading...</Typography>
+                </Box> : (
         <Grid container spacing={6}>
             <Grid item  xs={12} md={12} lg={4}>
-                <AddSubParameterDefinition formData={formData} />
+                <AddSubParameterDefinition formData={formData} setLoading={setLoading} />
             </Grid>
             <Grid item  xs={12} md={12} lg={8}>
                 <Card>
@@ -321,7 +334,9 @@ return (
 
             </Grid>
 
-        </Grid >
+            </Grid >
+         )}
+         </>
     )
 }
 

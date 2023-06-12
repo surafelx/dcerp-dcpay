@@ -1,5 +1,5 @@
 // ** React Imports
-import {  useState, useEffect } from 'react'
+import {   useEffect } from 'react'
 
 
 // ** MUI Imports
@@ -57,12 +57,11 @@ const emptyValues = {
 
 const AddMenuLevelTwo = ({
     formData,
+    setLoading
 }: any) => {
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
-
-    const [, setMainParameterDefinition] = useState<string>('')
 
     useEffect(() => {
         dispatch(
@@ -89,13 +88,16 @@ const AddMenuLevelTwo = ({
 
     // any type used
     const onSubmit = (data: any) => {
-        if (data.id) {
-            dispatch(editSubParameterDefinition({ ...data }))
-        } else {
-            dispatch(addSubParameterDefinition({ ...data }))
-        }
-        reset(emptyValues)
-        setMainParameterDefinition('')
+        setLoading(true)
+        setTimeout(() => {
+            if (data.id) {
+                dispatch(editSubParameterDefinition({ ...data, }))
+            } else {
+                dispatch(addSubParameterDefinition({ ...data, }))
+            }
+            reset(emptyValues)
+            setLoading(false)
+        }, 3000) 
     }
 
 

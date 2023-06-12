@@ -106,7 +106,6 @@ const UserList = () => {
             handleRowOptionsClose()
             setLoading(false)
         }, 3000) 
-          
         }
 
 

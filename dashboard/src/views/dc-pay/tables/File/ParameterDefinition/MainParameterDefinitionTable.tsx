@@ -18,6 +18,8 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import CircularProgress from '@mui/material/CircularProgress'
+
 
 // ** Icons Imports
 // import EyeOutline from 'mdi-material-ui/EyeOutline'
@@ -60,6 +62,7 @@ const UserList = () => {
     // ** State
     const [role, setRole] = useState<string>('')
     const [value, setValue] = useState<string>('')
+    const [loading, setLoading]=useState<boolean>(true)
     const [status, setStatus] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
@@ -102,8 +105,12 @@ const UserList = () => {
         }, []);
 
         const handleDelete = () => {
+            setLoading(true)
+        setTimeout(() => {
             dispatch(deleteMainParameterDefinition(id))
             handleRowOptionsClose()
+            setLoading(false)
+        }, 3000) 
         }
 
 
@@ -199,13 +206,17 @@ return (
         setStatus(e.target.value)
     }, [])
 
-
     useEffect(() => {
-        dispatch(
-            fetchData({
-                q: value
-            })
-        )
+        setLoading(true)
+        setTimeout(() => {
+            dispatch(
+                fetchData({
+                    q: value
+                })
+            )
+            setLoading(false)
+        }, 3000) 
+        
     }, [dispatch, value])
 
     const handleFilter = useCallback((val: string) => {
@@ -220,9 +231,14 @@ return (
     const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
+        <>
+        {loading ?    <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                  <CircularProgress sx={{ mb: 4 }} />
+                  <Typography>Loading...</Typography>
+                </Box> : (
         <Grid container spacing={6}>
             <Grid item  xs={12} md={12} lg={4}>
-                <AddMainParameterDefinition formData={formData} />
+                <AddMainParameterDefinition  loading={loading} setLoading={setLoading}  formData={formData} />
             </Grid>
             <Grid item  xs={12} md={12} lg={8}>
                 <Card>
@@ -285,10 +301,10 @@ return (
                         </Grid>
                     </CardContent>
                 </Card >
-
             </Grid>
-
         </Grid >
+           )}
+           </>
     )
 }
 
