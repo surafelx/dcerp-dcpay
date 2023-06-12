@@ -32,7 +32,7 @@ jobs:
           script: |
             cd projects/dcerp-dcpay/main-api
             git pull origin main
-            npm run build
+            npm run compile
       - name: PM2 Reset
         uses: appleboy/ssh-action@master
         with:
