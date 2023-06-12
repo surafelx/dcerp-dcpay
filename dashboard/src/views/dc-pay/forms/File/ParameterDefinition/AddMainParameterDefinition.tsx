@@ -36,7 +36,7 @@ const emptyValues = {
     parameterName: ''
 }
 
-const AddMenuLevelOne = ({ formData }: any) => {
+const AddMenuLevelOne = ({ formData, setLoading }: any) => {
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -60,14 +60,18 @@ const AddMenuLevelOne = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        if (data.id) {
-            dispatch(editMainParameterDefinition({ ...data, }))
-        } else {
-            dispatch(addMainParameterDefinition({ ...data, }))
-        }
-        reset(emptyValues)
-
+        setLoading(true)
+        setTimeout(() => {
+            if (data.id) {
+                dispatch(editMainParameterDefinition({ ...data, }))
+            } else {
+                dispatch(addMainParameterDefinition({ ...data, }))
+            }
+            reset(emptyValues)
+            setLoading(false)
+        }, 3000) 
     }
+    
 
     return (
         <Card>

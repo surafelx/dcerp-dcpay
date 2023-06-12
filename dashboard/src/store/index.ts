@@ -26,6 +26,9 @@ import subParameterDefinition from 'src/store/apps/File/ParameterDefinition/SubP
 // ** File - Trasaction Definition
 import transactionDefinition from 'src/store/apps/File/TransactionDefinition'
 
+// ** File - Period
+import period from 'src/store/apps/File/Period'
+
 // ** Tasks - Loan Transaction
 import loanTransaction from 'src/store/apps/Tasks/LoanTransaction'
 
@@ -89,6 +92,9 @@ export const store = configureStore({
 
      // ** File - Transaction Definition
      transactionDefinition,
+
+    // ** File - Period
+    period,
 
     // ** Tasks - Loan Transaction
     loanTransaction,
