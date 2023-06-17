@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
+    console.log(newMenu)
     const {
         organizationId,
         employeeCode,
@@ -63,9 +64,9 @@ export const create = async (newMenu: any): Promise<any> => {
         sex,
         employeeStatus,
         employeeType,
-        new Date(employmentDate),
-        new Date(contractStartDate),
-        new Date(contractEndDate),
+        new Date(employmentDate) || new Date(),
+        new Date(contractStartDate) || new Date(),
+        new Date(contractEndDate) || new Date(),
         monthlyWorkingHours,
         pensionNumber,
         tinNumber,
