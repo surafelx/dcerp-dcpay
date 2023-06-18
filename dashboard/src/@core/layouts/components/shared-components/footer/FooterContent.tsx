@@ -10,6 +10,7 @@ const FooterContent = () => {
   // ** Var
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
 
+  // @ts-ignore
   const userData = JSON.parse(window.localStorage.getItem('userData'))
 
   const {start_date: startDate, end_date: endDate} = userData.currentPeriod
