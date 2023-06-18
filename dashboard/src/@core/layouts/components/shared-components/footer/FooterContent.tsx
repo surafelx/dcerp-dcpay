@@ -13,15 +13,15 @@ const FooterContent = () => {
   // @ts-ignore
   const userData = JSON.parse(window.localStorage.getItem('userData'))
 
-  const {start_date: startDate, end_date: endDate} = userData.currentPeriod
+  const {start_date: startDate, end_date: endDate} = userData.currentPeriod || {start_date: '', end_date: ''}
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
       <Typography sx={{ color: 'text.primary', textTransform: 'capitalize' }}>
       <Link target='_blank' href='https://mui.com/store/license/'>
-      {`${moment().format("LL")}  `}
+      {`${moment().format("LL")} `}
           </Link>
-      {`${moment(startDate).format("YYYY/MM/DD")} - ${moment(endDate).format("YYYY/MM/DD")}`}
+      {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
       </Typography>
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
