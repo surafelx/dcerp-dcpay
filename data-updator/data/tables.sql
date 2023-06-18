@@ -29,7 +29,8 @@ CREATE TABLE periods (
 		period_back BOOLEAN NOT NULL,
 		period_proof BOOLEAN NOT NULL,
 		period_final BOOLEAN NOT NULL,
-		period_report BOOLEAN NOT NULL
+		period_report BOOLEAN NOT NULL,
+		period_process BOOLEAN NOT NULL
 	);
 
 CREATE TABLE branch (
@@ -240,3 +241,5 @@ CREATE TABLE tax_rate (
 	highest_range VARCHAR(40) NOT NULL,
 	tax_rate VARCHAR(40) NOT NULL
 );
+
+

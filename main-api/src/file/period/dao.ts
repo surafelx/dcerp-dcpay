@@ -76,7 +76,8 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     period_back,
     period_proof,
     period_final,
-    period_report
+    period_report,
+    period_process
     FROM periods
     WHERE organization_id=$1`,
         [organizationId])
@@ -143,11 +144,38 @@ export const updatePeriod = async (updatedPeriod: any): Promise<string> => {
     return branchId
 }
 
+export const getCurrentPeriod = async (organizationId: string): Promise<any> => {
+    const { rows: Periods } = await pool.query(`
+    SELECT 
+    id,
+    organization_id,
+    period_count,
+    period_name, 
+    period_year,
+    month_name, 
+    start_date,
+    end_date,
+    period_paid,
+    period_current,
+    period_back,
+    period_proof,
+    period_final,
+    period_report,
+    period_process
+    FROM periods
+    WHERE organization_id=$1 AND
+    period_current = true`,
+        [organizationId])
+    return Periods
+}
+
+
 
 
 export default {
     create,
     deletePeriod,
     getAllFromOrganization,
+    getCurrentPeriod,
     updatePeriod
 }

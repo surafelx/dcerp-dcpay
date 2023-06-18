@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import jwt from 'jsonwebtoken'
 import authorizerDao from './dao'
 import userService from '../settings/user-management/users/service'
+import periodService from '../file/period/service'
 
 const createError = require('http-errors')
 
@@ -18,10 +19,14 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
             throw createError.Unauthorized('Invalid Username and/or Password')
         }
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
-
+        const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
         res.send({ 
             accessToken,
-            userData: { ...user, password: undefined }
+            userData: { 
+                ...user, 
+                password: undefined, 
+                currentPeriod: currentPeriod[0]
+            }
         })
     } catch (err) {
         res.status(400).send(err)
@@ -37,10 +42,13 @@ router.get('/me', async (req: Request, res, next) => {
         const user = await userService.getInfo(requestUser.id)
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
         
+        const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
+       
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
-            branchId: user.branch_id
+            branchId: user.branch_id,
+            currentPeriod
         }
         res.send({accessToken, userData})
     } catch (err) {

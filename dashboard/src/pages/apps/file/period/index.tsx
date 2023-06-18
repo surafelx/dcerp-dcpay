@@ -164,12 +164,12 @@ const UserList = () => {
         {
             flex: 0.2,
             minWidth: 230,
-            headerName: 'Period',
-            field: 'period',
+            headerName: 'Count',
+            field: 'periodCount',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { periodCount } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -178,7 +178,31 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${periodCount}`}
+                            </Typography>
+                        </Box>
+                    </Box>
+                )
+            }
+        },
+        {
+            flex: 0.2,
+            minWidth: 230,
+            headerName: 'Period',
+            field: 'periodName',
+            renderCell: ({ row }: CellType) => {
+                const { periodName } = row
+
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodName}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -189,11 +213,11 @@ return (
             flex: 0.2,
             minWidth: 230,
             headerName: 'Year',
-            field: 'year',
+            field: 'periodYear',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { periodYear } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -202,7 +226,7 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${periodYear}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -213,11 +237,11 @@ return (
             flex: 0.2,
             minWidth: 230,
             headerName: 'Month Name',
-            field: 'month',
+            field: 'monthName',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { monthName } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -226,7 +250,7 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${monthName}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -237,11 +261,11 @@ return (
             flex: 0.2,
             minWidth: 230,
             headerName: 'Start',
-            field: 'start',
+            field: 'startDate',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { startDate } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -250,7 +274,7 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${startDate}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -260,12 +284,12 @@ return (
         {
             flex: 0.2,
             minWidth: 230,
-            headerName: 'End',
+            headerName: 'endDate',
             field: 'end',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { endDate } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -274,7 +298,7 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${endDate}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -284,12 +308,12 @@ return (
         {
             flex: 0.2,
             minWidth: 230,
-            field: 'paid',
+            field: 'periodPaid',
             headerName: 'Paid',
             renderCell: ({ row }: CellType) => {
-                const {  firstTransactionName } = row
-                
-return (
+                const { periodPaid } = row
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -298,7 +322,7 @@ return (
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${firstTransactionName}`}
+                                {`${periodPaid}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -308,53 +332,95 @@ return (
         {
             flex: 0.2,
             minWidth: 250,
-            field: 'current',
+            field: 'periodCurrent',
             headerName: 'Current',
             renderCell: ({ row }: CellType) => {
+                const { periodCurrent } = row
+
                 return (
-                    <Typography noWrap variant='body2'>
-                        {row.secondTransactionName}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodCurrent}`}
+                            </Typography>
+                        </Box>
+                    </Box>
                 )
             }
         },
         {
             flex: 0.2,
             minWidth: 50,
-            field: 'back',
+            field: 'periodBack',
             headerName: 'Back Period',
             renderCell: ({ row }: CellType) => {
+                const { periodBack } = row
+
                 return (
-                    <Typography noWrap variant='body2'>
-                        {row.firstOptionName}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodBack}`}
+                            </Typography>
+                        </Box>
+                    </Box>
                 )
             }
         },
         {
             flex: 0.2,
             minWidth: 250,
-            field: 'proof',
+            field: 'periodProof',
             headerName: 'Proof',
             renderCell: ({ row }: CellType) => {
+                const { periodProof } = row
+
                 return (
-                    <Typography noWrap variant='body2'>
-                        {row.calculationUnitName}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodProof}`}
+                            </Typography>
+                        </Box>
+                    </Box>
                 )
             }
         },
         {
             flex: 0.15,
             minWidth: 150,
-            field: 'final',
+            field: 'periodFinal',
             headerName: 'Final',
             renderCell: ({ row }: CellType) => {
+                const { periodFinal } = row
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.thirdTransactionName}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodFinal}`}
+                            </Typography>
+                        </Box>
                     </Box>
                 )
             }
@@ -362,14 +428,23 @@ return (
         {
             flex: 0.15,
             minWidth: 150,
-            field: 'process',
+            field: 'periodProcess',
             headerName: 'Process',
             renderCell: ({ row }: CellType) => {
+                const { periodProcess } = row
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.secondOptionName}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodProcess}`}
+                            </Typography>
+                        </Box>
                     </Box>
                 )
             }
@@ -377,42 +452,33 @@ return (
         {
             flex: 0.15,
             minWidth: 150,
-            field: 'report',
+            field: 'periodReport',
             headerName: 'Report',
             renderCell: ({ row }: CellType) => {
+                const { periodReport } = row
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.rate}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${periodReport}`}
+                            </Typography>
+                        </Box>
                     </Box>
                 )
             }
-        },
-        {
-            flex: 0.1,
-            minWidth: 90,
-            sortable: false,
-            field: 'actions',
-            headerName: 'Actions',
-            renderCell: ({ row }: CellType) => (
-                <RowOptions
-                    id={row.id}
-                    firstTransaction={row.firstTransaction}
-                    secondTransaction={row.secondTransaction}
-                    thirdTransaction={row.thirdTransaction}
-                    calculationUnit={row.calculationUnit}
-                    firstOption={row.firstOption}
-                    secondOption={row.secondOption}
-                    rate={row.rate}
-                />)
         }
     ]
 
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
-    const store = useSelector((state: RootState) => state.period)
+    const store = useSelector((state: RootState) => state.periods)
 
     useEffect(() => {
         dispatch(
