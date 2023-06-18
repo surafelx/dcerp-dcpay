@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect } from 'react'
+import { useEffect, forwardRef, ChangeEvent } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -12,8 +12,6 @@ import InputLabel from '@mui/material/InputLabel'
 import FormHelperText from '@mui/material/FormHelperText'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -36,9 +34,27 @@ import { AppDispatch } from 'src/store'
 
 import { useSelector } from 'react-redux'
 
-import DatePicker from '@mui/lab/DatePicker'
+import DatePicker from 'react-datepicker'
+import { DateType } from 'src/types/forms/reactDatepickerTypes'
+
 
 import Grid from '@mui/material/Grid'
+import 'react-datepicker/dist/react-datepicker.css'
+
+
+interface CustomInputProps {
+    value: DateType
+    label: string
+    error: boolean
+    onChange: (event: ChangeEvent) => void
+}
+
+const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
+    return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />
+})
+
+
+
 
 const schema = yup.object().shape({
     employeeCode: yup.string(),
@@ -129,7 +145,7 @@ const AddMenuLevelTwo = ({
 
 
 
- 
+
 
     const {
         control,
@@ -172,8 +188,8 @@ const AddMenuLevelTwo = ({
         }
 
         const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
-        
-return filteredChild
+
+        return filteredChild
     }
 
     const bankOptions = filterSubParametersByName('Bank')
@@ -217,16 +233,29 @@ return filteredChild
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <DatePicker
-                                                label='Employment Date'
-                                                value={value}
-                                                onChange={onChange}
-                                                renderInput={(params: any) => <TextField {...params} />}
-                                            />
-                                        </LocalizationProvider>
+                                        <DatePicker
+                                            selected={value ? new Date(value) : new Date()}
+                                            showYearDropdown
+                                            showMonthDropdown
+                                            onChange={onChange}
+                                            placeholderText='MM/DD/YYYY'
+                                            customInput={
+                                                <CustomInput
+                                                    value={value ? new Date(value) : new Date()}
+                                                    onChange={onChange}
+                                                    label='Employmentt Date'
+                                                    error={Boolean(errors.employmentDate)}
+                                                    aria-describedby='validation-basic-dob'
+                                                />
+                                            }
+                                        />
                                     )}
                                 />
+                                {errors.employmentDate && (
+                                    <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                                        This field is required
+                                    </FormHelperText>
+                                )}
                                 {errors.employmentDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.employmentDate.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
@@ -237,16 +266,29 @@ return filteredChild
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <DatePicker
-                                                label='Contract Start Date'
-                                                value={value}
-                                                onChange={onChange}
-                                                renderInput={(params: any) => <TextField {...params} />}
-                                            />
-                                        </LocalizationProvider>
+                                        <DatePicker
+                                            selected={value ? new Date(value) : new Date()}
+                                            showYearDropdown
+                                            showMonthDropdown
+                                            onChange={onChange}
+                                            placeholderText='MM/DD/YYYY'
+                                            customInput={
+                                                <CustomInput
+                                                    value={value ? new Date(value) : new Date()}
+                                                    onChange={onChange}
+                                                    label='Contract Start Date Date'
+                                                    error={Boolean(errors.contractStartDate)}
+                                                    aria-describedby='validation-basic-dob'
+                                                />
+                                            }
+                                        />
                                     )}
                                 />
+                                {errors.contractStartDate && (
+                                    <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                                        This field is required
+                                    </FormHelperText>
+                                )}
                                 {errors.contractStartDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.contractStartDate.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
@@ -257,16 +299,29 @@ return filteredChild
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
-                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                            <DatePicker
-                                                label='Contract End Date'
-                                                value={value}
-                                                onChange={onChange}
-                                                renderInput={(params: any) => <TextField {...params} />}
-                                            />
-                                        </LocalizationProvider>
+                                        <DatePicker
+                                            selected={value ? new Date(value) : new Date()}
+                                            showYearDropdown
+                                            showMonthDropdown
+                                            onChange={onChange}
+                                            placeholderText='MM/DD/YYYY'
+                                            customInput={
+                                                <CustomInput
+                                                    value={value ? new Date(value) : new Date()}
+                                                    onChange={onChange}
+                                                    label='Contract End Date'
+                                                    error={Boolean(errors.contractEndDate)}
+                                                    aria-describedby='validation-basic-dob'
+                                                />
+                                            }
+                                        />
                                     )}
                                 />
+                                {errors.contractEndDate && (
+                                    <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                                        This field is required
+                                    </FormHelperText>
+                                )}
                                 {errors.contractEndDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.contractEndDate.message}</FormHelperText>}
                             </FormControl>
                         </Grid>

@@ -9,10 +9,13 @@ const deletePeriod = async (userId: string): Promise<any> => await periodDao.del
 
 const updatePeriod = async (menuLevelData: any): Promise<any> => await periodDao.updatePeriod(menuLevelData)
 
+const getCurrentPeriod = async (organizationId: any): Promise<any[]> => await periodDao.getCurrentPeriod(organizationId)
+
 
 export default {
     create,
     deletePeriod,
     getAllFromOrganization,
+    getCurrentPeriod,
     updatePeriod
 }

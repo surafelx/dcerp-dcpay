@@ -240,13 +240,17 @@ return (
         setStatus(e.target.value)
     }, [])
 
-
     useEffect(() => {
-        dispatch(
-            fetchData({
-                q: value
-            })
-        )
+        setLoading(true)
+        setTimeout(() => {
+            dispatch(
+                fetchData({
+                    q: value
+                })
+            )
+            setLoading(false)
+        }, 3000) 
+        
     }, [dispatch, value])
 
     const handleFilter = useCallback((val: string) => {

@@ -26,6 +26,7 @@ router.get('/',
                 period_proof,
                 period_final,
                 period_report,
+                period_process
             }) => ({
                 id,
                 periodCount: period_count,
@@ -40,6 +41,7 @@ router.get('/',
                 periodProof: period_proof,
                 periodFinal: period_final,
                 periodReport: period_report,
+                periodProcess: period_process
             }));
             const filteredData = renamedPeriods.filter(
                 period =>
@@ -55,12 +57,13 @@ router.get('/',
                     period.periodCurrent.toLowerCase().includes(queryLowered) ||
                     period.periodProof.toLowerCase().includes(queryLowered) ||
                     period.periodFinal.toLowerCase().includes(queryLowered) || 
-                    period.periodReport.toLowerCase().includes(queryLowered)
+                    period.periodReport.toLowerCase().includes(queryLowered) ||
+                    period.periodProcess.toLowerCase().includes(queryLowered)
                 )
             )
             res.send({
                 allData: renamedPeriods,
-                Period: filteredData,
+                periods: filteredData,
                 query: req.query,
                 total: filteredData.length
             })

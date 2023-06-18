@@ -4,22 +4,24 @@ import Link from '@mui/material/Link'
 import { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import moment from 'moment'
 
 const FooterContent = () => {
   // ** Var
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
 
+  // @ts-ignore
+  const userData = JSON.parse(window.localStorage.getItem('userData'))
+
+  const {start_date: startDate, end_date: endDate} = userData.currentPeriod || {start_date: '', end_date: ''}
+
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Typography sx={{ mr: 2 }}>
-        {/* {`© ${new Date().getFullYear()}, Made with `}
-        <Box component='span' sx={{ color: 'error.main' }}>
-          ❤️
-        </Box>
-        {` by `}
-        <Link target='_blank' href='https://mui.com/store/contributors/themeselection/'>
-          ThemeSelection
-        </Link> */}
+      <Typography sx={{ color: 'text.primary', textTransform: 'capitalize' }}>
+      <Link target='_blank' href='https://mui.com/store/license/'>
+      {`${moment().format("LL")} `}
+          </Link>
+      {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
       </Typography>
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>

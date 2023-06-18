@@ -63,7 +63,7 @@ export const appPeriodSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.period
+      state.data = action.payload.periods
       state.total = action.payload.total
       state.params = action.payload.params
       state.allData = action.payload.allData
