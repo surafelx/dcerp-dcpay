@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd projects/dcerp-dcpay/main-api
-            git pull origin main
+            git pull origin ${{ github.event.pull_request.head.ref }}
             npm i
             npm run compile
       - name: PM2 Reset

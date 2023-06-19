@@ -31,6 +31,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd projects/dcerp-dcpay/data-updator
-            git pull origin main
+            git pull origin ${{ github.event.pull_request.head.ref }}
             npm i
             npm run start
