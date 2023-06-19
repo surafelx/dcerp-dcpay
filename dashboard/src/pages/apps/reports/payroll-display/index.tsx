@@ -27,6 +27,8 @@ import TextField from '@mui/material/TextField'
 // import DeleteOutline from 'mdi-material-ui/DeleteOutline'
 // import AccountOutline from 'mdi-material-ui/AccountOutline'
 
+import Button from '@mui/material/Button'
+
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -269,6 +271,29 @@ const UserList = () => {
                         </Grid>
                         </CardContent>
                         </Card>
+            </Grid>
+            <Grid item xs={12}>
+                <Card>
+                    <CardContent>
+                        <Grid container spacing={6}>
+                            <Grid item sm={3} xs={12}>
+                            <FormControl fullWidth>
+                                <Button color='primary' fullWidth size='large' type='submit' variant='contained'>
+                                    Print
+                                </Button>
+                            </FormControl>
+                            </Grid>
+
+                            <Grid item sm={3} xs={12}>
+                            <FormControl fullWidth>
+                                <Button color='primary' fullWidth size='large' type='submit' variant='contained'>
+                                    Download
+                                </Button>
+                            </FormControl>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
             </Grid>
         </Grid>
     )

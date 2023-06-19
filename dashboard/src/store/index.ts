@@ -46,6 +46,9 @@ import membership from 'src/store/apps/Tasks/Membership'
 // ** Reports - Payroll Display
 import payrollDisplay from 'src/store/apps/Reports/PayrollDisplay'
 
+// ** Reports - Payroll Advice
+import payrollAdvice from 'src/store/apps/Reports/PayrollAdvice'
+
 
 // ** Settings - General Setup 
 import holiday from 'src/store/apps/Settings/GeneralSetup/HolidaySetup'
@@ -110,6 +113,9 @@ export const store = configureStore({
 
      // ** Reports - Payroll Display
      payrollDisplay,
+
+      // ** Reports - Payroll Advice
+      payrollAdvice,
 
      // ** Settings -General Setup
      holiday, 
