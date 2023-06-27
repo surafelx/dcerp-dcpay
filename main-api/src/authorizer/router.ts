@@ -38,12 +38,14 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         }
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
+        const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
         res.send({
             accessToken,
             userData: {
                 ...user,
                 password: undefined,
-                currentPeriod: currentPeriod[0]
+                currentPeriod: currentPeriod[0],
+                organizationName
             }
         })
     } catch (err) {
@@ -56,17 +58,17 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
 router.get('/me', async (req: Request, res, next) => {
     try {
         const requestUser = req.user as any
-
         const user = await userService.getInfo(requestUser.id)
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
-
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
-
+        const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
+        
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
             branchId: user.branch_id,
-            currentPeriod
+            currentPeriod,
+            organizationName
         }
         res.send({ accessToken, userData })
     } catch (err) {

@@ -1,5 +1,5 @@
 // ** React Imports
-import { Ref, useEffect, useState, forwardRef, ReactElement } from 'react'
+import { Ref, useState, forwardRef, ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -31,8 +31,8 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 import DialogTabCompany from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabCompany'
 import DialogTabPeriod from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabPeriod'
+import DialogTabParameter from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabParameter'
 
-// import DialogTabParameters from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabParameters'
 // import DialogTabUsers from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabUsers'
 
 
@@ -80,9 +80,9 @@ const TabLabel = (props: TabLabelProps) => {
   )
 }
 
-const tabsArr = ['companyInformationTab', 'periodTab', 'submitTab']
+const tabsArr = ['companyInformationTab', 'periodTab', 'parameterTab', 'submitTab']
 
-const emptyAppObj = {
+let createAppObject: any = {
   application: {
     name: 'App Description',
     category: '',
@@ -99,45 +99,7 @@ const emptyAppObj = {
     calendar: ''
   },
   parameters: {
-    default: true,
-    custom: {
-      mainParameters: [],
-      subParameters: []
-    }
-  },
-  userRole: {
-    default: true,
-    custom: []
-  },
-  userAccount: {
-    default: true,
-    custom: []
-  }
-}
-
-
-const createAppObject = {
-  application: {
-    name: 'App Description',
-    category: '',
-  },
-  company: {
-    name: '',
-    address: '',
-    tinNumber: '',
-    branchCode: '',
-    branchName: ''
-  },
-  period: {
-    currentPeriod: '',
-    calendar: ''
-  },
-  parameters: {
-    default: true,
-    custom: {
-      mainParameters: [],
-      subParameters: []
-    }
+    default: true
   },
   userRole: {
     default: true,
@@ -153,8 +115,6 @@ const DialogCreateApp = () => {
   // ** States
   const [show, setShow] = useState<boolean>(false)
   const [activeTab, setActiveTab] = useState<string>('companyInformationTab')
-  const [appObj, setAppObj] = useState<any>(createAppObject)
-
 
   // ** Hook
   const { settings } = useSettings()
@@ -172,11 +132,6 @@ const DialogCreateApp = () => {
   const onSubmit = (data: any) => {
     dispatch(addCompany({ ...data }))
   }
-
-
-  useEffect(() => {
-    setAppObj(createAppObject)
-  }, [])
 
   const nextArrow = direction === 'ltr' ? 'mdi:arrow-right' : 'mdi:arrow-left'
   const previousArrow = direction === 'ltr' ? 'mdi:arrow-left' : 'mdi:arrow-right'
@@ -204,8 +159,31 @@ const DialogCreateApp = () => {
             if (activeTab !== 'submitTab') {
               setActiveTab(nextTab)
             } else {
-              onSubmit(appObj)
-              setAppObj(emptyAppObj)
+              onSubmit(createAppObject)
+              createAppObject =  {
+                company: {
+                  name: '',
+                  address: '',
+                  tinNumber: '',
+                  branchCode: '',
+                  branchName: ''
+                },
+                period: {
+                  currentPeriod: '',
+                  calendar: ''
+                },
+                parameters: {
+                  default: true
+                },
+                userRole: {
+                  default: true,
+                  custom: []
+                },
+                userAccount: {
+                  default: true,
+                  custom: []
+                }
+              }
               handleClose()
             }
           }}
@@ -302,19 +280,19 @@ const DialogCreateApp = () => {
                     />
                   }
                 />
-                {/* <Tab
+               <Tab
                   disableRipple
-                  value='parametersTab'
+                  value='parameterTab'
                   label={
                     <TabLabel
                       title='Parameters'
-                      active={activeTab === 'parametersTab'}
+                      active={activeTab === 'parameterTab'}
                       subtitle='Define Parameters'
                       icon={<Icon icon='mdi:credit-card-outline' />}
                     />
                   }
                 />
-                <Tab
+                 {/* <Tab
                   disableRipple
                   value='usersTab'
                   label={
@@ -351,11 +329,11 @@ const DialogCreateApp = () => {
                 <DialogTabPeriod createAppObject={createAppObject} />
                 {renderTabFooter()}
               </TabPanel>
-              {/* <TabPanel value='parametersTab' sx={{ flexGrow: 1 }}>
-                <DialogTabParameters createAppObject={createAppObject} />
+            <TabPanel value='parameterTab' sx={{ flexGrow: 1 }}>
+                <DialogTabParameter createAppObject={createAppObject} />
                 {renderTabFooter()}
               </TabPanel>
-              <TabPanel value='usersTab' sx={{ flexGrow: 1 }}>
+              {/*   <TabPanel value='usersTab' sx={{ flexGrow: 1 }}>
                 <DialogTabUsers createAppObject={createAppObject} />
                 {renderTabFooter()}
               </TabPanel> */}

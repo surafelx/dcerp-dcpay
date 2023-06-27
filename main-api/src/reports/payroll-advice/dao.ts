@@ -117,7 +117,7 @@ const getAllFromOrganization = async(organizationId: string, branchId: string, d
             id: employee.id,
             employeeName: `${employee.first_name} ${employee.last_name}`,
             employeeCode: `${employee.employee_code}`,
-            transactions: [...payTransactions, ...allTransactions],
+            transactions: [...allTransactions],
             grossTaxable,
             totalEarnings,
             totalDeductions,

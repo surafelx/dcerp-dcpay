@@ -12,7 +12,7 @@ const FooterContent = () => {
 
   // @ts-ignore
   const userData = JSON.parse(window.localStorage.getItem('userData'))
-
+  const { organizationName } = userData
   const {start_date: startDate, end_date: endDate} = userData.currentPeriod || {start_date: '', end_date: ''}
 
   return (
@@ -23,6 +23,14 @@ const FooterContent = () => {
           </Link>
       {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
       </Typography>
+      
+
+      <Typography sx={{ color: 'text.primary', textTransform: 'capitalize' }}>
+      <Link target='_blank' href='https://mui.com/store/license/'>
+      {`${organizationName || ''} `} 
+          </Link>
+      </Typography>
+
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
           <Link

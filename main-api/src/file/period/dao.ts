@@ -171,7 +171,7 @@ export const getCurrentPeriod = async (organizationId: string): Promise<any> => 
 }
 
 
-const generatePeriod = async (organizationId: string, currentPeriod: number) => {
+const generateGregorianPeriod = async (currentPeriod: number, organizationId: string) => {
 
     const currentYear = new Date().getFullYear();
 
@@ -315,7 +315,7 @@ const generateEthiopianPeriod = async (ethiopianStartingPeriod: any, currentPeri
 export default {
     create,
     deletePeriod,
-    generatePeriod,
+    generateGregorianPeriod,
     generateEthiopianPeriod,
     // setupPeriod,
     getAllFromOrganization,

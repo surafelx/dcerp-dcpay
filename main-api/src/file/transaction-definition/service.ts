@@ -13,6 +13,8 @@ const updateTransactionDefinition = async (transactionDefinition: any): Promise<
 
 const getAllFromTransactionGroup = async (organizationId: any, main: any, transactionGroupId: any): Promise<any[]> => await transactionDefinitionDao.getAllFromTransactionGroup(organizationId, main, transactionGroupId)
 
+const setupApp = async(organizationId: string, branchId: string) => await transactionDefinitionDao.setupApp(organizationId, branchId)
+
 
 export default {
     create,
@@ -20,5 +22,6 @@ export default {
     getAllFromOrganization,
     getAllFromTransactionGroup,
     getByName,
-    updateTransactionDefinition
+    updateTransactionDefinition,
+    setupApp
 }

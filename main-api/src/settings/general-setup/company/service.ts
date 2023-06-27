@@ -4,6 +4,9 @@ import periodService from '../../../file/period/service'
 import roleService from '../../../settings/user-management/roles/service'
 import userService from '../../../settings/user-management/users/service'
 import roleBranchService from '../../../settings/rights-management/branch/service'
+import parameterService from '../../../file/parameter-definition/service'
+import transactionDefinitionService from '../../../file/transaction-definition/service'
+
 
 const create = async (newHoliday: any): Promise<string> => await companyDao.create(newHoliday)
 
@@ -23,40 +26,40 @@ const defaultUser = {
 }
 
 
-// const defaultParameters = {
-//     mainParameters: [],
-//     subParameters: [],
-//     transactionDefinitions: [],
-// }
-
-// const defaultUtilities = {
-//     mainParameters: [],
-//     subParameters: [],
-//     transactionDefinitions: [],
-// }
-
 
 const setupApp =  async (companyData: any): Promise<any> => {
     try {
         const {
             company,
-            // period,
+            period,
             userRole,
             userAccount,
-            // parameters,
+            parameters,
             // utilities
         } = companyData
         const { branchCode, branchName, name: companyName } = company
         const organizationId = await companyDao.create(company)
         const newBranch = { branchCode, branchName, organizationId }
         const { id: branchId } = await branchDao.create(newBranch)
+        
         const startingPeriod = '2015,11,1';
 
-        await periodService.generateEthiopianPeriod(startingPeriod, 12, organizationId)
+        const {calendar, currentPeriod } = period
+
+        if(calendar === 'ethiopian-calendar')
+            await periodService.generateEthiopianPeriod(startingPeriod, currentPeriod, organizationId)
+
+        if(calendar === 'gregorian-calendar')
+            await periodService.generateGregorianPeriod(currentPeriod, organizationId)
 
         const newRole = userRole.default ? { roleName: 'Admin' } : { roleName: userRole.custom.roleName }
         const newUser = userAccount.default ? defaultUser : userAccount.custom
 
+        if(parameters.default) {
+            await parameterService.setupApp(organizationId)
+            await transactionDefinitionService.setupApp(organizationId, branchId)
+
+        }
         // // const newParameters = parameters.default ? defaultParameters : parameters.custom
         // // const newUtilities = utilities.default ? defaultUtilities : utilities.custom
 

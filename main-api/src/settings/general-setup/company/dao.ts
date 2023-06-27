@@ -38,17 +38,15 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN branch ON holiday.branch_id = branch.id
     WHERE holiday.organization_id=$1`,
         [organizationId])
-    console.log(holidays)
     return holidays
 }
 
 export const getInfo = async (holidayId: string) => {
+    console.log(holidayId)
     const { rows: holidays } = await pool.query(`
     SELECT 
-    id, 
-    menu_title,
-    menu_path
-    FROM menu_items
+    *
+    FROM organizations
     WHERE id=$1`,
         [holidayId])
     return holidays[0]

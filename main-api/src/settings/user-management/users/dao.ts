@@ -120,6 +120,7 @@ export const getInfo = async (userId: string): Promise<any> => {
     const res = await pool.query(`
     SELECT 
     ua.id, 
+    ur.organization_id,
     ua.first_name, 
     ua.last_name, 
     ua.email, 
