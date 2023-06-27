@@ -44,7 +44,7 @@ CREATE TABLE user_roles (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		branch_id VARCHAR(40) NOT NULL REFERENCES branch(id),
-		role_name TEXT NOT NULL UNIQUE
+		role_name TEXT NOT NULL
 	);
 
 CREATE TABLE user_accounts (
@@ -149,9 +149,9 @@ CREATE TABLE employee (
 		sex VARCHAR(40) NOT NULL,
 		employee_status VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
 		employee_type VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
-		employment_date DATE NOT NULL,
-		contract_start_date DATE NOT NULL,
-		contract_end_date DATE NOT NULL,
+		employment_date DATE,
+		contract_start_date DATE,
+		contract_end_date DATE,
 		monthly_working_hours VARCHAR(40) NOT NULL,
 		pension_number VARCHAR(40),
 		tin_number VARCHAR(40),

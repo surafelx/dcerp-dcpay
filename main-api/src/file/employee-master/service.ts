@@ -8,7 +8,8 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
     newEmployee.organizationId = organizationId
     const newEmployeeId = await employeeDao.create({ ...newEmployee })
     const basicSalaryId = await transctionDefinitionService.getByName('Basic Salary')
-     await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: basicSalaryId?.id, transactionAmount: newEmployee.basicSalary})
+    const calculatedSalary = (newEmployee.basicSalary*newEmployee.workingDays)/30
+    await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: basicSalaryId?.id, transactionAmount: calculatedSalary})
     return newEmployeeId
 }
 

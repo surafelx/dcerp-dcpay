@@ -23,6 +23,10 @@ import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormCo
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+
+import DialogSetupApp from 'src/views/dc-pay/setup-dialog/DialogSetupApp'
+
+
 // ** Third Party Imports
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
@@ -217,6 +221,11 @@ const LoginPage = () => {
                 {themeConfig.templateName}
               </Typography>
             </Box>
+            <Box sx={{ mb: 10 }}>
+              <DialogSetupApp />
+
+            </Box>
+
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <FormControl fullWidth sx={{ mb: 4 }}>
                 <Controller
@@ -287,6 +296,7 @@ const LoginPage = () => {
                 Login
               </Button>
             </form>
+
           </BoxWrapper>
         </Box>
       </RightWrapper>

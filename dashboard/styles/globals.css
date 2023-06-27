@@ -23,7 +23,7 @@ code[class*='language-'] {
   padding: 0;
 }
 
-
+/* 
 @media print {
   @page {
     margin: 0;
@@ -40,4 +40,4 @@ code[class*='language-'] {
   .page-number:before {
     content: "Page " counter(page);
   }
-}
+} */

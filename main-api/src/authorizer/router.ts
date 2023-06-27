@@ -3,11 +3,29 @@ import jwt from 'jsonwebtoken'
 import authorizerDao from './dao'
 import userService from '../settings/user-management/users/service'
 import periodService from '../file/period/service'
+import organizationService from '../settings/general-setup/company/service'
+
+
 
 const createError = require('http-errors')
 
 const router = Router()
 
+
+router.post('/company-setup', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { data } = req.body
+        console.log(data)
+        await organizationService.setupApp(data)
+        // Add Organization
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).send(err)
+        next(err)
+    }
+})
 
 router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -20,11 +38,11 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         }
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
-        res.send({ 
+        res.send({
             accessToken,
-            userData: { 
-                ...user, 
-                password: undefined, 
+            userData: {
+                ...user,
+                password: undefined,
                 currentPeriod: currentPeriod[0]
             }
         })
@@ -38,19 +56,19 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
 router.get('/me', async (req: Request, res, next) => {
     try {
         const requestUser = req.user as any
-       
+
         const user = await userService.getInfo(requestUser.id)
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
-        
+
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
-       
+
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
             branchId: user.branch_id,
             currentPeriod
         }
-        res.send({accessToken, userData})
+        res.send({ accessToken, userData })
     } catch (err) {
         res.status(400).send(err)
         next(err)

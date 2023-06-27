@@ -12,12 +12,18 @@ const create = async (req: Request, userAuthInfo: any): Promise<string> => {
     return userId
 }
 
+const setupApp = async (newUser: any, organizationId: any): Promise<string> => {
+    newUser.password = await encrypt(newUser.password)
+    newUser.organizationId = organizationId
+    const userId = await userDao.create({ ...newUser })
+    return userId
+}
+
+
 const getAll = async (): Promise<any[]> => {
     const users = await userDao.getAll()
     return users
 }
-
-
 
 const getAllFromOrganization = async (userAuthInfo: any): Promise<any[]> => {
     const { organization_id: organizationId } = userAuthInfo
@@ -55,6 +61,7 @@ const updateUser = async (userData: any): Promise<any> => {
 
 export default {
     create,
+    setupApp,
     deleteUser,
     getInfo,
     getAll,

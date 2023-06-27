@@ -13,11 +13,7 @@ import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TableContainer from '@mui/material/TableContainer'
-
-
 import Link from 'next/link'
-
-
 import Table from '@mui/material/Table'
 import Divider from '@mui/material/Divider'
 import TableRow from '@mui/material/TableRow'
@@ -25,22 +21,16 @@ import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import { styled } from '@mui/material/styles'
-
-import {BoxProps} from '@mui/material/Box'
+import { BoxProps } from '@mui/material/Box'
 
 // ** Store  Imports
 import { useDispatch, useSelector } from 'react-redux'
-
-
 import Button from '@mui/material/Button'
-
-
 
 // ** Actions Imports
 import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
-
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -59,7 +49,7 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 
 
 
-const UserList = () => {
+const PayrollSheet = () => {
     // ** State
     const [branch, setBranch] = useState<string>('')
     const [department, setDepartment] = useState<string>('')
@@ -120,7 +110,7 @@ const UserList = () => {
                             <CardHeader title='Payroll Sheet' />
                             <CardContent>
                                 <Grid container spacing={6}>
-                                    <Grid item sm={4} xs={12}>
+                                    <Grid item sm={6} xs={12}>
                                         <FormControl fullWidth>
                                             <InputLabel id='branch-select'>Select Branch</InputLabel>
                                             <Select
@@ -142,7 +132,7 @@ const UserList = () => {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item sm={4} xs={12}>
+                                    <Grid item sm={6} xs={12}>
                                         <FormControl fullWidth>
                                             <InputLabel id='department-select'>Select Department</InputLabel>
                                             <Select
@@ -164,7 +154,6 @@ const UserList = () => {
                                             </Select>
                                         </FormControl>
                                     </Grid>
-
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -172,11 +161,7 @@ const UserList = () => {
                     <Grid item xs={12}>
                         <Grid container spacing={6}>
                             <Grid item xs={12}>
-
-
-
                                 <Card>
-
                                     <TableContainer>
                                         <Table>
                                             <TableHead>
@@ -202,12 +187,9 @@ const UserList = () => {
                                                         )
                                                     })
                                                 }
-
-
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-
                                     <CardContent>
                                         <Grid container>
                                             <Grid item xs={12} sm={4} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
@@ -224,12 +206,7 @@ const UserList = () => {
                                             </Grid>
                                         </Grid>
                                     </CardContent>
-
-
                                 </Card>
-
-
-
                             </Grid>
                         </Grid>
                     </Grid>
@@ -241,7 +218,6 @@ const UserList = () => {
                         <Button
                             fullWidth
                             target='_blank'
-                            sx={{ mb: 3.5 }}
                             component={Link}
                             color='primary'
                             variant='outlined'
@@ -257,4 +233,4 @@ const UserList = () => {
     )
 }
 
-export default UserList
+export default PayrollSheet
