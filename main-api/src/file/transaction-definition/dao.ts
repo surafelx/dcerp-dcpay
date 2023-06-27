@@ -441,6 +441,26 @@ const setupApp = async (organizationId: any, branchId: any) => {
 }
 
 
+
+export const getTransactionDefinitionByNameByOrganization = async (organizationId: string, transactionName: any) => {
+    const tranQuery = `
+    SELECT 
+    transaction_definition.id,
+    transaction_definition.organization_id,
+    transaction_definition.transaction_code,
+    transaction_definition.transaction_name
+    FROM transaction_definition
+    WHERE 
+    transaction_definition.organization_id=$1 AND 
+    transaction_definition.transaction_name=$2
+   `
+    const { rows: transactions } = await pool.query(tranQuery,
+        [organizationId, transactionName])
+    return transactions[0].id
+}
+
+
+
 export default {
     create,
     deleteTransactionDefinition,
@@ -448,5 +468,6 @@ export default {
     getByName,
     getAllFromTransactionGroup,
     updateTransactionDefinition,
+    getTransactionDefinitionByNameByOrganization,
     setupApp
 }

@@ -9,10 +9,12 @@ const deleteTransactionParameterCalculation = async (userId: string): Promise<an
 
 const updateTransactionParameterCalculation = async (menuLevelData: any): Promise<any> => await transactionParameterCalculationDao.updateTransactionParameterCalculation(menuLevelData)
 
+const setupApp = async (organizationId: any): Promise<any> => await transactionParameterCalculationDao.setupApp(organizationId)
 
 export default {
     create,
     deleteTransactionParameterCalculation,
     getAllFromOrganization,
-    updateTransactionParameterCalculation
+    updateTransactionParameterCalculation,
+    setupApp
 }
