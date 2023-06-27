@@ -69,7 +69,7 @@ export const create = async (newMenu: any): Promise<any> => {
         employeeType,
         refactoredEmpDate,
         refactoredContStart,
-        refactoredContStart,
+        refactoredContEnd,
         monthlyWorkingHours,
         pensionNumber,
         tinNumber,
