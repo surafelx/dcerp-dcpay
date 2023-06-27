@@ -49,6 +49,8 @@ import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
 import AddEmployee from 'src/views/dc-pay/forms/File/EmployeeMaster/AddEmployee'
 
+// ** Styled Component
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 interface CellType {
     row: EmployeesType
@@ -66,6 +68,7 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 }))
 
 const UserList = () => {
+    
     // ** State
     const [role] = useState<string>('')
     const [value, setValue] = useState<string>('')
@@ -326,15 +329,17 @@ const UserList = () => {
         setValue(val)
     }, [])
 
-   
+
     const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
         <Grid container spacing={6}>
-            <Grid item  xs={12} md={12} lg={4}>
-                <AddEmployee formData={formData} />
+            <Grid item xs={12} md={12} lg={12}>
+                <DatePickerWrapper>
+                    <AddEmployee formData={formData} />
+                </DatePickerWrapper>
             </Grid>
-            <Grid item  xs={12} md={12} lg={8}>
+            <Grid item xs={12} md={12} lg={12}>
                 <Card>
                     <CardHeader title='Employees' />
                     <CardContent>

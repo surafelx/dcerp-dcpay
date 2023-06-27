@@ -15,6 +15,16 @@ const create = async (newRole: any, userId: any): Promise<string> => {
     return roleId
 }
 
+const createByOrganizationId = async (newRole: any, organizationId: any, branchId: any): Promise<string> => {
+    newRole.organizationId = organizationId
+    newRole.branchId = branchId
+    const roleId = await rolesDao.create(newRole)
+    await roleBranchService.populateForBranch(organizationId, roleId)
+    await menuRightsService.populateForMenu(organizationId, roleId)
+    return roleId
+}
+
+
 const deleteRole = async (roleId: string): Promise<any> => {
     await menuRightsService.deleteForRole(roleId)
     await roleBranchService.deleteForRole(roleId)
@@ -41,6 +51,7 @@ const updateRole = async (roleData: any): Promise<any> => await rolesDao.updateR
 
 export default {
     create,
+    createByOrganizationId,
     deleteRole,
     updateRole,
     getInfo,

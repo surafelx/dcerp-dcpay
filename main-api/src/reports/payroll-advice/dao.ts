@@ -112,7 +112,7 @@ const getAllFromOrganization = async(organizationId: string, branchId: string, d
 
             const {grossTaxable, totalEarnings, totalDeductions} = calculateGrossTaxable(allTransactions)
             const taxPay = await calculateTaxPay(grossTaxable)
-           
+
         return {
             id: employee.id,
             employeeName: `${employee.first_name} ${employee.last_name}`,

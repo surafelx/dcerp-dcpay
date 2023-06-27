@@ -10,6 +10,7 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
     return await branchRightsDao.create({ ...newMenu })
 }
 
+
 const getAllFromOrganization = async (userAuthInfo: any, roleId: any): Promise<any[]> => {
     const menuValues = await branchRightsDao.getAllFromOrganization(userAuthInfo, roleId)
     // const navArray = getNavigationArray(menuValues)

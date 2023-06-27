@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import { DataGrid } from '@mui/x-data-grid'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
@@ -13,133 +12,49 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-
+import TableContainer from '@mui/material/TableContainer'
 import Link from 'next/link'
+import Table from '@mui/material/Table'
+import Divider from '@mui/material/Divider'
+import TableRow from '@mui/material/TableRow'
+import TableHead from '@mui/material/TableHead'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import { styled } from '@mui/material/styles'
+import { BoxProps } from '@mui/material/Box'
 
-// ** Store Imports
+// ** Store  Imports
 import { useDispatch, useSelector } from 'react-redux'
-
-
 import Button from '@mui/material/Button'
-
-
 
 // ** Actions Imports
 import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
 
-
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { PayrollAdviceType } from 'src/types/apps/Reports/payrollAdviceType'
-
-
-interface CellType {
-    row: PayrollAdviceType
-}
 
 
 
-const UserList = () => {
+const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    '&:not(:last-of-type)': {
+        marginBottom: theme.spacing(2)
+    }
+}))
+
+
+
+
+const PayrollAdvice = () => {
     // ** State
     const [branch, setBranch] = useState<string>('')
     const [department, setDepartment] = useState<string>('')
     const [value] = useState<string>('')
     const [status,] = useState<string>('')
-    const [pageSize, setPageSize] = useState<number>(10)
-
-    const columns = [
-        {
-            flex: 0.2,
-            minWidth: 230,
-            field: 'employeeName',
-            headerName: 'Employee Name',
-            renderCell: ({ row }: CellType) => {
-                const { employeeName } = row
-
-                return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                            noWrap
-                            component='a'
-                            variant='body2'
-                            sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                        >
-                            {employeeName}
-                        </Typography>
-                    </Box>
-                )
-            }
-        },
-        {
-            flex: 0.2,
-            minWidth: 230,
-            field: 'earnings',
-            headerName: 'Earnings',
-            renderCell: ({ row }: CellType) => {
-                const { totalEarnings } = row
-
-                return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                            noWrap
-                            component='a'
-                            variant='body2'
-                            sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                        >
-                            {totalEarnings}
-                        </Typography>
-                    </Box>
-                )
-            }
-        },
-        {
-            flex: 0.2,
-            minWidth: 230,
-            field: 'deductions',
-            headerName: 'Deductions',
-            renderCell: ({ row }: CellType) => {
-                const { totalDeductions } = row
-
-                return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                            noWrap
-                            component='a'
-                            variant='body2'
-                            sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                        >
-                            {totalDeductions}
-                        </Typography>
-                    </Box>
-                )
-            }
-        },
-        {
-            flex: 0.2,
-            minWidth: 230,
-            field: 'netPay',
-            headerName: 'Net Pay',
-            renderCell: ({ row }: CellType) => {
-                const { netPay } = row
-
-                return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                            noWrap
-                            component='a'
-                            variant='body2'
-                            sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                        >
-                            {netPay}
-                        </Typography>
-                    </Box>
-                )
-            }
-        }
-    ]
-
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -147,6 +62,7 @@ const UserList = () => {
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
+
 
 
     useEffect(() => {
@@ -187,95 +103,133 @@ const UserList = () => {
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12}>
-                <Card>
-                    <CardHeader title='Payroll Advice' />
-                    <CardContent>
-                        <Grid container spacing={6}>
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='branch-select'>Select Branch</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={branch}
-                                        id='select-branch'
-                                        label='Select Branch'
-                                        labelId='branch-select'
-                                        onChange={handleBranchChange}
-                                        inputProps={{ placeholder: 'Select Branch' }}
-                                    >
-                                        {
-                                        [{id: 'All', branchName: 'All'}, ...branchStore.data].map(({ id, branchName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${branchName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='department-select'>Select Department</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={department}
-                                        id='select-department'
-                                        label='Select Department'
-                                        labelId='department-select'
-                                        onChange={handleDepartmentChange}
-                                        inputProps={{ placeholder: 'Select Department' }}
-                                    >
-                                        {
-                                             [{id: 'All', departmentName: 'All'}, ...departmentStore.data].map(({ id, departmentName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${departmentName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
-                        </Grid>
-                    </CardContent>
-                </Card>
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xl={9} md={8} xs={12}>
                 <Grid container spacing={6}>
                     <Grid item xs={12}>
                         <Card>
-                            <DataGrid
-                                autoHeight
-                                rows={store.data}
-                                columns={columns}
-                                checkboxSelection
-                                pageSize={pageSize}
-                                disableSelectionOnClick
-                                rowsPerPageOptions={[10, 25, 50]}
-                                onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                            />
+                            <CardHeader title='Payroll Advice' />
+                            <CardContent>
+                                <Grid container spacing={6}>
+                                    <Grid item sm={6} xs={12}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id='branch-select'>Select Branch</InputLabel>
+                                            <Select
+                                                fullWidth
+                                                value={branch}
+                                                id='select-branch'
+                                                label='Select Branch'
+                                                labelId='branch-select'
+                                                onChange={handleBranchChange}
+                                                inputProps={{ placeholder: 'Select Branch' }}
+                                            >
+                                                {
+                                                    [{ id: 'All', branchName: 'All' }, ...branchStore.data].map(({ id, branchName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{`${branchName}`}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item sm={6} xs={12}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id='department-select'>Select Department</InputLabel>
+                                            <Select
+                                                fullWidth
+                                                value={department}
+                                                id='select-department'
+                                                label='Select Department'
+                                                labelId='department-select'
+                                                onChange={handleDepartmentChange}
+                                                inputProps={{ placeholder: 'Select Department' }}
+                                            >
+                                                {
+                                                    [{ id: 'All', departmentName: 'All' }, ...departmentStore.data].map(({ id, departmentName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{`${departmentName}`}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
                         </Card>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Grid container spacing={6}>
+                            <Grid item xs={12}>
+                                <Card>
+                                    <TableContainer>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Code</TableCell>
+                                                    <TableCell>Name</TableCell>
+                                                    <TableCell>Deductions</TableCell>
+                                                    <TableCell>Earnings</TableCell>
+                                                    <TableCell>Net</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {
+                                                    store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }, index) => {
+                                                        return (
+                                                            <TableRow key={index}>
+                                                                <TableCell>{`${employeeCode}`}</TableCell>
+                                                                <TableCell>{`${employeeName}`}</TableCell>
+                                                                <TableCell>{`${totalDeductions}`}</TableCell>
+                                                                <TableCell>{`${totalEarnings}`}</TableCell>
+                                                                <TableCell>{`${netPay}`}</TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    })
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <CardContent>
+                                        <Grid container>
+                                            <Grid item xs={12} sm={4} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
+                                            </Grid>
+                                            <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+                                                <Divider />
+                                                <CalcWrapper>
+                                                    <Typography variant='body2'>Total:</Typography>
+                                                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                                                        {store.data.reduce((sum, { netPay }) => sum + netPay, 0)}
+                                                    </Typography>
+                                                </CalcWrapper>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xl={3} md={4} xs={12}>
                 <Card>
                     <CardContent>
-                        <Grid container spacing={6}>
-                            <Grid item sm={3} xs={12}>
-                            <FormControl fullWidth>
-                            <Button sx={{ mb: 2 }} component={Link} variant='contained' href='/apps/reports/payroll-advice/preview/4987'>
-                                Create Report
-                            </Button>
-                            </FormControl>
-                            </Grid>
-                        </Grid>
+                        <Button
+                            fullWidth
+                            target='_blank'
+                            component={Link}
+                            color='primary'
+                            variant='outlined'
+                            href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
+                        >
+                            Print
+                        </Button>
                     </CardContent>
                 </Card>
             </Grid>
         </Grid>
+
     )
 }
 
-export default UserList
+export default PayrollAdvice

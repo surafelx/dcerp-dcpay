@@ -18,8 +18,10 @@ import { fetchData } from 'src/store/apps/File/Period'
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 import { PeriodType } from 'src/types/apps/File/periodTypes'
-import AddPeriod from 'src/views/dc-pay/forms/File/Period/AddPeriod'
 
+// import AddPeriod from 'src/views/dc-pay/forms/File/Period/AddPeriod'
+
+import moment from 'moment'
 
 interface CellType {
     row: PeriodType
@@ -33,22 +35,20 @@ const UserList = () => {
     const [status] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
 
-    const [formData, ] = useState({
-        id: '',
-        firstTransaction: '',
-        secondTransaction: '',
-        thirdTransaction: '',
-        calculationUnit: '',
-        firstOption: '',
-        secondOption: '',
-        rate: ''
-    });
+    // const [formData, ] = useState({
+    //     id: '',
+    //     firstTransaction: '',
+    //     secondTransaction: '',
+    //     thirdTransaction: '',
+    //     calculationUnit: '',
+    //     firstOption: '',
+    //     secondOption: '',
+    //     rate: ''
+    // });
 
 
     const columns = [
         {
-            flex: 0.2,
-            minWidth: 230,
             headerName: 'Count',
             field: 'periodCount',
             renderCell: ({ row }: CellType) => {
@@ -71,8 +71,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
             headerName: 'Period',
             field: 'periodName',
             renderCell: ({ row }: CellType) => {
@@ -95,8 +93,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
             headerName: 'Year',
             field: 'periodYear',
             renderCell: ({ row }: CellType) => {
@@ -119,9 +115,7 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
-            headerName: 'Month Name',
+            headerName: 'Month',
             field: 'monthName',
             renderCell: ({ row }: CellType) => {
                 const { monthName } = row
@@ -143,8 +137,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
             headerName: 'Start',
             field: 'startDate',
             renderCell: ({ row }: CellType) => {
@@ -159,7 +151,7 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${startDate}`}
+                                 {`${moment(startDate).format("YYYY/MM/DD")}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -167,9 +159,7 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
-            headerName: 'endDate',
+            headerName: 'End',
             field: 'end',
             renderCell: ({ row }: CellType) => {
                 const { endDate } = row
@@ -183,7 +173,7 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${endDate}`}
+                                    {`${moment(endDate).format("YYYY/MM/DD")}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -191,8 +181,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 230,
             field: 'periodPaid',
             headerName: 'Paid',
             renderCell: ({ row }: CellType) => {
@@ -215,8 +203,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 250,
             field: 'periodCurrent',
             headerName: 'Current',
             renderCell: ({ row }: CellType) => {
@@ -239,10 +225,8 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 50,
             field: 'periodBack',
-            headerName: 'Back Period',
+            headerName: 'Back',
             renderCell: ({ row }: CellType) => {
                 const { periodBack } = row
 
@@ -263,8 +247,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 250,
             field: 'periodProof',
             headerName: 'Proof',
             renderCell: ({ row }: CellType) => {
@@ -287,8 +269,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.15,
-            minWidth: 150,
             field: 'periodFinal',
             headerName: 'Final',
             renderCell: ({ row }: CellType) => {
@@ -311,8 +291,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.15,
-            minWidth: 150,
             field: 'periodProcess',
             headerName: 'Process',
             renderCell: ({ row }: CellType) => {
@@ -335,8 +313,6 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.15,
-            minWidth: 150,
             field: 'periodReport',
             headerName: 'Report',
             renderCell: ({ row }: CellType) => {
@@ -378,9 +354,6 @@ const UserList = () => {
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12}>
-                <AddPeriod formData={formData} />
-            </Grid>
             <Grid item xs={12}>
                 <Card>
                     <CardContent>
