@@ -10,7 +10,7 @@ const defaultParameters = [
     { parentParameter: 'Employee Position', parameters: ['Executive'] },
     { parentParameter: 'Transaction Type', parameters: ['Earning Amount', 'Earning Quantity', 'Deduction Amount', 'Deduction Quantity', 'NA'] },
     { parentParameter: 'Transaction Group', parameters: ['Loan', 'Absence', 'Membership', 'NA'] },
-    { parentParameter: 'Calculation Unit', parameters: ['Hourly', 'Monthly'] },
+    { parentParameter: 'Calculation Unit', parameters: ['Hourly', 'Monthly', 'Daily'] },
     { parentParameter: 'Transaction Calculation', parameters: ['*', '='] },
     { parentParameter: 'Transaction Update Type', parameters: ['Input', 'Calculation'] },
 ];

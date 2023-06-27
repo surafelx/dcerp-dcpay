@@ -1,5 +1,7 @@
 import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
+import transactionDefinitionService from '../../file/transaction-definition/service'
+import parameterDefinitionService from '../../file/parameter-definition/service'
 
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
@@ -119,11 +121,70 @@ export const updateTransactionParameterCalculation = async (updatedTransactionPa
     return branchId
 }
 
+const defaultTransactionCalculations = [
+    {
+        firstTransaction: 'Absence Amount', 
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Daily',
+        firstOption: '*',
+        thirdTransaction: 'Absence Days',
+        secondOption: '*',
+        rate: '1'
+    },
+    {
+        firstTransaction: 'Cost Sharing', 
+        secondTransaction: 'Cost Sharing',
+        calculationUnit: 'Monthly',
+        firstOption: '=',
+        thirdTransaction: 'Cost Sharing',
+        secondOption: '=',
+        rate: '1000'
+    }
+]
+
+const setupApp = async(organizationId: any) => {
+
+    for (const transaction of defaultTransactionCalculations) {
+        const {
+           firstTransaction,
+           secondTransaction,
+           calculationUnit,
+           firstOption,
+           thirdTransaction, 
+           secondOption,
+           rate
+        } = transaction;
+
+       const firstTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, firstTransaction)
+
+       const secondTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, secondTransaction)
+     
+       const thirdTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, thirdTransaction)
+       console.log(thirdTransactionId)
+
+       const calculationUnitId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Calculation Unit', calculationUnit)
+       console.log(calculationUnitId)
+
+       const firstOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', firstOption)
+       console.log(firstOptionId)
+
+       const secondOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', secondOption)
+
+       console.log(secondOptionId)
+
+        const query = `INSERT INTO transaction_calculation (id, first_transaction_id, second_transaction_id, third_transaction_id, calculation_unit, first_option, second_option, rate)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;
+        await pool.query(query, [uuid(), firstTransactionId, secondTransactionId, thirdTransactionId, calculationUnitId, firstOptionId, secondOptionId, rate]);
+    }
+
+}
+
 
 
 export default {
     create,
     deleteTransactionParameterCalculation,
     getAllFromOrganization,
-    updateTransactionParameterCalculation
+    updateTransactionParameterCalculation,
+    setupApp
 }
