@@ -36,36 +36,35 @@ const defaultUser = {
 // }
 
 
-const setupApp =  (companyData: any) => {
+const setupApp =  async (companyData: any): Promise<any> => {
     try {
-        // const {
-        //     company,
-        //     // period,
-        //     userRole,
-        //     userAccount,
-        //     // parameters,
-        //     // utilities
-        // } = companyData
-        console.log(companyData)
-        // const { branchCode, branchName, name: companyName } = company
-        // const organizationId = await companyDao.create(company)
-        // const newBranch = { branchCode, branchName, organizationId }
-        // const { id: branchId } = await branchDao.create(newBranch)
-        // const startingPeriod = '2015,11,1';
+        const {
+            company,
+            // period,
+            userRole,
+            userAccount,
+            // parameters,
+            // utilities
+        } = companyData
+        const { branchCode, branchName, name: companyName } = company
+        const organizationId = await companyDao.create(company)
+        const newBranch = { branchCode, branchName, organizationId }
+        const { id: branchId } = await branchDao.create(newBranch)
+        const startingPeriod = '2015,11,1';
 
-        // await periodService.generateEthiopianPeriod(startingPeriod, 12, organizationId)
+        await periodService.generateEthiopianPeriod(startingPeriod, 12, organizationId)
 
-        // const newRole = userRole.default ? { roleName: 'Admin' } : { roleName: userRole.custom.roleName }
-        // const newUser = userAccount.default ? defaultUser : userAccount.custom
+        const newRole = userRole.default ? { roleName: 'Admin' } : { roleName: userRole.custom.roleName }
+        const newUser = userAccount.default ? defaultUser : userAccount.custom
 
         // // const newParameters = parameters.default ? defaultParameters : parameters.custom
         // // const newUtilities = utilities.default ? defaultUtilities : utilities.custom
 
-        // newUser.email = `admin@${companyName.replace(' ', '').toLowerCase()}.com`
-        // const roleId = await roleService.createByOrganizationId(newRole, organizationId, branchId)
-        // await roleBranchService.populateForBranch(organizationId, roleId)
-        // newUser.roleId = roleId
-        // await userService.setupApp(newUser, organizationId)
+        newUser.email = `admin@${companyName.replace(' ', '').toLowerCase()}.com`
+        const roleId = await roleService.createByOrganizationId(newRole, organizationId, branchId)
+        await roleBranchService.populateForBranch(organizationId, roleId)
+        newUser.roleId = roleId
+        await userService.setupApp(newUser, organizationId)
     } catch (e) {
         console.log(e)
     }
