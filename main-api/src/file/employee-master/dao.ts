@@ -27,6 +27,9 @@ export const create = async (newMenu: any): Promise<any> => {
         employeePosition
 
     } = newMenu
+    const refactoredEmpDate = !employmentDate ? null : new Date(employmentDate)
+    const refactoredContEnd = !contractEndDate ? null : new Date(contractEndDate)
+    const refactoredContStart = !contractStartDate ? null : new Date(contractStartDate)
     const query = `
 	INSERT INTO 
         employee 
@@ -64,9 +67,9 @@ export const create = async (newMenu: any): Promise<any> => {
         sex,
         employeeStatus,
         employeeType,
-        new Date(employmentDate) || new Date(),
-        new Date(contractStartDate) || new Date(),
-        new Date(contractEndDate) || new Date(),
+        refactoredEmpDate,
+        refactoredContStart,
+        refactoredContStart,
         monthlyWorkingHours,
         pensionNumber,
         tinNumber,

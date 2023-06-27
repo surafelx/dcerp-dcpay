@@ -23,12 +23,16 @@ import { PeriodType } from 'src/types/apps/File/periodTypes'
 
 import moment from 'moment'
 
+import IconButton from '@mui/material/IconButton'
+import Icon from 'src/@core/components/icon'
+
+
 interface CellType {
     row: PeriodType
 }
 
 const UserList = () => {
-    
+
     // ** State
     const [role] = useState<string>('')
     const [value] = useState<string>('')
@@ -151,7 +155,7 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                 {`${moment(startDate).format("YYYY/MM/DD")}`}
+                                {`${moment(startDate).format("YYYY/MM/DD")}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -173,7 +177,7 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                    {`${moment(endDate).format("YYYY/MM/DD")}`}
+                                {`${moment(endDate).format("YYYY/MM/DD")}`}
                             </Typography>
                         </Box>
                     </Box>
@@ -189,14 +193,15 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Typography
-                                noWrap
-                                component='a'
-                                variant='body2'
-                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                            >
-                                {`${periodPaid}`}
-                            </Typography>
+                            {periodPaid ? (
+                                <IconButton>
+                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                </IconButton>
+                            ) : (
+                                <IconButton>
+                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 )
@@ -217,7 +222,15 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${periodCurrent}`}
+                                {periodCurrent ? (
+                                    <IconButton>
+                                        <Icon icon='mdi:check-bold' fontSize={20} />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton>
+                                        <Icon icon='mdi:close-thick' fontSize={20} />
+                                    </IconButton>
+                                )}
                             </Typography>
                         </Box>
                     </Box>
@@ -239,7 +252,15 @@ const UserList = () => {
                                 variant='body2'
                                 sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                             >
-                                {`${periodBack}`}
+                                {periodBack ? (
+                                    <IconButton>
+                                        <Icon icon='mdi:check-bold' fontSize={20} />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton>
+                                        <Icon icon='mdi:close-thick' fontSize={20} />
+                                    </IconButton>
+                                )}
                             </Typography>
                         </Box>
                     </Box>
@@ -255,14 +276,15 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Typography
-                                noWrap
-                                component='a'
-                                variant='body2'
-                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                            >
-                                {`${periodProof}`}
-                            </Typography>
+                            {periodProof ? (
+                                <IconButton>
+                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                </IconButton>
+                            ) : (
+                                <IconButton>
+                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 )
@@ -277,14 +299,15 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Typography
-                                noWrap
-                                component='a'
-                                variant='body2'
-                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                            >
-                                {`${periodFinal}`}
-                            </Typography>
+                            {periodFinal ? (
+                                <IconButton>
+                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                </IconButton>
+                            ) : (
+                                <IconButton>
+                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 )
@@ -299,14 +322,15 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Typography
-                                noWrap
-                                component='a'
-                                variant='body2'
-                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                            >
-                                {`${periodProcess}`}
-                            </Typography>
+                            {periodProcess ? (
+                                <IconButton>
+                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                </IconButton>
+                            ) : (
+                                <IconButton>
+                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 )
@@ -321,14 +345,15 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Typography
-                                noWrap
-                                component='a'
-                                variant='body2'
-                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                            >
-                                {`${periodReport}`}
-                            </Typography>
+                            {periodReport ? (
+                                <IconButton>
+                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                </IconButton>
+                            ) : (
+                                <IconButton>
+                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 )

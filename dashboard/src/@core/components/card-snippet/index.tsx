@@ -83,7 +83,7 @@ const CardSnippet = (props: CardSnippetProps) => {
           : {
               action: (
                 <IconButton onClick={() => setShowCode(!showCode)}>
-                  <Icon icon='mdi:code-tags' fontSize={20} />
+                  <Icon icon='mdi:check-bold' fontSize={20} />
                 </IconButton>
               )
             })}

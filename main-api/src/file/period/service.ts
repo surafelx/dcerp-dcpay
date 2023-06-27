@@ -13,7 +13,7 @@ const updatePeriod = async (menuLevelData: any): Promise<any> => await periodDao
 
 const getCurrentPeriod = async (organizationId: any): Promise<any[]> => await periodDao.getCurrentPeriod(organizationId)
 
-const generatePeriod = async(organizationId: any, currentPeriod: number): Promise<void> => await periodDao.generatePeriod(organizationId, currentPeriod)
+const generateGregorianPeriod = async( currentPeriod: number, organizationId: any): Promise<void> => await periodDao.generateGregorianPeriod(currentPeriod, organizationId)
 
 const generateEthiopianPeriod = async(startingPeriod: any, currentPeriod: any, organizationId: any): Promise<void> => await periodDao.generateEthiopianPeriod(startingPeriod, currentPeriod, organizationId)
 
@@ -22,7 +22,7 @@ export default {
     create,
     deletePeriod,
     getAllFromOrganization,
-    generatePeriod,
+    generateGregorianPeriod,
     getCurrentPeriod,
     generateEthiopianPeriod,
     updatePeriod,
