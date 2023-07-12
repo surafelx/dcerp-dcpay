@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import { styled, useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
-
+import moment from 'moment'
 
 // ** Store Imports
 import { useDispatch } from 'react-redux'
@@ -64,6 +64,13 @@ const InvoicePrint = () => {
 
 
   const store = useSelector((state: RootState) => state.payrollAdvice)
+
+
+  // @ts-ignore
+  const userData = JSON.parse(window.localStorage.getItem('userData'))
+  const { organizationName } = userData
+  const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
+
 
   // ** Hooks
   const theme = useTheme()
@@ -163,30 +170,49 @@ const InvoicePrint = () => {
       <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
       <Grid container>
         <Grid item xs={6}>
+          <Typography variant='h5'>{organizationName}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Date</Typography>
+              <Typography variant='h6'> {`${moment().format("LL")} `}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Period</Typography>
+              <Typography variant='h6'>{`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}</Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
+      <Grid container>
+        <Grid item xs={6}>
           <Typography variant='h5'>Payroll Advice</Typography>
         </Grid>
         <Grid item xs={6}>
           <Grid container>
-          <Grid item xs={6}>
-            <Typography variant='body1'>Branch</Typography>
-            <Typography variant='h6'>{`${branch}`}</Typography>
-          </Grid>
-          <Grid item xs={6}>
-           
-          </Grid>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Branch</Typography>
+              <Typography variant='h6'>{`${branch}`}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Department</Typography>
+              <Typography variant='h6'>{`${department}`}</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
       <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
       {
         store.data.map(({ employeeName, transactions }: any,) => {
-          const earnings = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Earning Amount")
-          const deductions = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Deduction Amount")
+          const earnings = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Earning Amount" || transaction_type_name === "Earning Quantity")
+          const deductions = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Deduction Amount" || transaction_type_name === "Deduction Quantity")
 
           return (
             <>
               <Typography variant='h6'>{`${employeeName}`}</Typography>
-              <Grid container>
+              <Grid container columnSpacing={10}>
                 <Grid item xs={6} sx={{ mb: { sm: 0, xs: 4 } }}>
                   <Table sx={{ mb: 6 }}>
                     <TableHead>
@@ -198,14 +224,23 @@ const InvoicePrint = () => {
                     </TableHead>
                     <TableBody>
                       {
-                        earnings.map(({ transaction_name, transaction_amount }: any, index: any) => {
+                        earnings.map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
 
-                          return (
-                            <TableRow key={index}>
-                              <TableCell>{`${transaction_name}`}</TableCell>
-                              <TableCell>{`${transaction_amount}`}</TableCell>
-                            </TableRow>
-                          )
+                          if (transaction_type_name === "Earning Quantity")
+                            return (
+                              <TableRow key={index}>
+                                <TableCell>{`${transaction_name}`}</TableCell>
+                                <TableCell>{`${Number(transaction_amount).toFixed(2)}`}</TableCell>
+                              </TableRow>
+                            )
+                          if (transaction_type_name === "Earning Amount")
+                            return (
+                              <TableRow key={index}>
+                                <TableCell>{`${transaction_name}`}</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{`${Number(transaction_amount).toFixed(2)}`}</TableCell>
+                              </TableRow>
+                            )
                         })
                       }
                     </TableBody>
@@ -222,14 +257,23 @@ const InvoicePrint = () => {
                     </TableHead>
                     <TableBody>
                       {
-                        deductions.map(({ transaction_name, transaction_amount }: any, index: any) => {
+                        deductions.map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
 
-                          return (
-                            <TableRow key={index}>
-                              <TableCell>{`${transaction_name}`}</TableCell>
-                              <TableCell>{`${transaction_amount}`}</TableCell>
-                            </TableRow>
-                          )
+                          if (transaction_type_name === "Deduction Quantity")
+                            return (
+                              <TableRow key={index}>
+                                <TableCell>{`${transaction_name}`}</TableCell>
+                                <TableCell>{`${Number(transaction_amount).toFixed(2)}`}</TableCell>
+                              </TableRow>
+                            )
+                          if (transaction_type_name === "Deduction Amount")
+                            return (
+                              <TableRow key={index}>
+                                <TableCell>{`${transaction_name}`}</TableCell>
+                                <TableCell></TableCell>
+                                <TableCell>{`${Number(transaction_amount).toFixed(2)}`}</TableCell>
+                              </TableRow>
+                            )
                         })
                       }
                     </TableBody>
@@ -250,7 +294,7 @@ const InvoicePrint = () => {
           <CalcWrapper>
             <Typography variant='body2'>Total:</Typography>
             <Typography variant='body2' sx={{ fontWeight: 600 }}>
-              {store.data.reduce((sum, { netPay }) => sum + netPay, 0)}
+              {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
             </Typography>
           </CalcWrapper>
         </Grid>

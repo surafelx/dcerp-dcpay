@@ -13,7 +13,10 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
     return newEmployeeId
 }
 
-const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await employeeDao.getAllFromOrganization(organizationId)
+const getAllFromOrganization = async (organizationId: any): Promise<any[]> => {
+    const basicSalaryId = await transctionDefinitionService.getByName('Basic Salary')
+    return await employeeDao.getAllFromOrganization(organizationId, basicSalaryId?.id)
+}
 
 const deleteEmployee = async (userId: string): Promise<any> => await employeeDao.deleteEmployee(userId)
 

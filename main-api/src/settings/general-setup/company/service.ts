@@ -20,22 +20,13 @@ const deleteHoliday = async (holidayId: string): Promise<any> => await companyDa
 
 const updateHoliday = async (holidayData: any): Promise<any> => await companyDao.updateHoliday(holidayData)
 
-const defaultUser = {
-    firstName: 'Abebe',
-    lastName: 'Balcha',
-    email: 'abebebalcha@gmail.com',
-    password: 'Lol!pop3208'
-}
-
-
-
 const setupApp =  async (companyData: any): Promise<any> => {
     try {
         const {
             company,
             period,
             userRole,
-            userAccount,
+            user,
             parameters,
             // utilities
         } = companyData
@@ -55,7 +46,13 @@ const setupApp =  async (companyData: any): Promise<any> => {
             await periodService.generateGregorianPeriod(currentPeriod, organizationId)
 
         const newRole = userRole.default ? { roleName: 'Admin' } : { roleName: userRole.custom.roleName }
-        const newUser = userAccount.default ? defaultUser : userAccount.custom
+        const newUser = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: user.password,
+            roleId: ''
+        }
 
         if(parameters.default) {
             await parameterService.setupApp(organizationId)
@@ -65,8 +62,7 @@ const setupApp =  async (companyData: any): Promise<any> => {
         }
         // // const newParameters = parameters.default ? defaultParameters : parameters.custom
         // // const newUtilities = utilities.default ? defaultUtilities : utilities.custom
-
-        newUser.email = `admin@${companyName.replace(' ', '').toLowerCase()}.com`
+        console.log("Here")
         const roleId = await roleService.createByOrganizationId(newRole, organizationId, branchId)
         await roleBranchService.populateForBranch(organizationId, roleId)
         newUser.roleId = roleId

@@ -33,7 +33,7 @@ import DialogTabCompany from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/Di
 import DialogTabPeriod from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabPeriod'
 import DialogTabParameter from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabParameter'
 
-// import DialogTabUsers from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabUsers'
+import DialogTabUsers from 'src/views/dc-pay/setup-dialog/setup-dialog-tabs/DialogTabUsers'
 
 
 import { addCompany } from 'src/store/apps/Settings/GeneralSetup/CompanySetup'
@@ -80,7 +80,7 @@ const TabLabel = (props: TabLabelProps) => {
   )
 }
 
-const tabsArr = ['companyInformationTab', 'periodTab', 'parameterTab', 'submitTab']
+const tabsArr = ['companyInformationTab', 'periodTab', 'parameterTab', 'usersTab', 'submitTab']
 
 let createAppObject: any = {
   application: {
@@ -105,9 +105,11 @@ let createAppObject: any = {
     default: true,
     custom: []
   },
-  userAccount: {
-    default: true,
-    custom: []
+  user: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
   }
 }
 
@@ -179,9 +181,11 @@ const DialogCreateApp = () => {
                   default: true,
                   custom: []
                 },
-                userAccount: {
-                  default: true,
-                  custom: []
+                user: {
+                  firstName: '',
+                  lastName: '',
+                  email: '',
+                  password: '',
                 }
               }
               handleClose()
@@ -292,7 +296,7 @@ const DialogCreateApp = () => {
                     />
                   }
                 />
-                 {/* <Tab
+                 <Tab
                   disableRipple
                   value='usersTab'
                   label={
@@ -303,7 +307,7 @@ const DialogCreateApp = () => {
                       icon={<Icon icon='mdi:credit-card-outline' />}
                     />
                   }
-                /> */}
+                />
                 <Tab
                   disableRipple
                   value='submitTab'
@@ -333,10 +337,10 @@ const DialogCreateApp = () => {
                 <DialogTabParameter createAppObject={createAppObject} />
                 {renderTabFooter()}
               </TabPanel>
-              {/*   <TabPanel value='usersTab' sx={{ flexGrow: 1 }}>
+                <TabPanel value='usersTab' sx={{ flexGrow: 1 }}>
                 <DialogTabUsers createAppObject={createAppObject} />
                 {renderTabFooter()}
-              </TabPanel> */}
+              </TabPanel>
               <TabPanel value='submitTab' sx={{ flexGrow: 1 }}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography variant='h6' sx={{ mb: 2 }}>

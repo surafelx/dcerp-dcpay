@@ -277,32 +277,64 @@ const generateEthiopianPeriod = async (ethiopianStartingPeriod: any, currentPeri
 
             const periodCurrent = periodNumber === currentPeriod
 
-            const query = `
-              INSERT INTO periods (
-                id, organization_id, period_count, period_name, period_year, 
-                month_name, start_date, end_date, period_paid, period_current, 
-                period_back, period_proof, period_final, period_report, period_process
-              ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`;
+            if(periodNumber < currentPeriod) {
+                const query = `
+                INSERT INTO periods (
+                  id, organization_id, period_count, period_name, period_year, 
+                  month_name, start_date, end_date, period_paid, period_current, 
+                  period_back, period_proof, period_final, period_report, period_process
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`;
+  
+              const values = [
+                  uuid(),
+                  organizationId,
+                  periodNumber.toString(),
+                  ethiopianMonthName,
+                  currentYear.toString(),
+                  monthName,
+                  startDate,
+                  endDate,
+                  true,
+                  periodCurrent,
+                  true,
+                  true,
+                  true,
+                  true,
+                  true,
+              ];
+  
+              await pool.query(query, values);
+            }
 
-            const values = [
-                uuid(),
-                organizationId,
-                periodNumber.toString(),
-                ethiopianMonthName,
-                currentYear.toString(),
-                monthName,
-                startDate,
-                endDate,
-                false,
-                periodCurrent,
-                false,
-                false,
-                false,
-                false,
-                false,
-            ];
-
-            await pool.query(query, values);
+            if(periodNumber >= currentPeriod) {
+                const query = `
+                INSERT INTO periods (
+                  id, organization_id, period_count, period_name, period_year, 
+                  month_name, start_date, end_date, period_paid, period_current, 
+                  period_back, period_proof, period_final, period_report, period_process
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`;
+  
+              const values = [
+                  uuid(),
+                  organizationId,
+                  periodNumber.toString(),
+                  ethiopianMonthName,
+                  currentYear.toString(),
+                  monthName,
+                  startDate,
+                  endDate,
+                  false,
+                  periodCurrent,
+                  false,
+                  false,
+                  false,
+                  false,
+                  false,
+              ];
+  
+              await pool.query(query, values);
+            }
+           
         }
 
     } catch (e) {
