@@ -11,9 +11,9 @@ INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_pa
 INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('181b583a-cee5-4fdc-8900-ee8ab934eb94', '2e688881-8e77-49a6-8601-dd718e11e438', 'Female', 'ffc1a255-765e-4d63-af0d-1986b2425b2e');
 INSERT INTO parameter_definition (id, organization_id, parameter_name) VALUES ('8f189e7d-d18f-4dde-86ea-0513a6b46e21', '2e688881-8e77-49a6-8601-dd718e11e438', 'Employee Status');
 INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('c6c1296f-bbe7-452a-b963-bb398b104c58', '2e688881-8e77-49a6-8601-dd718e11e438', 'Active', '8f189e7d-d18f-4dde-86ea-0513a6b46e21');
-INSERT INTO parameter_definition (id, organization_id, parameter_name) VALUES ('7f53b6c7-4d76-4880-a379-b84bb73cab3b', '2e688881-8e77-49a6-8601-dd718e11e438', 'Employment Type');
+INSERT INTO parameter_definition (id, organization_id, parameter_name) VALUES ('7f53b6c7-4d76-4880-a379-b84bb73cab3b', '2e688881-8e77-49a6-8601-dd718e11e438', 'Employee Type');
 INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('2653efad-914b-478d-bd0d-07845da39030', '2e688881-8e77-49a6-8601-dd718e11e438', 'Permanent', '7f53b6c7-4d76-4880-a379-b84bb73cab3b');
-INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('e1fb25b0-9c91-4b26-bd7d-9fd6312d66e1', '2e688881-8e77-49a6-8601-dd718e11e438', 'Temporary', '7f53b6c7-4d76-4880-a379-b84bb73cab3b');
+INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('e1fb25b0-9c91-4b26-bd7d-9fd6312d66e1', '2e688881-8e77-49a6-8601-dd718e11e438', 'Contract', '7f53b6c7-4d76-4880-a379-b84bb73cab3b');
 INSERT INTO parameter_definition (id, organization_id, parameter_name) VALUES ('5bce504f-7358-4e6d-b09b-3773df2b9c2b', '2e688881-8e77-49a6-8601-dd718e11e438', 'Bank');
 INSERT INTO parameter_definition (id, organization_id, parameter_name, parent_parameter_id) VALUES ('553bfa97-b755-46cf-926c-d6abdae276b1', '2e688881-8e77-49a6-8601-dd718e11e438', 'CBE', '5bce504f-7358-4e6d-b09b-3773df2b9c2b');
 INSERT INTO parameter_definition (id, organization_id, parameter_name) VALUES ('24026aad-481a-45e0-90cc-c6b6cde8d048', '2e688881-8e77-49a6-8601-dd718e11e438', 'Employee Department');
