@@ -180,9 +180,9 @@ const PayrollAdvice = () => {
                                                             <TableRow key={index}>
                                                                 <TableCell>{`${employeeCode}`}</TableCell>
                                                                 <TableCell>{`${employeeName}`}</TableCell>
-                                                                <TableCell>{`${totalDeductions}`}</TableCell>
-                                                                <TableCell>{`${totalEarnings}`}</TableCell>
-                                                                <TableCell>{`${netPay}`}</TableCell>
+                                                                <TableCell>{`${Number(totalDeductions).toFixed(2)}`}</TableCell>
+                                                                <TableCell>{`${Number(totalEarnings).toFixed(2)}`}</TableCell>
+                                                                <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
                                                             </TableRow>
                                                         )
                                                     })
@@ -199,7 +199,7 @@ const PayrollAdvice = () => {
                                                 <CalcWrapper>
                                                     <Typography variant='body2'>Total:</Typography>
                                                     <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                                                        {store.data.reduce((sum, { netPay }) => sum + netPay, 0)}
+                                                        {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
                                                     </Typography>
                                                 </CalcWrapper>
                                             </Grid>

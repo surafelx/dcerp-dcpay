@@ -75,7 +75,7 @@ const UserList = () => {
 
                 return (
                     <Typography noWrap variant='body2'>
-                        {row.transactionAmount}
+                        {Number(row.transactionAmount).toFixed(2)}
                     </Typography>
                 )
             }
@@ -104,16 +104,14 @@ const UserList = () => {
                 currentPlan: ''
             })
         )
-    }, [dispatch, employee, status, value])
-
-
-    useEffect(() => {
         dispatch(
             fetchEmployee({
                 q: ''
             })
         )
-    }, [dispatch])
+    }, [dispatch, employee, status, value])
+
+
 
     const handleEmployeeChange = useCallback((e: SelectChangeEvent) => {
         setEmployee(e.target.value)
@@ -207,7 +205,7 @@ const UserList = () => {
                                     <TextField
                                         disabled={true}
                                         label='Total Earning'
-                                        value={`${totalEarnings}`}
+                                        value={`${Number(totalEarnings).toFixed(2)}`}
                                         placeholder='Total Earning'
                                     />
                                 </FormControl>
@@ -217,7 +215,7 @@ const UserList = () => {
                                     <TextField
                                         disabled={true}
                                         label='Total Deductions'
-                                        value={`${totalDeductions}`}
+                                        value={`${Number(totalDeductions).toFixed(2)}`}
                                         placeholder='Total Deductions'
                                     />
                                 </FormControl>
@@ -227,7 +225,7 @@ const UserList = () => {
                                     <TextField
                                         disabled={true}
                                         label='Net Pay'
-                                        value={`${totalEarnings - totalDeductions}`}
+                                        value={`${Number(totalEarnings - totalDeductions).toFixed(2)}`}
                                         placeholder='Net Pay'
                                     />
                                 </FormControl>

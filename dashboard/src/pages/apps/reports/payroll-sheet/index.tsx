@@ -170,7 +170,6 @@ const PayrollSheet = () => {
                                                     <TableCell>A/C No.</TableCell>
                                                     <TableCell>Name</TableCell>
                                                     <TableCell>Net</TableCell>
-                                                    <TableCell>Signature</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -181,8 +180,7 @@ const PayrollSheet = () => {
                                                                 <TableCell>{`${employeeCode}`}</TableCell>
                                                                 <TableCell></TableCell>
                                                                 <TableCell>{`${employeeName}`}</TableCell>
-                                                                <TableCell>{`${netPay}`}</TableCell>
-                                                                <TableCell></TableCell>
+                                                                <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
                                                             </TableRow>
                                                         )
                                                     })
@@ -200,7 +198,7 @@ const PayrollSheet = () => {
                                                 <CalcWrapper>
                                                     <Typography variant='body2'>Total:</Typography>
                                                     <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                                                        {store.data.reduce((sum, { netPay }) => sum + netPay, 0)}
+                                                        {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
                                                     </Typography>
                                                 </CalcWrapper>
                                             </Grid>

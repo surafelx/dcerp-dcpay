@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid'
 
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
-    console.log(newMenu)
     const {
         organizationId,
         employeeCode,
@@ -81,9 +80,10 @@ export const create = async (newMenu: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
+export const getAllFromOrganization = async (organizationId: string, basicSalaryId: string): Promise<any> => {
     const { rows: employees } = await pool.query(`
     SELECT 
+    DISTINCT
     e.id,
     e.organization_id,
     e.branch_id,
@@ -105,8 +105,10 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     pt.transaction_amount as basic_salary
     FROM employee e
     INNER JOIN pay_transaction pt ON pt.employee_id = e.id
-    WHERE e.organization_id=$1`,
-        [organizationId])
+    WHERE e.organization_id=$1 AND
+    pt.transaction_id = $2`,
+        [organizationId, basicSalaryId])
+    console.log(employees)
     return employees
 }
 

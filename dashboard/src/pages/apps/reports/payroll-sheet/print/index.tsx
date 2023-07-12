@@ -29,6 +29,8 @@ import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
+import moment from 'moment'
+
 const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -64,6 +66,13 @@ const InvoicePrint = () => {
 
 
   const store = useSelector((state: RootState) => state.payrollAdvice)
+
+  
+  // @ts-ignore
+  const userData = JSON.parse(window.localStorage.getItem('userData'))
+  const { organizationName } = userData
+  const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
+
 
   // ** Hooks
   const theme = useTheme()
@@ -161,7 +170,41 @@ const InvoicePrint = () => {
       </Grid>
 
       <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
-
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography variant='h5'>{organizationName}</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Date</Typography>
+              <Typography variant='h6'> {`${moment().format("LL")} `}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Period</Typography>
+              <Typography variant='h6'>{`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}</Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography variant='h5'>Payroll Sheet</Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant='body1'>Branch</Typography>
+              <Typography variant='h6'>{`${branch}`}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+            <Typography variant='body1'>Department</Typography>
+              <Typography variant='h6'>{`${department}`}</Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
  
       <Divider sx={{ mt: theme => `${theme.spacing(6)} !important`, mb: '0 !important' }} />
 
@@ -183,7 +226,7 @@ const InvoicePrint = () => {
                   <TableCell>{`${employeeCode}`}</TableCell>
                   <TableCell></TableCell>
                   <TableCell>{`${employeeName}`}</TableCell>
-                  <TableCell>{`${netPay}`}</TableCell>
+                  <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               )
@@ -203,7 +246,7 @@ const InvoicePrint = () => {
           <CalcWrapper>
             <Typography variant='body2'>Total:</Typography>
             <Typography variant='body2' sx={{ fontWeight: 600 }}>
-              {store.data.reduce((sum, { netPay }) => sum + netPay, 0)}
+              {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
             </Typography>
           </CalcWrapper>
         </Grid>

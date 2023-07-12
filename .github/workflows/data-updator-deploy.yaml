@@ -1,4 +1,4 @@
-name: DP Pull Request Lint
+name:  DP Data-Updator Pull Request Deploy
 
 on:
   pull_request:
