@@ -30,7 +30,7 @@ const setupApp =  async (companyData: any): Promise<any> => {
             parameters,
             // utilities
         } = companyData
-        const { branchCode, branchName, name: companyName } = company
+        const { branchCode, branchName } = company
         const organizationId = await companyDao.create(company)
         const newBranch = { branchCode, branchName, organizationId }
         const { id: branchId } = await branchDao.create(newBranch)

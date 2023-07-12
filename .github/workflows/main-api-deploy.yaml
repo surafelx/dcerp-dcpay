@@ -1,4 +1,4 @@
-name: DP Pull Request Lint
+name: DP Main-API Pull Request Deploy
 
 on:
   pull_request:
