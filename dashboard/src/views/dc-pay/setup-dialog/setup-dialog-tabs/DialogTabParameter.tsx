@@ -28,7 +28,7 @@ const TabFramework = ({ createAppObject }: any) => {
               <Typography variant='caption'>Uses the application recommended parameters for the data definitions as well as the transactions.</Typography>
             </div>
           </Box>
-          <Radio value='default-parameters' onChange={() =>createAppObject.period.calendar = 'default-parameters'} checked={value === 'default-parameters'} />
+          <Radio value='default-parameters' onChange={() =>createAppObject.parameters.default = true} checked={value === 'default-parameters'} />
         </Box>
         <Box
           onClick={() => {
@@ -43,7 +43,7 @@ const TabFramework = ({ createAppObject }: any) => {
               <Typography variant='caption'>Create your own parameters, transaction definitions from a clear slate.</Typography>
             </div>
           </Box>
-          <Radio value='custom-parameters' onChange={() =>createAppObject.period.calendar = 'custom-parameters'} checked={value === 'custom-parameters'} />
+          <Radio value='custom-parameters' onChange={() =>createAppObject.parameters.default = true} checked={value === 'custom-parameters'} />
         </Box>
 
       </Box>
