@@ -391,7 +391,7 @@ const AddMenuLevelTwo = ({
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Employment Type</InputLabel>
+                                            <InputLabel id='demo-simple-select-autoWidth-label'>Employee Type</InputLabel>
                                             <Select
                                                 label='Employee Type'
                                                 value={value}
