@@ -195,11 +195,11 @@ const UserList = () => {
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {periodPaid ? (
                                 <IconButton>
-                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                    <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                 </IconButton>
                             ) : (
                                 <IconButton>
-                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                    <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
                         </Box>
@@ -224,11 +224,11 @@ const UserList = () => {
                             >
                                 {periodCurrent ? (
                                     <IconButton>
-                                        <Icon icon='mdi:check-bold' fontSize={20} />
+                                        <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                     </IconButton>
                                 ) : (
                                     <IconButton>
-                                        <Icon icon='mdi:close-thick' fontSize={20} />
+                                        <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                     </IconButton>
                                 )}
                             </Typography>
@@ -254,11 +254,11 @@ const UserList = () => {
                             >
                                 {periodBack ? (
                                     <IconButton>
-                                        <Icon icon='mdi:check-bold' fontSize={20} />
+                                        <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                     </IconButton>
                                 ) : (
                                     <IconButton>
-                                        <Icon icon='mdi:close-thick' fontSize={20} />
+                                        <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                     </IconButton>
                                 )}
                             </Typography>
@@ -278,14 +278,14 @@ const UserList = () => {
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {periodProof ? (
                                 <IconButton>
-                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                    <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                 </IconButton>
                             ) : (
                                 <IconButton>
-                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                    <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
-                        </Box>
+                        </Box>a
                     </Box>
                 )
             }
@@ -301,11 +301,11 @@ const UserList = () => {
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {periodFinal ? (
                                 <IconButton>
-                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                    <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                 </IconButton>
                             ) : (
                                 <IconButton>
-                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                    <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
                         </Box>
@@ -324,11 +324,11 @@ const UserList = () => {
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {periodProcess ? (
                                 <IconButton>
-                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                    <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                 </IconButton>
                             ) : (
                                 <IconButton>
-                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                    <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
                         </Box>
@@ -347,11 +347,11 @@ const UserList = () => {
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {periodReport ? (
                                 <IconButton>
-                                    <Icon icon='mdi:check-bold' fontSize={20} />
+                                    <Icon icon='mdi:check-bold' fontSize={20} color={'green'} />
                                 </IconButton>
                             ) : (
                                 <IconButton>
-                                    <Icon icon='mdi:close-thick' fontSize={20} />
+                                    <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
                         </Box>

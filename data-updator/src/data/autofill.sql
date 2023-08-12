@@ -59,3 +59,76 @@ INSERT INTO transaction_calculation (id, first_transaction_id, second_transactio
 VALUES ('0d7e8b99-0595-4b9b-beb9-a1cf72b67664', '7ae1323b-6213-43e4-9a65-a5aa34a89aae', '96fd0651-aef6-4a02-b234-cba24a51faac', 'cd7183d7-4e04-4012-aa7c-3820875a807a', '93819963-c591-4b84-a1de-344be30044b9', 'af5af51b-9508-49ac-9883-9be20eb893f4', 'af5af51b-9508-49ac-9883-9be20eb893f4', 1);
 INSERT INTO transaction_calculation (id, first_transaction_id, second_transaction_id, third_transaction_id, calculation_unit, first_option, second_option, rate)
 VALUES ('ee0a4ab3-65f7-41ec-870a-ab6289640529', '5cf05cf1-dbce-4704-9932-08844135a20d', '96fd0651-aef6-4a02-b234-cba24a51faac', '085f92e9-1511-46ce-8193-459f340a242f', 'f21a9b73-57c0-469f-b558-20038d475136', '1a638418-66c7-41ba-9a3a-3c8d5837d7c9', '1a638418-66c7-41ba-9a3a-3c8d5837d7c9', 1000);
+
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('f3cb290e-a512-493c-a6d3-f11250a93e79', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'File', '/apps/file');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('e29311bb-9e91-44b0-83c5-17f2c7d62d96', '2e688881-8e77-49a6-8601-dd718e11e438', 'f3cb290e-a512-493c-a6d3-f11250a93e79', 'Period', '/apps/file/period');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('a17aefb0-09f7-477b-8212-39a571d06dcb', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'Tasks', '/apps/tasks');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('1bf99113-de34-4eca-8f25-c2381df364f5', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'Process', '/apps/process');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('e5e91bc7-2581-499c-968d-5aa4f2f6a989', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'Reports', '/apps/reports');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('34fa48a7-a638-439d-a0bc-3def99c67284', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'Settings', '/apps/settings');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('08a54d6a-92d4-4642-8e44-147c27377324', '2e688881-8e77-49a6-8601-dd718e11e438', NULL, 'Utilities', '/apps/utilities');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('e9804b6b-f42a-4da2-bf16-43b37500f6a8', '2e688881-8e77-49a6-8601-dd718e11e438', 'f3cb290e-a512-493c-a6d3-f11250a93e79', 'Entity Management', '/apps/file/entity-management');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('a7410568-35c6-45ba-8313-08f9e4fcccdc', '2e688881-8e77-49a6-8601-dd718e11e438', 'f3cb290e-a512-493c-a6d3-f11250a93e79', 'Employee Master', '/apps/file/employee-master');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('bbf5745f-6ece-4c9b-986d-08e78a446c2f', '2e688881-8e77-49a6-8601-dd718e11e438', 'f3cb290e-a512-493c-a6d3-f11250a93e79', 'Parameter Definition', '/apps/file/parameter-definition');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('8218b911-48f0-4c60-9419-a48d77ec7d11', '2e688881-8e77-49a6-8601-dd718e11e438', 'f3cb290e-a512-493c-a6d3-f11250a93e79', 'Transaction Definition', '/apps/file/transaction-definition')
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('880f5abe-47ab-4ead-838f-1bf8694a23a1', '2e688881-8e77-49a6-8601-dd718e11e438', 'a17aefb0-09f7-477b-8212-39a571d06dcb', 'Loan Transaction', '/apps/tasks/loan-transaction');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('957697ae-dade-45d2-9bae-6bf2277d09d9', '2e688881-8e77-49a6-8601-dd718e11e438', 'a17aefb0-09f7-477b-8212-39a571d06dcb', 'Pay Transaction', '/apps/tasks/pay-transaction');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('53cecb7c-e7f4-48fa-bb33-281ab6232ae0', '2e688881-8e77-49a6-8601-dd718e11e438', 'a17aefb0-09f7-477b-8212-39a571d06dcb', 'Membership', '/apps/tasks/membership');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('c6eaeeec-7451-4a00-ab8c-87c260607b0b', '2e688881-8e77-49a6-8601-dd718e11e438', 'a17aefb0-09f7-477b-8212-39a571d06dcb', 'Discontinuation', '/apps/tasks/discontinuation');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('ef1dba47-9411-4556-a8c2-e433a9fbcc89', '2e688881-8e77-49a6-8601-dd718e11e438', '1bf99113-de34-4eca-8f25-c2381df364f5', 'Payroll Process', '/apps/process/payroll-process');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('0d11b8fe-d5b1-4b2d-b86e-097f6163f187', '2e688881-8e77-49a6-8601-dd718e11e438', 'e5e91bc7-2581-499c-968d-5aa4f2f6a989', 'Payroll Advice', '/apps/reports/payroll-advice-');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('a43b7e55-3156-427a-aaec-ab52afafe226', '2e688881-8e77-49a6-8601-dd718e11e438', 'e5e91bc7-2581-499c-968d-5aa4f2f6a989', 'Payroll Display', '/apps/reports/payroll-display');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('dee7aee9-87e5-4ae8-86b5-0a0f7bafabe9', '2e688881-8e77-49a6-8601-dd718e11e438', 'e5e91bc7-2581-499c-968d-5aa4f2f6a989', 'Payroll Sheet', '/apps/reports/payroll-sheet');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('1f435e07-b997-4da1-9f94-4a27cd5f69ff', '2e688881-8e77-49a6-8601-dd718e11e438', '34fa48a7-a638-439d-a0bc-3def99c67284', 'General Setup', '/apps/settings/general-setup');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('d479d4ef-2e41-47a8-b6bd-0cd9073c9085', '2e688881-8e77-49a6-8601-dd718e11e438', '34fa48a7-a638-439d-a0bc-3def99c67284', 'User Management', '/apps/settings/user-management');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('762bc2ae-ef4e-4309-babd-5e10789929ff', '2e688881-8e77-49a6-8601-dd718e11e438', '34fa48a7-a638-439d-a0bc-3def99c67284', 'Rights Management', '/apps/settings/rights-management');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('b9942782-230c-4cf9-ae4f-39473b7d482e', '2e688881-8e77-49a6-8601-dd718e11e438', '08a54d6a-92d4-4642-8e44-147c27377324', 'Transaction Parameter Calculation', '/apps/utilities/transaction-parameter-calculation');
+
+INSERT INTO menu_items (id, organization_id, parent_id, menu_title, menu_path)
+VALUES ('98912e5b-e930-44d5-8407-96a77a76cdae', '2e688881-8e77-49a6-8601-dd718e11e438', '08a54d6a-92d4-4642-8e44-147c27377324', 'Tax Rate', '/apps/utilities/tax-rate');

@@ -263,11 +263,11 @@ const defaultNavMenu = [
 
 router.get('/navigation', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // const userId = req.headers['x-user-id'];
-        // const { role_id: roleId } = await userService.getUserAuthorizationInfo(String(userId))
-        // const navMenu = await authorizerDao.getNavigationMenu(roleId)
-        // res.send(navMenu)
-        res.send(defaultNavMenu)
+        const userId = req.headers['x-user-id'];
+        const { role_id: roleId } = await userService.getUserAuthorizationInfo(String(userId))
+        const navMenu = await authorizerDao.getNavigationMenu(roleId)
+        res.send(navMenu)
+        // res.send(defaultNavMenu)
     } catch (err) {
         res.status(400).send(err)
         next(err)

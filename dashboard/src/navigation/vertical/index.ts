@@ -175,15 +175,15 @@ const navigation = (): VerticalNavItemsType => {
   icon: 'AccountOutline',
   children: [
       {
-          title: 'Payroll Display',
+          title: 'Display',
           path: '/apps/reports/payroll-display'
       },
       {
-          title: 'Payroll Advice',
+          title: 'Advice',
           path: '/apps/reports/payroll-advice'
       },
       {
-          title: 'Payroll Sheet',
+          title: 'Sheet',
           path: '/apps/reports/payroll-sheet'
       },
       

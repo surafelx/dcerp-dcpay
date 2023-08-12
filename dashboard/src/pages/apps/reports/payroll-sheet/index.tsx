@@ -107,7 +107,7 @@ const PayrollSheet = () => {
                 <Grid container spacing={6}>
                     <Grid item xs={12}>
                         <Card>
-                            <CardHeader title='Payroll Sheet' />
+                            <CardHeader title='Sheet' />
                             <CardContent>
                                 <Grid container spacing={6}>
                                     <Grid item sm={6} xs={12}>

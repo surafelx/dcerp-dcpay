@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid'
 const defaultParameters = [
     { parentParameter: 'Sex', parameters: ['Male', 'Female'] },
     { parentParameter: 'Employee Status', parameters: ['Active'] },
-    { parentParameter: 'Employment Type', parameters: ['Permanent', 'Cotnract'] },
+    { parentParameter: 'Employee Type', parameters: ['Permanent', 'Contract'] },
     { parentParameter: 'Bank', parameters: ['CBE'] },
     { parentParameter: 'Employee Department', parameters: ['Human Resources'] },
     { parentParameter: 'Employee Position', parameters: ['Executive'] },
