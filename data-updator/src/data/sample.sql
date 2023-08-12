@@ -9,8 +9,6 @@ INSERT INTO organizations(id, organization_name) VALUES
 INSERT INTO branch(id, organization_id, branch_code, branch_name) VALUES 
 ('8b50dfcb-7b6d-4f01-9678-731f4e50cde3', '2e688881-8e77-49a6-8601-dd718e11e438', 1, 'Mexico');
 
-INSERT INTO periods(id, period_name) VALUES 
-('a51a1615-9e8d-46f4-b707-e01d8c6ee47f', 'Current');
 
 INSERT INTO user_roles(id, organization_id, branch_id, role_name) VALUES 
 ('78623c3a-d5f7-4e60-90dd-e9fec1154353','2e688881-8e77-49a6-8601-dd718e11e438', '8b50dfcb-7b6d-4f01-9678-731f4e50cde3', 'Admin');

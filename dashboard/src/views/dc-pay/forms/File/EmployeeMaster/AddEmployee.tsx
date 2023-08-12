@@ -393,7 +393,7 @@ const AddMenuLevelTwo = ({
                                         <>
                                             <InputLabel id='demo-simple-select-autoWidth-label'>Employment Type</InputLabel>
                                             <Select
-                                                label='Employment Type'
+                                                label='Employee Type'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
                                                 labelId='demo-simple-select-autoWidth-label'

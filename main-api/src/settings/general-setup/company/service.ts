@@ -7,7 +7,7 @@ import roleBranchService from '../../../settings/rights-management/branch/servic
 import parameterService from '../../../file/parameter-definition/service'
 import transactionDefinitionService from '../../../file/transaction-definition/service'
 import transactionParameterCalculationService from '../../../utilities/transaction-parameter-calculation/service'
-
+import menuItemsService from '../../general-setup/menu-setup/service'
 
 
 const create = async (newHoliday: any): Promise<string> => await companyDao.create(newHoliday)
@@ -58,8 +58,10 @@ const setupApp =  async (companyData: any): Promise<any> => {
             await parameterService.setupApp(organizationId)
             await transactionDefinitionService.setupApp(organizationId, branchId)
             await transactionParameterCalculationService.setupApp(organizationId)
-
         }
+
+        await menuItemsService.setupApp(organizationId)
+        
         // // const newParameters = parameters.default ? defaultParameters : parameters.custom
         // // const newUtilities = utilities.default ? defaultUtilities : utilities.custom
         console.log("Here")

@@ -190,7 +190,7 @@ const InvoicePrint = () => {
       <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
       <Grid container>
         <Grid item xs={6}>
-          <Typography variant='h5'>Payroll Sheet</Typography>
+          <Typography variant='h5'>Sheet</Typography>
         </Grid>
         <Grid item xs={6}>
           <Grid container>
