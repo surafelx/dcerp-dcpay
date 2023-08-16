@@ -285,7 +285,7 @@ const UserList = () => {
                                     <Icon icon='mdi:close-thick' fontSize={20} color={'red'} />
                                 </IconButton>
                             )}
-                        </Box>a
+                        </Box>
                     </Box>
                 )
             }

@@ -9,8 +9,11 @@ export type EmployeesType = {
   id: number
   employeeCode: string
   employeeBranch: string
+  employeeTitle: string
+  employeeTitleName: string
   employeeDepartment: string
   firstName: string
+  middleName: string
   lastName: string
   basicSalary: string
   employmentDate: string
