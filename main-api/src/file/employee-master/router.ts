@@ -12,11 +12,13 @@ router.get('/',
             const { q = '',} = req.query ?? ''
             const queryLowered = q.toString().toLowerCase()
             const employees = await employeeService.getAllFromOrganization(organizationId)
-            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, first_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, tin_number, working_days, employee_position, basic_salary, employment_date }) => ({
+            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, tin_number, working_days, employee_position, basic_salary, employment_date }) => ({
                 id,
                 employeeBranch: branch_id,
                 employeeDepartment: department_id,
                 employeeCode: employee_code,
+                employeeTitle: employee_title,
+                employeeTitleName: employee_title_name,
                 sex,
                 employeeStatus: employee_status,
                 employeeType: employee_type,
@@ -28,6 +30,7 @@ router.get('/',
                 tinNumber: tin_number,
                 workingDays: working_days,
                 firstName: first_name,
+                middleName: middle_name,
                 lastName: last_name,
                 basicSalary: basic_salary,
                 employmentDate: employment_date

@@ -72,7 +72,9 @@ const RangeCustomInput = forwardRef((props: PickerProps, ref) => {
 
 const schema = yup.object().shape({
     employeeCode: yup.string(),
+    employeeTitle: yup.string(),
     firstName: yup.string(),
+    middleName: yup.string(),
     lastName: yup.string(),
     sex: yup.string(),
     contractStartDate: yup.string(),
@@ -95,10 +97,12 @@ const schema = yup.object().shape({
 const emptyValues = {
     id: '',
     employeeCode: '',
+    employeeTitle: '',
     contractStartDate: '',
     contractEndDate: '',
     employmentDate: '',
     firstName: '',
+    middleName: '',
     lastName: '',
     sex: '',
     employeeStatus: '',
@@ -230,6 +234,7 @@ const AddMenuLevelTwo = ({
     const employeeStatusOptions = filterSubParametersByName('Employee Status')
     const employmentTypeOptions = filterSubParametersByName('Employee Type')
     const employeePositionOptions = filterSubParametersByName('Employee Position')
+    const employeeTitleOptions = filterSubParametersByName('Employee Title')
 
 
     const handleOnChangeRange = (dates: any) => {
@@ -253,7 +258,7 @@ const AddMenuLevelTwo = ({
 
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={5}>
-                        <Grid item xs={12} sm={2}>
+                        <Grid item xs={12} sm={1}>
                             <FormControl fullWidth sx={{ mb: 4 }}>
                                 <Controller
                                     name='employeeCode'
@@ -270,14 +275,45 @@ const AddMenuLevelTwo = ({
                                                 console.log(e.target.value)
                                             }
                                             }
-                                            placeholder='Employee Code'
+                                            placeholder='Code'
                                         />
                                     )}
                                 />
                                 {errors.employeeCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeCode.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={5}>
+                        <Grid item xs={12} sm={2}>
+                            <FormControl fullWidth sx={{ mb: 4 }}>
+                                <Controller
+                                    name='employeeTitle'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <>
+                                            <InputLabel id='demo-simple-select-autoWidth-label'>Title</InputLabel>
+                                            <Select
+                                                label='Title'
+                                                value={value}
+                                                id='demo-simple-select-autoWidth'
+                                                labelId='demo-simple-select-autoWidth-label'
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                            >
+                                                {
+                                                    employeeTitleOptions.map(({ id, parameterName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{parameterName}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </>
+
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
                             <FormControl fullWidth sx={{ mb: 4 }}>
                                 <Controller
                                     name='firstName'
@@ -298,7 +334,31 @@ const AddMenuLevelTwo = ({
                                 {errors.firstName && <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={5}>
+                        <Grid item xs={12} sm={3}>
+                            <FormControl fullWidth sx={{ mb: 4 }}>
+                                <Controller
+                                    name='middleName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            autoFocus
+                                            label='Midle Name'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={(e) => {
+                                                onChange(e)
+                                                console.log(e.target.value)
+                                            }
+                                            }
+                                            placeholder='Middle Name'
+                                        />
+                                    )}
+                                />
+                                {errors.employeeCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeCode.message}</FormHelperText>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={3}>
                             <FormControl fullWidth sx={{ mb: 4 }}>
                                 <Controller
                                     name='lastName'

@@ -79,10 +79,12 @@ const UserList = () => {
     const [formData, setFormData] = useState({
         id: '',
         employeeCode: '',
+        employeeTitle: '',
         contractStartDate: '',
         contractEndDate: '',
         employmentDate: '',
         firstName: '',
+        middleName: '',
         lastName: '',
         sex: '',
         employeeStatus: '',
@@ -104,7 +106,9 @@ const UserList = () => {
         contractStartDate,
         contractEndDate,
         employmentDate,
+        employeeTitle,
         firstName,
+        middleName,
         lastName,
         sex,
         employeeStatus,
@@ -140,10 +144,12 @@ const UserList = () => {
                 {
                     id,
                     employeeCode,
+                    employeeTitle,
                     contractStartDate,
                     contractEndDate,
                     employmentDate,
                     firstName,
+                    middleName,
                     lastName,
                     sex,
                     employeeStatus,
@@ -222,7 +228,7 @@ const UserList = () => {
             field: 'fullName',
             headerName: 'Name',
             renderCell: ({ row }: CellType) => {
-                const { id, firstName, lastName } = row
+                const { id, employeeTitleName, firstName, middleName, lastName } = row
 
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -234,7 +240,7 @@ const UserList = () => {
                                     variant='body2'
                                     sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
                                 >
-                                    {`${firstName} ${lastName}`}
+                                    {`${employeeTitleName} ${firstName} ${middleName} ${lastName}`}
                                 </Typography>
                             </Link>
                         </Box>
@@ -266,7 +272,7 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {`${moment(row.employmentDate).format("YYYY/MM/DD")}`}
+                            {`${moment(row.employmentDate).format("DD/MM/YYYY")}`}
                         </Typography>
                     </Box>
                 )
@@ -300,6 +306,9 @@ const UserList = () => {
                     workingDays={row.workingDays}
                     employeeBankAccount={row.employeeBankAccount}
                     employeeBank={row.employeeBank}
+                    employeeTitle={row.employeeTitle}
+                    employeeTitleName={row.employeeTitleName}
+                    middleName={row.middleName}
 
                 />)
         }

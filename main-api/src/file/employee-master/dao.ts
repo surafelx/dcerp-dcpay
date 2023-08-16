@@ -7,10 +7,12 @@ export const create = async (newMenu: any): Promise<any> => {
     const {
         organizationId,
         employeeCode,
+        employeeTitle,
         contractStartDate,
         contractEndDate,
         employmentDate,
         firstName,
+        middleName,
         lastName,
         sex,
         employeeStatus,
@@ -26,9 +28,9 @@ export const create = async (newMenu: any): Promise<any> => {
         employeePosition
 
     } = newMenu
-    const refactoredEmpDate = !employmentDate ? null : new Date(employmentDate.replace(/-/g, '\/'))
-    const refactoredContEnd = !contractEndDate ? null : new Date(contractEndDate.replace(/-/g, '\/'))
-    const refactoredContStart = !contractStartDate ? null : new Date(contractStartDate.replace(/-/g, '\/'))
+    const refactoredEmpDate = !employmentDate ? null : new Date(employmentDate)
+    const refactoredContEnd = !contractEndDate ? null : new Date(contractEndDate)
+    const refactoredContStart = !contractStartDate ? null : new Date(contractStartDate)
     const query = `
 	INSERT INTO 
         employee 
@@ -38,7 +40,9 @@ export const create = async (newMenu: any): Promise<any> => {
             branch_id,
             department_id,
             employee_code,
+            employee_title,
             first_name,
+            middle_name,
             last_name,
             sex,
             employee_status,
@@ -52,7 +56,7 @@ export const create = async (newMenu: any): Promise<any> => {
             working_days,
             employee_position
             ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -61,7 +65,9 @@ export const create = async (newMenu: any): Promise<any> => {
         employeeBranch,
         employeeDepartment,
         employeeCode,
+        employeeTitle,
         firstName,
+        middleName,
         lastName,
         sex,
         employeeStatus,
@@ -89,7 +95,9 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     e.branch_id,
     e.department_id,
     e.employee_code,
+    e.employee_title,
     e.first_name,
+    e.middle_name,
     e.last_name,
     e.sex,
     e.employee_status,
@@ -102,9 +110,11 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     e.tin_number,
     e.working_days,
     e.employee_position,
-    pt.transaction_amount as basic_salary
+    pt.transaction_amount as basic_salary,
+    pd1.parameter_name as employee_title_name
     FROM employee e
     INNER JOIN pay_transaction pt ON pt.employee_id = e.id
+    INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
     WHERE e.organization_id=$1 AND
     pt.transaction_id = $2`,
         [organizationId, basicSalaryId])
@@ -125,7 +135,9 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         employeeBranch,
         employeeDepartment,
         employeeCode,
+        employeeTitle,
         firstName,
+        middleName,
         lastName,
         sex,
         employeeStatus,
@@ -145,28 +157,32 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
     SET branch_id = $1,
     department_id = $2,
     employee_code = $3,
-    first_name = $4,
-    last_name = $5,
-    sex = $6,
-    employee_status = $7,
-    employee_type = $8,
-    employment_date = $9, 
-    contract_start_date = $10,
+    employee_title = $4
+    first_name = $5,
+    middle_name = $6,
+    last_name = $7,
+    sex = $8,
+    employee_status = $9,
+    employee_type = $10,
+    employment_date = $11, 
+    contract_start_date = $12,
     contract_end_date = $11,
-    monthly_working_hours = $12,
-    basic_salary = $13,
-    pension_number = $14,
-    tin_number = $15,
-    working_days = $16,
-    employee_position = $17
-    WHERE id = $18
+    monthly_working_hours = $13,
+    basic_salary = $14,
+    pension_number = $15,
+    tin_number = $16,
+    working_days = $17,
+    employee_position = $18
+    WHERE id = $19
     RETURNING *;
     `
     const res = await pool.query(query, [
         employeeBranch,
         employeeDepartment,
         employeeCode,
+        employeeTitle,
         firstName,
+        middleName,
         lastName,
         sex,
         employeeStatus,

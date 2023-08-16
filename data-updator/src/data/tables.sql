@@ -1,8 +1,8 @@
+
 CREATE TABLE organizations (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_name TEXT NOT NULL UNIQUE
 	);
-
 
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
@@ -15,10 +15,22 @@ CREATE TABLE menu_items (
     REFERENCES menu_items (id)
 );
 
-
 CREATE TABLE periods (
 		id VARCHAR(40) NOT NULL UNIQUE,
-		period_name TEXT NOT NULL UNIQUE
+		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+		period_count TEXT NOT NULL,
+		period_name TEXT NOT NULL,
+		period_year TEXT NOT NULL,
+		month_name TEXT NOT NULL,
+		start_date DATE NOT NULL,
+		end_date DATE NOT NULL,
+		period_paid BOOLEAN NOT NULL,
+		period_current BOOLEAN NOT NULL,
+		period_back BOOLEAN NOT NULL,
+		period_proof BOOLEAN NOT NULL,
+		period_final BOOLEAN NOT NULL,
+		period_report BOOLEAN NOT NULL,
+		period_process BOOLEAN NOT NULL
 	);
 
 CREATE TABLE branch (
@@ -32,7 +44,7 @@ CREATE TABLE user_roles (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		branch_id VARCHAR(40) NOT NULL REFERENCES branch(id),
-		role_name TEXT NOT NULL UNIQUE
+		role_name TEXT NOT NULL
 	);
 
 CREATE TABLE user_accounts (
@@ -132,14 +144,16 @@ CREATE TABLE employee (
 		branch_id VARCHAR(40) NOT NULL REFERENCES branch(id),
 		department_id VARCHAR(40) NOT NULL REFERENCES department(id),
 		employee_code VARCHAR(40) NOT NULL,
+		employee_title VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
 		first_name VARCHAR(40) NOT NULL,
+		middle_name VARCHAR(40) NOT NULL,
 		last_name VARCHAR(40) NOT NULL,
 		sex VARCHAR(40) NOT NULL,
 		employee_status VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
 		employee_type VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
-		employment_date DATE NOT NULL,
-		contract_start_date DATE NOT NULL,
-		contract_end_date DATE NOT NULL,
+		employment_date DATE,
+		contract_start_date DATE,
+		contract_end_date DATE,
 		monthly_working_hours VARCHAR(40) NOT NULL,
 		pension_number VARCHAR(40),
 		tin_number VARCHAR(40),
@@ -229,3 +243,5 @@ CREATE TABLE tax_rate (
 	highest_range VARCHAR(40) NOT NULL,
 	tax_rate VARCHAR(40) NOT NULL
 );
+
+
