@@ -52,7 +52,7 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     e1.id = $2
     `,
         [organizationId, employeeId])
-        // await getPayrollSheet(organizationId)
+        await getPayrollSheet(organizationId)
     return payTransactions
 }
 
