@@ -6,15 +6,16 @@ import transctionDefinitionService from '../transaction-definition/service'
 const create = async (req: Request, organizationId: string): Promise<string> => {
     const newEmployee = req.body.data
     newEmployee.organizationId = organizationId
+    console.log(organizationId)
     const newEmployeeId = await employeeDao.create({ ...newEmployee })
-    const basicSalaryId = await transctionDefinitionService.getByName('Basic Salary')
+    const basicSalaryId = await transctionDefinitionService.getByNameAndOrganization(organizationId, 'Basic Salary')
     const calculatedSalary = (newEmployee.basicSalary*newEmployee.workingDays)/30
     await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: basicSalaryId?.id, transactionAmount: calculatedSalary})
     return newEmployeeId
 }
 
 const getAllFromOrganization = async (organizationId: any): Promise<any[]> => {
-    const basicSalaryId = await transctionDefinitionService.getByName('Basic Salary')
+    const basicSalaryId = await transctionDefinitionService.getByNameAndOrganization(organizationId, 'Basic Salary')
     return await employeeDao.getAllFromOrganization(organizationId, basicSalaryId?.id)
 }
 

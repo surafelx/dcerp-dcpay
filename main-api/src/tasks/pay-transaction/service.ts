@@ -3,7 +3,7 @@ import payTransactionDao from './dao'
 
 const create = async (newPayTransaction: any,): Promise<string> => await payTransactionDao.create({ ...newPayTransaction })
 
-const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await payTransactionDao.getAllFromOrganization(organizationId)
+const getAllFromOrganization = async (organizationId: any, employeeId: any): Promise<any[]> => await payTransactionDao.getAllFromOrganization(organizationId, employeeId)
 
 const deletePayTransaction = async (userId: string): Promise<any> => await payTransactionDao.deletePayTransaction(userId)
 

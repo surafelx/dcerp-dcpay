@@ -272,7 +272,7 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {`${moment(row.employmentDate).format("DD/MM/YYYY")}`}
+                            {`${moment(row.employmentDate).format("YYYY-MM-DD")}`}
                         </Typography>
                     </Box>
                 )

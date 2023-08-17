@@ -113,8 +113,8 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     pt.transaction_amount as basic_salary,
     pd1.parameter_name as employee_title_name
     FROM employee e
-    INNER JOIN pay_transaction pt ON pt.employee_id = e.id
-    INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
+    LEFT JOIN pay_transaction pt ON pt.employee_id = e.id
+    LEFT JOIN parameter_definition pd1 ON pd1.id = e.employee_title
     WHERE e.organization_id=$1 AND
     pt.transaction_id = $2`,
         [organizationId, basicSalaryId])

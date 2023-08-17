@@ -5,7 +5,7 @@ const create = async (newTransactionDefinition: any): Promise<string> => await t
 
 const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await transactionDefinitionDao.getAllFromOrganization(organizationId)
 
-const getByName = async (transactionName: any): Promise<any> => await transactionDefinitionDao.getByName(transactionName)
+const getByNameAndOrganization = async (organizationId: any, transactionName: any): Promise<any> => await transactionDefinitionDao.getByNameAndOrganization(organizationId, transactionName)
 
 const deleteTransactionDefinition = async (userId: string): Promise<any> => await transactionDefinitionDao.deleteTransactionDefinition(userId)
 
@@ -23,7 +23,7 @@ export default {
     deleteTransactionDefinition,
     getAllFromOrganization,
     getAllFromTransactionGroup,
-    getByName,
+    getByNameAndOrganization,
     updateTransactionDefinition,
     getTransactionDefinitionByNameByOrganization,
     setupApp

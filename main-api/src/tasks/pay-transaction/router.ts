@@ -9,13 +9,15 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '' } = req.query ?? ''
+            const { q = '', employee = null } = req.query ?? ''
+            const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
-            const payTransactions = await payTransactionService.getAllFromOrganization(organizationId)
+            const payTransactions = await payTransactionService.getAllFromOrganization(organizationId, employeeId)
             const renamedPayTransactions = payTransactions.map(({
                 id,
                 employee_id,
                 transaction_id,
+                transaction_definition_id,
                 transaction_amount,
                 employee_code,
                 employee_first_name,
@@ -27,6 +29,7 @@ router.get('/',
                 id,
                 employeeId: employee_id,
                 transactionId: transaction_id,
+                transactionDefinitionId: transaction_definition_id,
                 transactionAmount: transaction_amount,
                 employeeCode: employee_code,
                 employeeFirstName: employee_first_name,
@@ -45,6 +48,7 @@ router.get('/',
                     payTransaction.transactionName.toLowerCase().includes(queryLowered)
                 )
             )
+            console.log(renamedPayTransactions, "Glo")
             res.send({
                 allData: renamedPayTransactions,
                 payTransaction: filteredData,
@@ -59,7 +63,9 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log(req.body.data)
             const createdPayTransaction = await payTransactionService.create({ ...req.body.data })
+            
             res.send(createdPayTransaction)
         } catch (err) {
             console.log(err)
