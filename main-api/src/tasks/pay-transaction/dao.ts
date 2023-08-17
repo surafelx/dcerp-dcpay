@@ -30,16 +30,17 @@ export const create = async (newMenu: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
+export const getAllFromOrganization = async (organizationId: string, employeeId: string): Promise<any> => {
     const { rows: payTransactions } = await pool.query(`
     SELECT 
     lt.id,
     lt.employee_id,
-    lt.transaction_id,
+    td.id as transaction_id,
     lt.transaction_amount,
     e1.employee_code,
     e1.first_name as employee_first_name,
     e1.last_name as employee_last_name,
+    td.id as transaction_definition_id,
     td.transaction_name,
     td.transaction_code,
     pd.parameter_name as transaction_type_name
@@ -47,8 +48,10 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN employee e1 ON lt.employee_id = e1.id
     INNER JOIN transaction_definition td ON lt.transaction_id = td.id
     INNER JOIN parameter_definition pd ON pd.id = td.transaction_type
-    WHERE e1.organization_id=$1`,
-        [organizationId])
+    WHERE e1.organization_id=$1 AND
+    e1.id = $2
+    `,
+        [organizationId, employeeId])
         await getPayrollSheet(organizationId)
     return payTransactions
 }

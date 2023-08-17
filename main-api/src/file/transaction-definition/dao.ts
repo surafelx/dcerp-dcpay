@@ -109,11 +109,12 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN parameter_definition pd3 ON transaction_definition.update_type = pd3.id
     WHERE transaction_definition.organization_id=$1`,
         [organizationId])
+    console.log(employees)
     return employees
 }
 
 
-export const getByName = async (transactionName: string) => {
+export const getByNameAndOrganization = async (organizationId: string, transactionName: string) => {
     const { rows: employees } = await pool.query(`
     SELECT 
     transaction_definition.id,
@@ -142,8 +143,9 @@ export const getByName = async (transactionName: string) => {
     INNER JOIN parameter_definition pd1 ON transaction_definition.transaction_type = pd1.id
     INNER JOIN parameter_definition pd2 ON transaction_definition.transaction_group = pd2.id
     INNER JOIN parameter_definition pd3 ON transaction_definition.update_type = pd3.id
-    WHERE transaction_definition.transaction_name=$1`,
-        [transactionName])
+    WHERE transaction_definition.organization_id=$1 AND
+    transaction_definition.transaction_name = $2`,
+        [organizationId, transactionName])
     return employees[0]
 }
 
@@ -465,7 +467,7 @@ export default {
     create,
     deleteTransactionDefinition,
     getAllFromOrganization,
-    getByName,
+    getByNameAndOrganization,
     getAllFromTransactionGroup,
     updateTransactionDefinition,
     getTransactionDefinitionByNameByOrganization,

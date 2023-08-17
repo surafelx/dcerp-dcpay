@@ -5,6 +5,7 @@ const defaultParameters = [
     { parentParameter: 'Sex', parameters: ['Male', 'Female'] },
     { parentParameter: 'Employee Status', parameters: ['Active'] },
     { parentParameter: 'Employee Type', parameters: ['Permanent', 'Contract'] },
+    { parentParameter: 'Employee Title', parameters: ['Dr. ', 'Mr. '] },
     { parentParameter: 'Bank', parameters: ['CBE'] },
     { parentParameter: 'Employee Department', parameters: ['Human Resources'] },
     { parentParameter: 'Employee Position', parameters: ['Executive'] },
