@@ -14,18 +14,19 @@ interface Redux {
 // ** Fetch SubPaarameterDefinitions
 export const fetchData = createAsyncThunk('appSubParameterDefinitions/fetchData', async (params: any) => {
   const response = await apiRequest.get(`file/parameter-definition/sub-parameter-definition`, { params })
-  
-return response.data
+
+  return response.data
 })
 
 // ** Add User
 export const addSubParameterDefinition = createAsyncThunk(
   'appSubParameterDefinitions/addSubParameterDefinition',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }, {  dispatch }: Redux) => {
     const response = await apiRequest.post(`file/parameter-definition/sub-parameter-definition`, { data })
-    dispatch(fetchData(getState().user.params))
-    
-return response.data
+    const parameter = response.data.parent_parameter_id
+    dispatch(fetchData({parameter}))
+
+    return response.data
   }
 )
 
@@ -35,19 +36,20 @@ export const deleteSubParameterDefinition = createAsyncThunk(
   async (id: number | string, { getState, dispatch }: Redux) => {
     const response = await apiRequest.delete(`file/parameter-definition/sub-parameter-definition/${id}`)
     dispatch(fetchData(getState().user.params))
-    
-return response.data
+
+    return response.data
   }
 )
 
 // ** Edit User
 export const editSubParameterDefinition = createAsyncThunk(
   'appSubParameterDefinitions/editSubParameterDefinition',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }, {  dispatch }: Redux) => {
     const response = await apiRequest.put(`file/parameter-definition/sub-parameter-definition`, { data })
-    dispatch(fetchData(getState().user.params))
+    const parameter = response.data.parent_parameter_id
+    dispatch(fetchData({parameter}))
     
-return response.data
+    return response.data
   }
 )
 

@@ -15,39 +15,42 @@ interface Redux {
 export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async (params: any) => {
   const response = await apiRequest.get(`tasks/pay-transaction`, { params })
   
-return response.data
+  return response.data
 })
 
 // ** Add User
 export const addPayTransaction = createAsyncThunk(
   'appPayTransactions/addPayTransaction',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }, {dispatch }: Redux) => {
     const response = await apiRequest.post(`tasks/pay-transaction`, { data })
-    dispatch(fetchData(getState().user.params))
-    
-return response.data
+     const employee = response.data.employee_id
+    dispatch(fetchData({employee}))
+
+    return response.data
   }
 )
 
 // ** Delete User
 export const deletePayTransaction = createAsyncThunk(
   'appPayTransactions/deletePayTransaction',
-  async (id: number | string, { getState, dispatch }: Redux) => {
+  async (id: number | string, { dispatch }: Redux) => {
     const response = await apiRequest.delete(`tasks/pay-transaction/${id}`)
-    dispatch(fetchData(getState().user.params))
-    
-return response.data
+    const employee = response.data.employee_id
+    dispatch(fetchData({employee}))
+
+    return response.data
   }
 )
 
 // ** Edit User
 export const editPayTransaction = createAsyncThunk(
   'appPayTransactions/editPayTransaction',
-  async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }, { dispatch }: Redux) => {
     const response = await apiRequest.put(`tasks/pay-transaction`, { data })
-    dispatch(fetchData(getState().user.params))
-    
-return response.data
+    const employee = response.data.employee_id
+    dispatch(fetchData({employee}))
+
+    return response.data
   }
 )
 
