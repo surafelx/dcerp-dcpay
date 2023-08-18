@@ -37,8 +37,7 @@ export const getAllFromOrganization = async (organizationId: string, parameterId
     SELECT c.id, c.parent_parameter_id as parameter_id, c.parameter_name AS sub_parameter_name, p.parameter_name AS main_parameter_name
     FROM parameter_definition c
     JOIN parameter_definition p ON c.parent_parameter_id = p.id
-    WHERE c.organization_id = $1 AND 
-    p.id = $2;
+    WHERE c.organization_id = $1 AND (c.parent_parameter_id = $2 OR $2 IS NULL);
     `,
         [organizationId, parameterId])
     return mainParameterDefinitions

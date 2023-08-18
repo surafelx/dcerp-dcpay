@@ -11,6 +11,7 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
+
 // ** Fetch SubPaarameterDefinitions
 export const fetchData = createAsyncThunk('appSubParameterDefinitions/fetchData', async (params: any) => {
   const response = await apiRequest.get(`file/parameter-definition/sub-parameter-definition`, { params })

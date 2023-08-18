@@ -4,12 +4,13 @@ import userService from '../../../settings/user-management/users/service'
 
 const router = Router()
 
+
 router.get('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', parameter } = req.query ?? ''
+            const { q = '', parameter = null } = req.query ?? ''
             const parameterId = parameter
             const queryLowered = q.toString().toLowerCase()
             const mainParameterDefinitions = await subParameterDefinitionService.getAllFromOrganization(organizationId, parameterId)
