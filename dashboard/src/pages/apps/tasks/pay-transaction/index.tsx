@@ -305,7 +305,8 @@ const UserList = () => {
         } else {
             dispatch(addPayTransaction({ ...data }))
         }
-        clearAllFields()
+        setTransaction('')
+        reset({transactionAmount: ''})
     }
 
     return (
@@ -350,7 +351,7 @@ const UserList = () => {
                                             inputProps={{ placeholder: 'Select Transaction' }}
                                         >
                                             {
-                                                transactionDefinitionStore.data.map(({ id, transactionName }, index) => {
+                                                transactionDefinitionStore.data.filter((tran: any) => tran.updateTypeName === 'Input' && tran.transactionGroupName !== 'Loan' && tran.transactionName !== 'None').map(({ id, transactionName }, index) => {
                                                     return (
                                                         <MenuItem key={index} value={id}>{`${transactionName}`}</MenuItem>
                                                     )

@@ -9,9 +9,10 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '' } = req.query ?? ''
+            const { q = '', parameter } = req.query ?? ''
+            const parameterId = parameter
             const queryLowered = q.toString().toLowerCase()
-            const mainParameterDefinitions = await subParameterDefinitionService.getAllFromOrganization(organizationId)
+            const mainParameterDefinitions = await subParameterDefinitionService.getAllFromOrganization(organizationId, parameterId)
             const renamedMainParameterDefinitions = mainParameterDefinitions.map(({ id, parameter_id, main_parameter_name, sub_parameter_name }) => ({
                 id,
                 parameterId: parameter_id,

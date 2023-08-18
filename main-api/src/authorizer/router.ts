@@ -15,7 +15,6 @@ const router = Router()
 router.post('/company-setup', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { data } = req.body
-        console.log(data)
         await organizationService.setupApp(data)
         // Add Organization
 

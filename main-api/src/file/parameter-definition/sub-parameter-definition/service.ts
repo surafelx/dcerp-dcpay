@@ -8,7 +8,7 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
     return newMenuId
 }
 
-const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await mainParameterDefinitionDao.getAllFromOrganization(organizationId)
+const getAllFromOrganization = async (organizationId: any, parameterId: any): Promise<any[]> => await mainParameterDefinitionDao.getAllFromOrganization(organizationId, parameterId)
 
 
 
