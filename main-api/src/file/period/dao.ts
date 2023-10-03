@@ -2,6 +2,10 @@ import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
 let ethiopic = require('ethiopic-js')
 
+interface Period {
+    organizationId: number;
+    
+}
 export const create = async (newPeriod: any): Promise<any> => {
     const id = uuid()
     const {
