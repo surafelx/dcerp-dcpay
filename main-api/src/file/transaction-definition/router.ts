@@ -21,6 +21,7 @@ router.get('/parameter',
                     transactionCode: transaction_code,
                     transactionName: transaction_name
                 }));
+            console.log(renamedTransactionDefinition, "Hello")
             res.send({
                 allData: renamedTransactionDefinition,
                 transactionDefinition: renamedTransactionDefinition,

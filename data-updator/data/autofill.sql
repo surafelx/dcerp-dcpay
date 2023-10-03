@@ -59,3 +59,7 @@ INSERT INTO transaction_calculation (id, first_transaction_id, second_transactio
 VALUES ('0d7e8b99-0595-4b9b-beb9-a1cf72b67664', '7ae1323b-6213-43e4-9a65-a5aa34a89aae', '96fd0651-aef6-4a02-b234-cba24a51faac', 'cd7183d7-4e04-4012-aa7c-3820875a807a', '93819963-c591-4b84-a1de-344be30044b9', 'af5af51b-9508-49ac-9883-9be20eb893f4', 'af5af51b-9508-49ac-9883-9be20eb893f4', 1);
 INSERT INTO transaction_calculation (id, first_transaction_id, second_transaction_id, third_transaction_id, calculation_unit, first_option, second_option, rate)
 VALUES ('ee0a4ab3-65f7-41ec-870a-ab6289640529', '5cf05cf1-dbce-4704-9932-08844135a20d', '96fd0651-aef6-4a02-b234-cba24a51faac', '085f92e9-1511-46ce-8193-459f340a242f', 'f21a9b73-57c0-469f-b558-20038d475136', '1a638418-66c7-41ba-9a3a-3c8d5837d7c9', '1a638418-66c7-41ba-9a3a-3c8d5837d7c9', 1000);
+
+
+
+
