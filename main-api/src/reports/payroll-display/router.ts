@@ -35,7 +35,6 @@ router.get('/',
                     payrollSheet.transactionTypeName.toLowerCase().includes(queryLowered)
                 )
             )
-            console.log(renamedPayTransactions)
             res.send({
                 allData: renamedPayTransactions,
                 payrollDisplay: filteredData,

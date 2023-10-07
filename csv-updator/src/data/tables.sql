@@ -1,8 +1,8 @@
+
 CREATE TABLE organizations (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_name TEXT NOT NULL UNIQUE
 	);
-
 
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
@@ -15,10 +15,22 @@ CREATE TABLE menu_items (
     REFERENCES menu_items (id)
 );
 
-
 CREATE TABLE periods (
 		id VARCHAR(40) NOT NULL UNIQUE,
-		period_name TEXT NOT NULL UNIQUE
+		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+		period_count TEXT NOT NULL,
+		period_name TEXT NOT NULL,
+		period_year TEXT NOT NULL,
+		month_name TEXT NOT NULL,
+		start_date DATE NOT NULL,
+		end_date DATE NOT NULL,
+		period_paid BOOLEAN NOT NULL,
+		period_current BOOLEAN NOT NULL,
+		period_back BOOLEAN NOT NULL,
+		period_proof BOOLEAN NOT NULL,
+		period_final BOOLEAN NOT NULL,
+		period_report BOOLEAN NOT NULL,
+		period_process BOOLEAN NOT NULL
 	);
 
 CREATE TABLE branch (
@@ -32,7 +44,7 @@ CREATE TABLE user_roles (
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		branch_id VARCHAR(40) NOT NULL REFERENCES branch(id),
-		role_name TEXT NOT NULL UNIQUE
+		role_name TEXT NOT NULL
 	);
 
 CREATE TABLE user_accounts (
@@ -102,16 +114,6 @@ CREATE TABLE role_menu (
 		parent_id VARCHAR(255)
 	);
 
-CREATE TABLE menu_items (
-  id VARCHAR(40) NOT NULL UNIQUE,
-  organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
-  parent_id VARCHAR(40),
-  menu_title VARCHAR(50) NOT NULL,
-  menu_path VARCHAR(100) NOT NULL,
-  CONSTRAINT fk_parent_menu_item
-    FOREIGN KEY (parent_id)
-    REFERENCES menu_items (id)
-);
 
 
 CREATE TABLE department (
@@ -125,13 +127,26 @@ CREATE TABLE department (
 );
 
 
+CREATE TABLE parameter_definition (
+id VARCHAR(40) NOT NULL UNIQUE,
+  organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+  parameter_name VARCHAR(50) NOT NULL,
+  parent_parameter_id VARCHAR(40),
+  CONSTRAINT fk_parent_parameter
+    FOREIGN KEY (parent_parameter_id)
+    REFERENCES parameter_definition (id)
+);
+
+
 CREATE TABLE employee ( 
 		id VARCHAR(40) NOT NULL UNIQUE,
 		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		branch_id VARCHAR(40) NOT NULL REFERENCES branch(id),
 		department_id VARCHAR(40) NOT NULL REFERENCES department(id),
 		employee_code VARCHAR(40) NOT NULL,
+		employee_title VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
 		first_name VARCHAR(40) NOT NULL,
+		middle_name VARCHAR(40) NOT NULL,
 		last_name VARCHAR(40) NOT NULL,
 		sex VARCHAR(40) NOT NULL,
 		employee_status VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
@@ -146,15 +161,6 @@ CREATE TABLE employee (
 		employee_position VARCHAR(40) NOT NULL REFERENCES parameter_definition(id)
 );
 
-CREATE TABLE parameter_definition (
-id VARCHAR(40) NOT NULL UNIQUE,
-  organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
-  parameter_name VARCHAR(50) NOT NULL,
-  parent_parameter_id VARCHAR(40),
-  CONSTRAINT fk_parent_parameter
-    FOREIGN KEY (parent_parameter_id)
-    REFERENCES parameter_definition (id)
-);
 
 
 CREATE TABLE employee_bank_account (
@@ -236,3 +242,5 @@ CREATE TABLE tax_rate (
 	highest_range VARCHAR(40) NOT NULL,
 	tax_rate VARCHAR(40) NOT NULL
 );
+
+

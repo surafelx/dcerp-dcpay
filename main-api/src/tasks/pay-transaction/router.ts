@@ -48,7 +48,6 @@ router.get('/',
                     payTransaction.transactionName.toLowerCase().includes(queryLowered)
                 )
             )
-            console.log(renamedPayTransactions, "Glo")
             res.send({
                 allData: renamedPayTransactions,
                 payTransaction: filteredData,
@@ -63,7 +62,6 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log(req.body.data)
             const createdPayTransaction = await payTransactionService.create({ ...req.body.data })
             
             res.send(createdPayTransaction)

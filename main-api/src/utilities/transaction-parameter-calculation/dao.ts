@@ -127,19 +127,138 @@ const defaultTransactionCalculations = [
         secondTransaction: 'Basic Salary',
         calculationUnit: 'Daily',
         firstOption: '*',
-        thirdTransaction: 'Absence Days',
+        thirdTransaction: 'Absence Hours',
         secondOption: '*',
         rate: '1'
     },
     {
-        firstTransaction: 'Cost Sharing', 
-        secondTransaction: 'Cost Sharing',
+        firstTransaction: 'Transport Allowance', 
+        secondTransaction: 'Basic Salary',
         calculationUnit: 'Monthly',
         firstOption: '=',
-        thirdTransaction: 'Cost Sharing',
+        thirdTransaction: 'Acting Allowance',
         secondOption: '=',
-        rate: '1000'
-    }
+        rate: '1'
+    },
+    {
+        firstTransaction: 'Overtime Amount 125%',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Hourly',
+        firstOption: '*',
+        thirdTransaction: 'Overtime Hours 125%',
+        secondOption: '*',
+        rate: '1.5'
+    },
+    {
+        firstTransaction: 'Overtime Amount 150%',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Hourly',
+        firstOption: '*',
+        thirdTransaction: 'Overtime Hours 150%',
+        secondOption: '*',
+        rate: '1.75'
+    },
+    {
+        firstTransaction: 'Overtime Amount 200%',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Hourly',
+        firstOption: '*',
+        thirdTransaction: 'Overtime Hours 200%',
+        secondOption: '*',
+        rate: '2'
+    },
+    {
+        firstTransaction: 'Overtime Amount 250%',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Hourly',
+        firstOption: '*',
+        thirdTransaction: 'Overtime Hours 250%',
+        secondOption: '*',
+        rate: '2.5'
+    },
+    {
+        firstTransaction: 'Pension Company',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '0.11'
+    },
+    {
+        firstTransaction: 'Pension Employee',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '0.07'
+    },
+    {
+        firstTransaction: 'Labour Union',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '0.01'
+    },
+    {
+        firstTransaction: 'Club',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '=',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '10'
+    },
+    {
+        firstTransaction: 'Credit Association Forced Saving',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '0.1'
+    },
+    {
+        firstTransaction: 'Provident Fund EBS Amount',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'Provident Fund EBS Rate',
+        secondOption: '*',
+        rate: '1'
+    },
+    {
+        firstTransaction: 'Edir',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '=',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '10'
+    },
+    {
+        firstTransaction: 'Red Cross',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '=',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '1'
+    },
+    {
+        firstTransaction: 'Cost Sharing',
+        secondTransaction: 'Basic Salary',
+        calculationUnit: 'Monthly',
+        firstOption: '*',
+        thirdTransaction: 'None',
+        secondOption: '=',
+        rate: '0.1'
+    },
+    
+
 ]
 
 const setupApp = async(organizationId: any) => {
@@ -158,19 +277,10 @@ const setupApp = async(organizationId: any) => {
        const firstTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, firstTransaction)
 
        const secondTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, secondTransaction)
-     
        const thirdTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, thirdTransaction)
-       console.log(thirdTransactionId)
-
        const calculationUnitId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Calculation Unit', calculationUnit)
-       console.log(calculationUnitId)
-
        const firstOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', firstOption)
-       console.log(firstOptionId)
-
        const secondOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', secondOption)
-
-       console.log(secondOptionId)
 
         const query = `INSERT INTO transaction_calculation (id, first_transaction_id, second_transaction_id, third_transaction_id, calculation_unit, first_option, second_option, rate)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`;

@@ -236,6 +236,7 @@ const UserList = () => {
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.payTransaction)
 
+    console.log(store.data, "Store")
     const employeeStore = useSelector((state: RootState) => state.employee)
     const deductionStore = store.data.filter(({ transactionTypeName }: any) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount"))
     const earningStore = store.data.filter(({ transactionTypeName }: any) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount"))

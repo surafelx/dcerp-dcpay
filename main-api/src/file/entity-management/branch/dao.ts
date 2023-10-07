@@ -77,3 +77,4 @@ export default {
     getAllFromOrganization,
     updateBranch
 }
+

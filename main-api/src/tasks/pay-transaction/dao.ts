@@ -1,5 +1,6 @@
 import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
+import taxRateService from '../../utilities/tax-rate/service'
 
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
@@ -156,17 +157,19 @@ const getPayrollSheet = async(organizationId: string) => {
             }  
 
 
-            const netPay = calculateNetPay(allTransactions)
+            const {grossSalary, netPay, tax} = await calculateNetPay(organizationId, allTransactions)
+
+            console.log(employeeTransactions)
         return {
             employeeName: `${employee.first_name} ${employee.last_name}`,
             employeeCode: `${employee.employee_code}`,
             transactions: [...payTransactions, ...allTransactions],
-            netPay
+            netPay,
+            grossSalary,
+            tax
         }
 
     }))
-
-    console.log(employeeTransactions)
 
 }
 
@@ -194,15 +197,17 @@ const calculateTransactionCalculations = (transaction: any) => {
     }
 }
 
-const calculateNetPay = (transactions: any) => {
-    let netPay = 0 
+const calculateNetPay = async (organizationId: any, transactions: any) => {
+    let grossSalary = 0 
     transactions.map((tran: any) => {
         if(tran.transaction_type_name === 'Earning Amount')
-            netPay += parseFloat(tran.transaction_amount)
+            grossSalary += parseFloat(tran.transaction_amount)
         if(tran.transaction_type_name === 'Deduction Amount')
-            netPay -= parseFloat(tran.transaction_amount)
+            grossSalary -= parseFloat(tran.transaction_amount)
     })
-    return netPay
+    const tax = await taxRateService.calculateTaxRate(organizationId, grossSalary)
+    const netPay = grossSalary - tax
+    return {grossSalary, netPay, tax}
 }
 
 
