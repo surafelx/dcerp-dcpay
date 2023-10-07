@@ -49,8 +49,8 @@ router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
-            const { organization_id: organizationId, branch_id: branchId } = await userService.getUserAuthorizationInfo(userId)
-            const createdTaxRate = await taxRateService.create({ ...req.body.data, organizationId, branchId })
+            const { organization_id: organizationId} = await userService.getUserAuthorizationInfo(userId)
+            const createdTaxRate = await taxRateService.create({ ...req.body.data, organizationId })
             res.send(createdTaxRate)
         } catch (err) {
             console.log(err)

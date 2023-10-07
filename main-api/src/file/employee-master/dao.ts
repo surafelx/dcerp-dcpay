@@ -118,7 +118,6 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     WHERE e.organization_id=$1 AND
     pt.transaction_id = $2`,
         [organizationId, basicSalaryId])
-    console.log(employees)
     return employees
 }
 

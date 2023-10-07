@@ -2,10 +2,10 @@ import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
 let ethiopic = require('ethiopic-js')
 
-interface Period {
-    organizationId: number;
+// interface Period {
+//     organizationId: number;
     
-}
+// }
 export const create = async (newPeriod: any): Promise<any> => {
     const id = uuid()
     const {
@@ -262,7 +262,7 @@ const generateEthiopianPeriod = async (ethiopianStartingPeriod: any, currentPeri
                 periodsGenerated.push({ periodNumber, ethiopianMonthName, monthName, currentYear: currentYear.toString(), startDate, endDate })
             } else {
                 // Handle the case when ethiopianMonthObj is undefined
-                console.log(`Ethiopian month not found for gregorian month: ${gregorianMonth}`);
+                // console.log(`Ethiopian month not found for gregorian month: ${gregorianMonth}`);
             }
 
         }

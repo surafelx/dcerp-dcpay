@@ -1,4 +1,6 @@
 import pool from '../../config/pool'
+import taxRateService from '../../utilities/tax-rate/service'
+
 
 const getAllFromOrganization = async(organizationId: string, employeeId: string) => {
     const { rows: employees } = await pool.query(`
@@ -99,15 +101,9 @@ const getAllFromOrganization = async(organizationId: string, employeeId: string)
                 allTransactions.push(...calculatedTrans)
             }  
 
-            // const grossTaxable = calculateGrossTaxable(allTransactions)
-            // const taxPay = await calculateTaxPay(grossTaxable)
-            // const taxTransaction = {
-            //     id: '7ae1323b-6213-43e4-9a65-a5aa34a89aae',
-            //     transaction_name: 'Income Tax',
-            //     transaction_amount: taxPay,
-            //     transaction_type_name:  'Deduction Amount',
-            // }
-
+            const {grossSalary, netPay, tax} = await calculateNetPay(organizationId, allTransactions)
+            
+            console.log(grossSalary, netPay, tax)
         return [...allTransactions]
 
 }
@@ -137,6 +133,18 @@ const calculateTransactionCalculations = (transaction: any) => {
     }
 }
 
+const calculateNetPay = async (organizationId: any, transactions: any) => {
+    let grossSalary = 0 
+    transactions.map((tran: any) => {
+        if(tran.transaction_type_name === 'Earning Amount')
+            grossSalary += parseFloat(tran.transaction_amount)
+        if(tran.transaction_type_name === 'Deduction Amount')
+            grossSalary -= parseFloat(tran.transaction_amount)
+    })
+    const tax = await taxRateService.calculateTaxRate(organizationId, grossSalary)
+    const netPay = grossSalary - tax
+    return {grossSalary, netPay, tax}
+}
 
 // const calculateTaxPay = async (grossTaxable: any) => {
 //     const { rows: taxRates } = await pool.query(`

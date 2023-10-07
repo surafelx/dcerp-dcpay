@@ -1,0 +1,40 @@
+{
+  "name": "csv-updator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build ",
+    "start": "tsc & node .",
+    "dev": "tsc -w & nodemon .",
+    "develop": "nodemon .",
+    "compile": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts",
+    "lint-fix": "eslint . --ext .ts --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^18.18.3",
+    "@types/pg": "^8.10.1",
+    "@types/uuid": "^9.0.4",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "eslint": "^8.38.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.2",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/moment": "^2.13.0",
+    "csv-parser": "^3.0.0",
+    "moment": "^2.29.4",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "uuid": "^9.0.0"
+  }
+}

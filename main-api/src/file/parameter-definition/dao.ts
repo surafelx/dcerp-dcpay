@@ -3,12 +3,12 @@ import { v4 as uuid } from 'uuid'
 
 const defaultParameters = [
     { parentParameter: 'Sex', parameters: ['Male', 'Female'] },
-    { parentParameter: 'Employee Status', parameters: ['Active'] },
+    { parentParameter: 'Employee Status', parameters: ['Active', 'Suspended', 'Terminated'] },
     { parentParameter: 'Employee Type', parameters: ['Permanent', 'Contract'] },
-    { parentParameter: 'Employee Title', parameters: ['Dr. ', 'Mr. '] },
+    { parentParameter: 'Employee Title', parameters: ['Dr.', 'Mr.', 'Ms.'] },
     { parentParameter: 'Bank', parameters: ['CBE'] },
     { parentParameter: 'Employee Department', parameters: ['Human Resources'] },
-    { parentParameter: 'Employee Position', parameters: ['Executive'] },
+    { parentParameter: 'Employee Position', parameters: ['Executive', 'Employee', 'Manager'] },
     { parentParameter: 'Transaction Type', parameters: ['Earning Amount', 'Earning Quantity', 'Deduction Amount', 'Deduction Quantity', 'NA'] },
     { parentParameter: 'Transaction Group', parameters: ['Loan', 'Absence', 'Membership', 'NA'] },
     { parentParameter: 'Calculation Unit', parameters: ['Hourly', 'Monthly', 'Daily'] },
