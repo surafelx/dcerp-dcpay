@@ -70,7 +70,8 @@ const getPayrollSheet = async(organizationId: string) => {
     WHERE e1.organization_id=$1`,
         [organizationId])
 
-    const employeeTransactions = await Promise.all(employees.map(async (employee: any) => {
+    await Promise.all(employees.map(async (employee: any) => 
+    {
     
 
     const { rows: payTransactions } = await pool.query(`
@@ -159,7 +160,6 @@ const getPayrollSheet = async(organizationId: string) => {
 
             const {grossSalary, netPay, tax} = await calculateNetPay(organizationId, allTransactions)
 
-            console.log(employeeTransactions)
         return {
             employeeName: `${employee.first_name} ${employee.last_name}`,
             employeeCode: `${employee.employee_code}`,

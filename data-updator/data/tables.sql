@@ -237,7 +237,6 @@ CREATE TABLE transaction_calculation (
 CREATE TABLE tax_rate (
 	id VARCHAR(40) NOT NULL UNIQUE,
 	organization_id VARCHAR(40) NOT NULL,
-	branch_id VARCHAR(40) NOT NULL,
 	tax_rate_code VARCHAR(40) NOT NULL,
 	lowest_range VARCHAR(40) NOT NULl,
 	highest_range VARCHAR(40) NOT NULL,

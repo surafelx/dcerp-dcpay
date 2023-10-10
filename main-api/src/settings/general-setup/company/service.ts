@@ -8,7 +8,7 @@ import parameterService from '../../../file/parameter-definition/service'
 import transactionDefinitionService from '../../../file/transaction-definition/service'
 import transactionParameterCalculationService from '../../../utilities/transaction-parameter-calculation/service'
 import menuItemsService from '../../general-setup/menu-setup/service'
-// import taxRateService from '../../../utilities/tax-rate/service'
+import taxRateService from '../../../utilities/tax-rate/service'
 
 const create = async (newHoliday: any): Promise<string> => await companyDao.create(newHoliday)
 
@@ -61,7 +61,7 @@ const setupApp =  async (companyData: any): Promise<any> => {
             await transactionParameterCalculationService.setupApp(organizationId)
         }
 
-        // await taxRateService.setupApp(organizationId)
+        await taxRateService.setupApp(organizationId)
 
         await menuItemsService.setupApp(organizationId)
         
