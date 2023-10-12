@@ -1,5 +1,6 @@
 TrnPeriodNumber,TrnEmpCode,TrnParCode,TrnAmount,TrnAffectAmount,TrnPrintFlag,TrnuserId,TrnRecordno,TrnDate
-12,101,1,30000,0,0,sysadmin,1,01-01-2015 00:00
+12,101,1,33000,0,0,sysadmin,1,01-01-2015 00:00
+12,101,4,30,0,0,sysadmin,1,01-01-2015 00:00
 12,101,8,2200,0,0,zemy,115,19-07-2017 00:00
 12,101,9,6800,0,0,zemy,117,03-08-2017 00:00
 12,101,18,3000,0,0,zemy,116,19-07-2017 00:00
@@ -16,6 +17,7 @@ TrnPeriodNumber,TrnEmpCode,TrnParCode,TrnAmount,TrnAffectAmount,TrnPrintFlag,Trn
 12,105,8,800,0,0,zemy,1713,19-07-2017 00:00
 12,106,1,1800,0,0,sysadmin,6,01-01-2015 00:00
 12,106,8,400,0,0,zemy,1714,19-07-2017 00:00
+12,106,4,30,0,0,sysadmin,1,01-01-2015 00:00
 12,107,1,4380,0,0,sysadmin,7,01-01-2015 00:00
 12,107,8,1000,0,0,zemy,1715,19-07-2017 00:00
 12,108,1,4000,0,0,sysadmin,8,01-01-2015 00:00

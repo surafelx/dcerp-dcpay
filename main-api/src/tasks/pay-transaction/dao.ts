@@ -123,6 +123,7 @@ const getPayrollSheet = async(organizationId: string) => {
         await Promise.all([...memberships, ...payTransactions].map(async (payTransaction) => {
             const { rows: tranCal } = await pool.query(`
                 SELECT 
+                DISTINCT
                 td1.transaction_name as first_transaction_name,
                 td2.transaction_name as second_transaction_name,
                 pd1.parameter_name as calculation_unit_name,
@@ -156,7 +157,6 @@ const getPayrollSheet = async(organizationId: string) => {
                 const calculatedTrans = tranC.map((calc) => calculateTransactionCalculations(calc))
                 allTransactions.push(...calculatedTrans)
             }  
-
 
             const {grossSalary, netPay, tax} = await calculateNetPay(organizationId, allTransactions)
 
@@ -216,7 +216,7 @@ export const deletePayTransaction = async (branchId: string): Promise<any> => {
 }
 
 
-export const updatePayTransaction = async (updatedPayTransaction: any): Promise<string> => {
+export const updatePayTransaction = async (updatedPayTransaction: any): Promise<any> => {
     const {
         id,
         employeeId,
@@ -240,11 +240,25 @@ export const updatePayTransaction = async (updatedPayTransaction: any): Promise<
     return branchId
 }
 
+export const getById = async (payTransactionId: string): Promise<any> => {
+    const { rows: payTransactions } = await pool.query(`
+    SELECT 
+    *
+    FROM pay_transaction
+    WHERE
+    id = $1
+    `,
+    [payTransactionId])
+    return payTransactions[0]
+}
+
+
 
 
 export default {
     create,
     deletePayTransaction,
     getAllFromOrganization,
+    getById,
     updatePayTransaction
 }

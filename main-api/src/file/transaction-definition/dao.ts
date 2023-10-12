@@ -239,96 +239,6 @@ export const getAllFromTransactionGroup = async (organizationId: string, transac
 
 
 const defaultTransactions = [
-    // {
-    //     transactionCode: '1',
-    //     transactionName: 'Absence Amount',
-    //     shortName: 'ABA',
-    //     transactionType: 'Deduction Amount',
-    //     updateType: 'Calculation',
-    //     permanent: true,
-    //     taxable: false,
-    //     unTaxableLimit: '',
-    //     affectByLeave: true,
-    //     leaveDays: '',
-    //     affectBackPayroll: false,
-    //     affectBeneficiary: true,
-    //     transactionGroup: 'Absence',
-    //     glEntryBy: 'total',
-    //     directAccount: '1000',
-    //     contractGlAccount: '1000'
-    // },
-    // {
-    //     transactionCode: '2',
-    //     transactionName: 'Absence Days',
-    //     shortName: 'ABD',
-    //     transactionType: 'Deduction Quantity',
-    //     updateType: 'Input',
-    //     permanent: true,
-    //     taxable: false,
-    //     unTaxableLimit: '',
-    //     affectByLeave: false,
-    //     leaveDays: '',
-    //     affectBackPayroll: false,
-    //     affectBeneficiary: false,
-    //     transactionGroup: 'Absence',
-    //     glEntryBy: '',
-    //     directAccount: '1000',
-    //     contractGlAccount: '1000'
-    // },
-    // {
-    //     transactionCode: '3',
-    //     transactionName: 'Cost Sharing',
-    //     shortName: 'CS',
-    //     transactionType: 'Deduction Amount',
-    //     updateType: 'Calculation',
-    //     permanent: true,
-    //     taxable: false,
-    //     unTaxableLimit: '',
-    //     affectByLeave: false,
-    //     leaveDays: '',
-    //     affectBackPayroll: false,
-    //     affectBeneficiary: false,
-    //     transactionGroup: 'Membership',
-    //     glEntryBy: '',
-    //     directAccount: '1000',
-    //     contractGlAccount: '1000'
-    // },
-    // {
-    //     transactionCode: '4',
-    //     transactionName: 'Loan',
-    //     shortName: 'L',
-    //     transactionType: 'Deduction Amount',
-    //     updateType: 'Input',
-    //     permanent: false,
-    //     taxable: false,
-    //     unTaxableLimit: '',
-    //     affectByLeave: false,
-    //     leaveDays: '',
-    //     affectBackPayroll: false,
-    //     affectBeneficiary: false,
-    //     transactionGroup: 'Loan',
-    //     glEntryBy: '',
-    //     directAccount: '1000',
-    //     contractGlAccount: '1000'
-    // },
-    // {
-    //     transactionCode: '5',
-    //     transactionName: 'Basic Salary',
-    //     shortName: 'BS',
-    //     transactionType: 'Earning Amount',
-    //     updateType: 'Input',
-    //     permanent: false,
-    //     taxable: false,
-    //     unTaxableLimit: '',
-    //     affectByLeave: false,
-    //     leaveDays: '',
-    //     affectBackPayroll: false,
-    //     affectBeneficiary: false,
-    //     transactionGroup: 'NA',
-    //     glEntryBy: '',
-    //     directAccount: '',
-    //     contractGlAccount: ''
-    // },
     {
         transactionCode: '40',
         transactionName: 'None',
@@ -336,7 +246,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -354,7 +264,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -373,7 +283,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -391,7 +301,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -407,9 +317,9 @@ const defaultTransactions = [
         transactionName: 'Days Worked',
         shortName: 'Days Worked',
         transactionType: 'Earning Quantity',
-        updateType: 'Calculation',
+        updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -427,7 +337,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -439,13 +349,13 @@ const defaultTransactions = [
         contractGlAccount: ''
     },
     {
-        transactionCode: '6',
+        transactionCode: '19',
         transactionName: 'Indeminity Allowance',
         shortName: 'Indeminity All',
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -463,7 +373,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -499,7 +409,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -517,7 +427,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -536,7 +446,7 @@ const defaultTransactions = [
         transactionType: 'Earning Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -554,7 +464,7 @@ const defaultTransactions = [
         transactionType: 'Earning Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -572,7 +482,7 @@ const defaultTransactions = [
         transactionType: 'Earning Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -590,7 +500,7 @@ const defaultTransactions = [
         transactionType: 'Earning Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -608,7 +518,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -626,7 +536,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -644,7 +554,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -657,8 +567,8 @@ const defaultTransactions = [
     },
     {
         transactionCode: '18',
-        transactionName: 'Medical Allowance',
-        shortName: 'Medical All',
+        transactionName: 'Position Allowance',
+        shortName: 'Position All',
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
@@ -680,7 +590,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -696,9 +606,9 @@ const defaultTransactions = [
         transactionName: 'Income Tax',
         shortName: 'Income Tax',
         transactionType: 'Deduction Amount',
-        updateType: 'Calculation',
+        updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -717,7 +627,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -735,7 +645,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -753,13 +663,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -771,13 +681,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -791,13 +701,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -809,7 +719,7 @@ const defaultTransactions = [
         transactionType: 'Earning Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -821,50 +731,50 @@ const defaultTransactions = [
         contractGlAccount: ''
     },
 
-    {
-        transactionCode: '28',
-        transactionName: 'Provident Fund Rate',
-        shortName: 'Provident Rate',
-        transactionType: 'Deduction Quantity',
-        updateType: 'Input',
-        permanent: false,
-        taxable: false,
-        unTaxableLimit: '',
-        affectByLeave: false,
-        leaveDays: '',
-        affectBackPayroll: false,
-        affectBeneficiary: false,
-        transactionGroup: 'NA',
-        glEntryBy: '',
-        directAccount: '',
-        contractGlAccount: ''
-    },
-    {
-        transactionCode: '29',
-        transactionName: 'Provident Fund Amount',
-        shortName: 'Provident Amt',
-        transactionType: 'Deduction Amount',
-        updateType: 'Calculation',
-        permanent: false,
-        taxable: false,
-        unTaxableLimit: '',
-        affectByLeave: false,
-        leaveDays: '',
-        affectBackPayroll: false,
-        affectBeneficiary: false,
-        transactionGroup: 'NA',
-        glEntryBy: '',
-        directAccount: '',
-        contractGlAccount: ''
-    },
+    // {
+    //     transactionCode: '28',
+    //     transactionName: 'Provident Fund Rate',
+    //     shortName: 'Provident Rate',
+    //     transactionType: 'Deduction Quantity',
+    //     updateType: 'Input',
+    //     permanent: false,
+    //     taxable: true,
+    //     unTaxableLimit: '',
+    //     affectByLeave: false,
+    //     leaveDays: '',
+    //     affectBackPayroll: false,
+    //     affectBeneficiary: false,
+    //     transactionGroup: 'NA',
+    //     glEntryBy: '',
+    //     directAccount: '',
+    //     contractGlAccount: ''
+    // },
+    // {
+    //     transactionCode: '29',
+    //     transactionName: 'Provident Fund Amount',
+    //     shortName: 'Provident Amt',
+    //     transactionType: 'Deduction Amount',
+    //     updateType: 'Calculation',
+    //     permanent: false,
+    //     taxable: true,
+    //     unTaxableLimit: '',
+    //     affectByLeave: false,
+    //     leaveDays: '',
+    //     affectBackPayroll: false,
+    //     affectBeneficiary: false,
+    //     transactionGroup: 'NA',
+    //     glEntryBy: '',
+    //     directAccount: '',
+    //     contractGlAccount: ''
+    // },
     {
         transactionCode: '30',
-        transactionName: 'Telephone',
+        transactionName: 'Telephone Expenses',
         shortName: 'Telephone',
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -877,12 +787,12 @@ const defaultTransactions = [
     },
     {
         transactionCode: '31',
-        transactionName: 'Medical',
+        transactionName: 'Medical Expenses',
         shortName: 'Medical',
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -900,7 +810,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -919,7 +829,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -937,7 +847,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -955,7 +865,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -974,7 +884,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -994,13 +904,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -1008,12 +918,12 @@ const defaultTransactions = [
 
     {
         transactionCode: '38',
-        transactionName: 'Provident Fund EBS Rate',
-        shortName: 'Provident EBS Rate',
+        transactionName: 'Credit Ass. Volunteer Saving Rate',
+        shortName: 'CAVSR',
         transactionType: 'Deduction Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1027,12 +937,12 @@ const defaultTransactions = [
 
     {
         transactionCode: '39',
-        transactionName: 'Provident Fund EBS Amount',
-        shortName: 'Provident EBS Amt',
+        transactionName: 'Credit Ass. Volunteer Saving Amount',
+        shortName: 'CAVSA',
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1050,13 +960,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -1068,7 +978,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1086,7 +996,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1103,13 +1013,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -1122,7 +1032,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1141,7 +1051,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1159,13 +1069,13 @@ const defaultTransactions = [
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Membership',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -1177,7 +1087,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1195,7 +1105,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1213,7 +1123,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1231,7 +1141,7 @@ const defaultTransactions = [
         transactionType: 'Deduction Quantity',
         updateType: 'Input',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1249,7 +1159,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Calculation',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1264,10 +1174,10 @@ const defaultTransactions = [
         transactionCode: '97',
         transactionName: 'Last Overpay',
         shortName: 'Last Overpay',
-        transactionType: 'NA',
+        transactionType: 'Deduction Amount',
         updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1283,9 +1193,9 @@ const defaultTransactions = [
         transactionName: 'Overpay',
         shortName: 'Overpay',
         transactionType: 'NA',
-        updateType: 'Input',
+        updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1303,7 +1213,7 @@ const defaultTransactions = [
         transactionType: 'NA',
         updateType: 'Not Editable',
         permanent: false,
-        taxable: false,
+        taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
         leaveDays: '',
@@ -1338,80 +1248,86 @@ const setupApp = async (organizationId: any, branchId: any) => {
         const naTransactionGroup = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Group', 'NA')
 
         for (const transaction of defaultTransactions) {
-            const {
-                transactionCode,
-                transactionName,
-                shortName,
-                permanent,
-                taxable,
-                unTaxableLimit,
-                affectByLeave,
-                leaveDays,
-                affectBackPayroll,
-                affectBeneficiary,
-                glEntryBy,
-                directAccount,
-                contractGlAccount
-            } = transaction;
-
-            let refactoredTransactionType;
-            let refactoredUpdateType;
-            let refactoredTransactionGroup
-
-            switch (transaction.transactionType) {
-                case 'Deduction Amount':
-                    refactoredTransactionType = deductionAmountTransactionType;
-                    break;
-                case 'Deduction Quantity':
-                    refactoredTransactionType = deductionQuantityTransactionType;
-                    break;
-                case 'Earning Amount':
-                    refactoredTransactionType = earningAmountTransactionType;
-                    break;
-                case 'Earning Quantity':
-                    refactoredTransactionType = earningQuantityTransactionType;
-                    break;
-                case 'NA':
-                    refactoredTransactionType = naTransactionType;
-                    break;
-                default:
-                    refactoredTransactionType = '';
+            try {
+                const {
+                    transactionCode,
+                    transactionName,
+                    shortName,
+                    permanent,
+                    taxable,
+                    unTaxableLimit,
+                    affectByLeave,
+                    leaveDays,
+                    affectBackPayroll,
+                    affectBeneficiary,
+                    glEntryBy,
+                    directAccount,
+                    contractGlAccount
+                } = transaction;
+    
+                let refactoredTransactionType;
+                let refactoredUpdateType;
+                let refactoredTransactionGroup
+    
+                switch (transaction.transactionType) {
+                    case 'Deduction Amount':
+                        refactoredTransactionType = deductionAmountTransactionType;
+                        break;
+                    case 'Deduction Quantity':
+                        refactoredTransactionType = deductionQuantityTransactionType;
+                        break;
+                    case 'Earning Amount':
+                        refactoredTransactionType = earningAmountTransactionType;
+                        break;
+                    case 'Earning Quantity':
+                        refactoredTransactionType = earningQuantityTransactionType;
+                        break;
+                    case 'NA':
+                        refactoredTransactionType = naTransactionType;
+                        break;
+                    default:
+                        refactoredTransactionType = '';
+                }
+    
+                switch (transaction.updateType) {
+                    case 'Input':
+                        refactoredUpdateType = inputUpdateType;
+                        break;
+                    case 'Calculation':
+                        refactoredUpdateType = calculationUpdateType;
+                        break;
+                    case 'Not Editable':
+                        refactoredUpdateType = notEditableType;
+                        break;
+                    default:
+                        refactoredUpdateType = '';
+                }
+    
+                switch (transaction.transactionGroup) {
+                    case 'Absence':
+                        refactoredTransactionGroup = absenceTransactionGroup;
+                        break;
+                    case 'Membership':
+                        refactoredTransactionGroup = membershipTransactionGroup;
+                        break;
+                    case 'Loan':
+                        refactoredTransactionGroup = loanTransactionGroup;
+                        break;
+                    case 'NA':
+                        refactoredTransactionGroup = naTransactionGroup;
+                        break;
+                    default:
+                        refactoredTransactionGroup = '';
+                }
+    
+                const query = `INSERT INTO transaction_definition (id, organization_id, branch_id, transaction_code, transaction_name, short_name, transaction_type, update_type, permanent, taxable, un_taxable_limit, affect_by_leave, leave_days, affect_back_payroll, affect_beneficiary, transaction_group, gl_entry_by, direct_account, contract_gl_account)
+                             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`;
+                await pool.query(query, [uuid(), organizationId, branchId, transactionCode, transactionName, shortName, refactoredTransactionType, refactoredUpdateType, permanent, taxable, unTaxableLimit, affectByLeave, leaveDays, affectBackPayroll, affectBeneficiary, refactoredTransactionGroup, glEntryBy, directAccount, contractGlAccount]);
+            } catch(error) {
+                console.log(transaction)
+                console.error(error)
             }
-
-            switch (transaction.updateType) {
-                case 'Input':
-                    refactoredUpdateType = inputUpdateType;
-                    break;
-                case 'Calculation':
-                    refactoredUpdateType = calculationUpdateType;
-                    break;
-                case 'Not Editable':
-                    refactoredUpdateType = notEditableType;
-                    break;
-                default:
-                    refactoredUpdateType = '';
-            }
-
-            switch (transaction.transactionGroup) {
-                case 'Absence':
-                    refactoredTransactionGroup = absenceTransactionGroup;
-                    break;
-                case 'Membership':
-                    refactoredTransactionGroup = membershipTransactionGroup;
-                    break;
-                case 'Loan':
-                    refactoredTransactionGroup = loanTransactionGroup;
-                    break;
-                case 'NA':
-                    refactoredTransactionGroup = naTransactionGroup;
-                    break;
-                default:
-                    refactoredTransactionGroup = '';
-            }
-
-            const query = `INSERT INTO transaction_definition (id, organization_id, branch_id, transaction_code, transaction_name, short_name, transaction_type, update_type, permanent, taxable, un_taxable_limit, affect_by_leave, leave_days, affect_back_payroll, affect_beneficiary, transaction_group, gl_entry_by, direct_account, contract_gl_account)
-                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`;
-            await pool.query(query, [uuid(), organizationId, branchId, transactionCode, transactionName, shortName, refactoredTransactionType, refactoredUpdateType, permanent, taxable, unTaxableLimit, affectByLeave, leaveDays, affectBackPayroll, affectBeneficiary, refactoredTransactionGroup, glEntryBy, directAccount, contractGlAccount]);
+            
         }
     } catch (err) {
         console.log(err)
@@ -1422,7 +1338,8 @@ const setupApp = async (organizationId: any, branchId: any) => {
 
 
 export const getTransactionDefinitionByNameByOrganization = async (organizationId: string, transactionName: any) => {
-    const tranQuery = `
+   try {
+ const tranQuery = `
     SELECT 
     transaction_definition.id,
     transaction_definition.organization_id,
@@ -1436,6 +1353,11 @@ export const getTransactionDefinitionByNameByOrganization = async (organizationI
     const { rows: transactions } = await pool.query(tranQuery,
         [organizationId, transactionName])
     return transactions[0].id
+   } catch(error) {
+    console.log(transactionName)
+    console.log(error)
+   }
+   
 }
 
 

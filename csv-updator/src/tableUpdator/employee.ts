@@ -120,6 +120,7 @@ export const create = async (newMenu: any): Promise<any> => {
         employeeStatus,
         employeeType,
         monthlyWorkingHours,
+        pensionStatus,
         pensionNumber,
         tinNumber,
         workingDays,
@@ -133,7 +134,7 @@ export const create = async (newMenu: any): Promise<any> => {
     const refactoredEmpDate = !employmentDate ? null : new Date(employmentDate)
     const refactoredContEnd = !contractEndDate ? null : new Date(contractEndDate)
     const refactoredContStart = !contractStartDate ? null : new Date(contractStartDate)
-
+    const employeePensionStatus = pensionStatus == 'TRUE' ? true : false
     const query = `
 	INSERT INTO 
         employee 
@@ -154,12 +155,13 @@ export const create = async (newMenu: any): Promise<any> => {
             contract_start_date,
             contract_end_date,
             monthly_working_hours,
+            pension_status,
             pension_number,
             tin_number,
             working_days,
             employee_position
             ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -179,6 +181,7 @@ export const create = async (newMenu: any): Promise<any> => {
         refactoredContStart,
         refactoredContEnd,
         monthlyWorkingHours,
+        employeePensionStatus,
         pensionNumber,
         tinNumber,
         workingDays,
@@ -263,6 +266,7 @@ const processCSV = async (organizationId: any,csvFile: any) => {
             const middleName = ''
             const lastName = ''
             const pensionNumber = row['Emppensionno']
+            const pensionStatus = row['EmpPension']
 
            
             const employee = {
@@ -270,15 +274,16 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                 empGender,
                 empType,
                 empStatus,
-                contractStartDate: !empContStart ? null : moment(empContStart, 'DD-MM-YYYY'),
-                contractEndDate: !empContEnd ? null : moment(empContEnd,'DD-MM-YYYY'),
-                employmentDate: !empDate ? null : moment(empDate, 'DD-MM-YYYY'),
+                contractStartDate: !empContStart ? null : moment(empContStart, 'MM/DD/YYYY'),
+                contractEndDate: !empContEnd ? null : moment(empContEnd,'MM/DD/YYYY'),
+                employmentDate: !empDate ? null : moment(empDate, 'MM/DD/YYYY'),
                 workingDays,
                 tinNumber,
                 branchCode,
                 departmentCode,
                 empPosition,
                 monthlyWorkingHours,
+                pensionStatus,
                 basicSalary,
                 firstName,
                 middleName,
@@ -292,7 +297,7 @@ const processCSV = async (organizationId: any,csvFile: any) => {
 
         const fileStream = await fs.createReadStream(csvFile);
 
-
+        await new Promise((resolve: any, reject: any) => {
         fileStream
             .pipe(csv())
             .on('data', (row: any) => {
@@ -420,8 +425,11 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                         console.log(err)
                     } 
                 }
-        
+                console.log('Processing complete');
+                resolve(); // Resolve the promise when processing is complete.
             });
+        });
+        return resultArray
 
     } catch (err) {
         console.log(err)

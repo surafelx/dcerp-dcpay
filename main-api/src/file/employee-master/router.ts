@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import employeeService from './service'
 import userService from '../../settings/user-management/users/service'
+import periodService from '../period/service'
+
 
 const router = Router()
 
@@ -61,7 +63,9 @@ router.post('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const createdEmployee = await employeeService.create(req, String(organizationId))
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {periodId: currentPeriod[0].id, userId, }
+            const createdEmployee = await employeeService.create(req, String(organizationId), userInfo)
             res.send(createdEmployee)
         } catch (err) {
             console.log(err)

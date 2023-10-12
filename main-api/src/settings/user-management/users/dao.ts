@@ -281,6 +281,7 @@ const getUserAuthorizationInfo = async (userId: string) => {
     WHERE ua.id  = $1;
   `, [userId])
     const userAuthInfo = rows[0]
+    
     return userAuthInfo
 }
 

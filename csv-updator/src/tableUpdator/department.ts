@@ -64,7 +64,6 @@ export const getBranchByName = async (branchName: any): Promise<any> => {
     return branch
 }
 
-
 const processCSV = async (organizationId: any, csvFile: any) => {
     try {
         const resultArray: any = [];
@@ -74,64 +73,65 @@ const processCSV = async (organizationId: any, csvFile: any) => {
             const branchCode = row['BranchCode'];
             const departmentCode = row['DepartmentCode'];
             const departmentName = row['DepartmentName'];
-            
+
             const department = {
                 branchCode,
                 departmentCode,
                 departmentName,
                 permanentAccount: '',
-                contractAccount: ''
+                contractAccount: '',
             };
             resultArray.push(department);
         };
 
+        const fileStream = fs.createReadStream(csvFile);
 
-        const fileStream = await fs.createReadStream(csvFile);
-
-
-        fileStream
-            .pipe(csv())
-            .on('data', (row: any) => {
-                processRow(row);
-            })
-            .on('end',async  () => {
-                for (const department of resultArray) {
-                    try {
-                        if (department.branchCode ==  MANAGEMENT_GROUP_BRANCH) {
-                            const branch = await getBranchByName('Management Group')
-                            department.branchId = branch.id
+        await new Promise((resolve: any, reject: any) => {
+            fileStream
+                .pipe(csv())
+                .on('data', (row: any) => {
+                    processRow(row);
+                })
+                .on('end', async () => {
+                    for (const department of resultArray) {
+                        try {
+                            if (department.branchCode == MANAGEMENT_GROUP_BRANCH) {
+                                const branch = await getBranchByName('Management Group');
+                                department.branchId = branch.id;
+                            }
+                            if (department.branchCode == COMMERCE_AND_FINANCE_BRANCH) {
+                                const branch = await getBranchByName('Commerce and Finance');
+                                department.branchId = branch.id;
+                            }
+                            if (department.branchCode == PRODUCTION_OPERATION_BRANCH) {
+                                const branch = await getBranchByName('Production Operation');
+                                department.branchId = branch.id;
+                            }
+                            if (department.branchCode == CONTRACT_EMPLOYEE_BRANCH) {
+                                const branch = await getBranchByName('Contract Employee');
+                                department.branchId = branch.id;
+                            }
+                            if (department.branchCode == ALL_BRANCH) {
+                                const branch = await getBranchByName('All');
+                                department.branchId = branch.id;
+                            }
+                            department.organizationId = organizationId;
+                            await create(department);
+                        } catch (err) {
+                            console.log('Error processing row:', err);
+                            console.log('Row data:', department);
                         }
-                        if (department.branchCode ==  COMMERCE_AND_FINANCE_BRANCH) {
-                            const branch = await getBranchByName('Commerce and Finance')
-                            department.branchId = branch.id
-                        }
-                        if (department.branchCode ==  PRODUCTION_OPERATION_BRANCH) {
-                            const branch = await getBranchByName('Production Operation')
-                            department.branchId = branch.id
-                        }
-                        if (department.branchCode ==  CONTRACT_EMPLOYEE_BRANCH) {
-                            const branch = await getBranchByName('Contract Employee')
-                            department.branchId = branch.id
-                        }
-                        if (department.branchCode ==  ALL_BRANCH) {
-                            const branch = await getBranchByName('All')
-                            department.branchId = branch.id
-                        }
-                        department.organizationId = organizationId
-                       await create(department)
-                    } catch(err) {
-                        console.log(department)
-                        console.log(err)
                     }
-                 
-                }
-        
-            });
+                    console.log('Processing complete');
+                    resolve(); // Resolve the promise when processing is complete.
+                });
+        });
 
+        return resultArray;
     } catch (err) {
-        console.log(err)
+        console.error('Error in processCSV:', err);
     }
-
 };
+
 
 export default processCSV;

@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "dev-win": "npm-run-all --parallel dashboard:dev main-api:dev main-api:develop",
+        "dev": "npm-run-all --parallel dashboard:dev main-api:dev",
         "install": "npm-run-all --parallel dashboard:install main-api:install",
         "build": "npm-run-all --parallel dashboard:build main-api:build",
         "start": "npm-run-all --parallel dashboard:start main-api:start",
