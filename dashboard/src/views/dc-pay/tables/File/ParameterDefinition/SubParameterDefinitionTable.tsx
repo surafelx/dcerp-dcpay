@@ -257,7 +257,7 @@ const UserList = () => {
     const handleParameterChange = useCallback((e: SelectChangeEvent) => {
         reset({ parameterName: '' })
         setParameter(e.target.value)
-    }, [])
+    }, [reset])
 
 
 

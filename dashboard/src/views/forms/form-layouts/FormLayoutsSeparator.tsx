@@ -91,7 +91,7 @@ const FormLayoutsSeparator = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth label='Username' placeholder='carterLeonard' />
-            </Grid>
+          </Grid>
             <Grid item xs={12} sm={6}>
               <TextField fullWidth type='email' label='Email' placeholder='carterleonard@gmail.com' />
             </Grid>

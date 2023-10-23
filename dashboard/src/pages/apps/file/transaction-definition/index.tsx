@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -35,7 +35,7 @@ import { RootState, AppDispatch } from 'src/store'
 import { TransactionDefinitionType } from 'src/types/apps/File/transactionDefinitionTypes'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
+
 import AddTransactionDefinition from 'src/views/dc-pay/forms/File/TransactionDefinition/AddTransactionDefinition'
 
 
@@ -58,10 +58,9 @@ interface CellType {
 const UserList = () => {
     // ** State
     const [role] = useState<string>('')
-    const [value, setValue] = useState<string>('')
+    const [value, ] = useState<string>('')
     const [status] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-    const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
 
     const [formData, setFormData] = useState({
         id: '',
@@ -618,12 +617,7 @@ return (
         )
     }, [dispatch, role, status, value])
 
-    const handleFilter = useCallback((val: string) => {
-        setValue(val)
-    }, [])
-
    
-    const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
         <Grid container spacing={6}>
@@ -635,7 +629,6 @@ return (
                     <CardHeader title='Transaction Definition' />
                     <CardContent>
                         <Grid item xs={12}>
-                            {/* <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} /> */}
                             <DataGrid
                                 autoHeight
                                 rows={store.data}

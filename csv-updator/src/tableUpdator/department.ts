@@ -48,16 +48,18 @@ export const create = async (newDepartment: any): Promise<any> => {
     return department
 }
 
-export const getBranchByName = async (branchName: any): Promise<any> => {
+export const getBranchByOrganizationByName = async (organizationId: any, branchName: any): Promise<any> => {
 
     const query = `
 	SELECT
         *
     FROM 
     branch WHERE
-    branch_name=$1
+    organization_id = $1 AND
+    branch_name= $2
     `
     const res = await pool.query(query, [
+      organizationId, 
       branchName
     ])
     const branch = res.rows[0]
@@ -96,23 +98,23 @@ const processCSV = async (organizationId: any, csvFile: any) => {
                     for (const department of resultArray) {
                         try {
                             if (department.branchCode == MANAGEMENT_GROUP_BRANCH) {
-                                const branch = await getBranchByName('Management Group');
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Management Group');
                                 department.branchId = branch.id;
                             }
                             if (department.branchCode == COMMERCE_AND_FINANCE_BRANCH) {
-                                const branch = await getBranchByName('Commerce and Finance');
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Commerce and Finance');
                                 department.branchId = branch.id;
                             }
                             if (department.branchCode == PRODUCTION_OPERATION_BRANCH) {
-                                const branch = await getBranchByName('Production Operation');
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Production Operation');
                                 department.branchId = branch.id;
                             }
                             if (department.branchCode == CONTRACT_EMPLOYEE_BRANCH) {
-                                const branch = await getBranchByName('Contract Employee');
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Contract Employee');
                                 department.branchId = branch.id;
                             }
                             if (department.branchCode == ALL_BRANCH) {
-                                const branch = await getBranchByName('All');
+                                const branch = await getBranchByOrganizationByName(organizationId, 'All');
                                 department.branchId = branch.id;
                             }
                             department.organizationId = organizationId;

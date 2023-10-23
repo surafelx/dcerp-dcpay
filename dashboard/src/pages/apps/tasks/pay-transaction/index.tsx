@@ -42,6 +42,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
+
 interface CellType {
     row: PayTransactionType
 }
@@ -191,7 +192,7 @@ const UserList = () => {
             flex: 0.2,
             minWidth: 250,
             field: 'transactionName',
-            headerName: 'Transaction',
+            headerName: ' Name',
             renderCell: ({ row }: CellType) => {
                 return (
                     <Typography noWrap variant='body2'>
@@ -200,16 +201,31 @@ const UserList = () => {
                 )
             }
         },
-        {
+          {
             flex: 0.15,
-            field: 'transactionAmount',
+            field: 'transactionQuantity',
             minWidth: 150,
-            headerName: 'Transaction Amount',
+            headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.transactionAmount}
+                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? row.transactionAmount : ''}
+                        </Typography>
+                    </Box>
+                )
+            }
+        },
+        {
+            flex: 0.15,
+            field: 'transactionAmount',
+            minWidth: 150,
+            headerName: 'Amount',
+            renderCell: ({ row }: CellType) => {
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? row.transactionAmount : ''}
                         </Typography>
                     </Box>
                 )
@@ -236,10 +252,9 @@ const UserList = () => {
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.payTransaction)
 
-    console.log(store.data, "Store")
     const employeeStore = useSelector((state: RootState) => state.employee)
-    const deductionStore = store.data.filter(({ transactionTypeName }: any) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount"))
-    const earningStore = store.data.filter(({ transactionTypeName }: any) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount"))
+    const deductionStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount") && Number(transactionAmount))
+    const earningStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && Number(transactionAmount))
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
     const handleEmployeeChange = useCallback((e: SelectChangeEvent) => {
@@ -311,18 +326,19 @@ const UserList = () => {
     }
 
     return (
-        <Grid container spacing={6}>
+        <Grid container spacing={3}>
             <Grid item xs={12}>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
 
                     <Card>
-                        <CardHeader title='Pay Transaction' />
+                        <CardHeader title='Pay Transaction'  />
                         <CardContent>
-                            <Grid container spacing={12}>
+                            <Grid container spacing={3}>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth>
-                                        <InputLabel id='employee-select'>Select Employee</InputLabel>
+                                        <InputLabel size={'small'} id='employee-select'>Select Employee</InputLabel>
                                         <Select
+                                            size={'small'}
                                             fullWidth
                                             value={employee}
                                             id='select-employee'
@@ -343,8 +359,9 @@ const UserList = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth>
-                                        <InputLabel >Select Transaction</InputLabel>
+                                        <InputLabel size={'small'} >Select Transaction</InputLabel>
                                         <Select
+                                        size={'small'}
                                             fullWidth
                                             value={transaction}
                                             label='Select Transaction'
@@ -362,13 +379,14 @@ const UserList = () => {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <FormControl fullWidth sx={{ mb: 4 }}>
+                                    <FormControl fullWidth sx={{ mb: 3 }}>
                                         <Controller
                                             name='transactionAmount'
                                             control={control}
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
+                                                size={'small'}
                                                     autoFocus
                                                     label='Transaction Amount'
                                                     value={value}
@@ -383,17 +401,19 @@ const UserList = () => {
                                     </FormControl>
                                 </Grid>
                             </Grid>
-                            <Grid container spacing={5}>
-                                <Grid item xs={12} sm={6}>
+                            <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
                                     <FormControl fullWidth>
-                                        <Button color='primary' fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
+                                        <Button color='primary' fullWidth size='small' type='submit' variant='contained' sx={{ mb: 7 }}>
                                             Submit
                                         </Button>
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={3}>
                                     <FormControl fullWidth>
-                                        <Button color='secondary' fullWidth size='large' onClick={() => clearAllFields()} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                        <Button color='secondary' fullWidth size='small' onClick={() => clearAllFields()} type='reset' variant='contained' sx={{ mb: 7 }}>
                                             Reset
                                         </Button>
                                     </FormControl>
@@ -406,14 +426,13 @@ const UserList = () => {
             </Grid>
             <Grid item xs={12} md={12} lg={6}>
                 <Card>
-                    <CardHeader title='Earnings' />
+                    <CardHeader title='Earnings' titleTypographyProps={{ variant: 'body2' }}  />
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
                                 autoHeight
                                 rows={earningStore}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
                                 disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
@@ -425,14 +444,13 @@ const UserList = () => {
             </Grid>
             <Grid item xs={12} md={12} lg={6}>
                 <Card>
-                    <CardHeader title='Deductions' />
+                    <CardHeader title='Deductions' titleTypographyProps={{ variant: 'body2' }} />
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
                                 autoHeight
                                 rows={deductionStore}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
                                 disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}

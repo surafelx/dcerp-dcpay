@@ -70,7 +70,7 @@ const schema = yup.object().shape({
 
 const emptyValues = {
     transactionCode: '',
-    transactionName: '',
+transactionName: '',
     shortName: '',
     transactionType: '',
     updateType: '',

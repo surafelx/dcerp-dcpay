@@ -14,13 +14,17 @@ router.get('/',
             const { q = '',} = req.query ?? ''
             const queryLowered = q.toString().toLowerCase()
             const employees = await employeeService.getAllFromOrganization(organizationId)
-            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, tin_number, working_days, employee_position, basic_salary, employment_date }) => ({
+            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name}) => ({
                 id,
                 employeeBranch: branch_id,
                 employeeDepartment: department_id,
                 employeeCode: employee_code,
                 employeeTitle: employee_title,
                 employeeTitleName: employee_title_name,
+                employeeBank: employee_bank,
+                employeeBankName: employee_bank_name,
+                employeeBankAccount: employee_account_number,
+                employeeTypeName: employee_type_name,
                 sex,
                 employeeStatus: employee_status,
                 employeeType: employee_type,
@@ -29,6 +33,7 @@ router.get('/',
                 contractEndDate: contract_end_date,
                 monthlyWorkingHours: monthly_working_hours,
                 pensionNumber: pension_number,
+                pensionStatus: pension_status,
                 tinNumber: tin_number,
                 workingDays: working_days,
                 firstName: first_name,
@@ -64,7 +69,7 @@ router.post('/',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {periodId: currentPeriod[0].id, userId, }
+            const userInfo = {periodId: currentPeriod[0].id, userId, organizationId}
             const createdEmployee = await employeeService.create(req, String(organizationId), userInfo)
             res.send(createdEmployee)
         } catch (err) {

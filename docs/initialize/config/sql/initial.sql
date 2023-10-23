@@ -145,10 +145,14 @@ CREATE TABLE employee (
 		monthly_working_hours VARCHAR(40) NOT NULL,
 		pension_status BOOLEAN NOT NULL,
 		pension_number VARCHAR(40),
+		employee_bank VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
+  		employee_account_number VARCHAR(50),
 		tin_number VARCHAR(40),
 		working_days VARCHAR(40),
 		employee_position VARCHAR(40) NOT NULL REFERENCES parameter_definition(id)
 );
+
+
 
 CREATE TABLE parameter_definition (
 id VARCHAR(40) NOT NULL UNIQUE,
@@ -160,13 +164,6 @@ id VARCHAR(40) NOT NULL UNIQUE,
     REFERENCES parameter_definition (id)
 );
 
-
-CREATE TABLE employee_bank_account (
-  id VARCHAR(40) NOT NULL UNIQUE,
-  employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
-  bank VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
-  account_number VARCHAR(50) NOT NULL
-);
 
 CREATE TABLE transaction_definition (
 	    id VARCHAR(40) NOT NULL UNIQUE,
