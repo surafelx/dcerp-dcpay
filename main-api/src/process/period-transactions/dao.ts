@@ -117,16 +117,6 @@ export const updatePeriodTransaction = async (updatedPeriodTransaction: any): Pr
 }
 
 
-const getGrossSalary = async (employeeId: any) => {
-    const {rows: grossSalary} = await pool.query(`SELECT SUM(CAST(pt.transaction_amount AS NUMERIC)) AS grossSalary
-    FROM period_transactions pt
-    INNER JOIN transaction_definition td ON td.id = pt.transaction_id
-    INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
-    WHERE pt.employee_id = $1
-      AND pd3.parameter_name = 'Earning Amount';
-    `, [employeeId])
-    return grossSalary[0]
-}
 
 
 export default {
