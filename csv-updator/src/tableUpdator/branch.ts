@@ -52,26 +52,33 @@ const processCSV = async (organizationId: any, csvFile: any) => {
             resultArray.push(branch);
         };
 
+        const fileStream = fs.createReadStream(csvFile);
 
-        const fileStream = await fs.createReadStream(csvFile);
+        await new Promise((resolve: any, reject): any => {
+            fileStream
+                .pipe(csv())
+                .on('data', (row: any) => {
+                    processRow(row);
+                })
+                .on('end', async () => {
+                    for (const branch of resultArray) {
+                        branch.organizationId = organizationId;
+                        try {
+                            await create(branch);
+                        } catch (err) {
+                            console.log('Error processing row:', err);
+                            console.log('Row data:', branch);
+                        }
+                    }
+                    console.log('Processing complete');
+                    resolve(); // Resolve the promise when processing is complete.
+                });
+        });
 
-        fileStream
-            .pipe(csv())
-            .on('data', (row: any) => {
-                processRow(row);
-            })
-            .on('end',async  () => {
-                for (const branch of resultArray) {
-                    branch.organizationId = organizationId
-                    await create(branch)
-                }
-        
-            });
-
+        return resultArray;
     } catch (err) {
-        console.log(err)
+        console.error('Error in processCSV:', err);
     }
-
 };
 
 export default processCSV;

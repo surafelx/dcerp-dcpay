@@ -1,6 +1,8 @@
 // ** React Imports
 import { useState, useEffect, useCallback } from 'react'
 
+
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -48,6 +50,8 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 
 
 
+import {utils, writeFile} from 'xlsx';
+
 
 const PayrollAdvice = () => {
     // ** State
@@ -91,6 +95,32 @@ const PayrollAdvice = () => {
     }, [dispatch])
 
 
+
+  const generateExcelFile = () => {
+    // Your data should be structured as an array of arrays
+
+
+    const tableData = [
+        ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
+        ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
+          employeeCode,
+          employeeName,
+          parseFloat(totalDeductions).toFixed(2),
+          parseFloat(totalEarnings).toFixed(2),
+          parseFloat(netPay).toFixed(2),
+        ]),
+      ]
+      console.log(store, tableData)
+          // Create a new workbook
+    const workbook = utils.book_new();
+    // Create a worksheet and add your data
+    const worksheet = utils.aoa_to_sheet(tableData);
+    // Add the worksheet to the workbook
+    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    // Generate the Excel file
+    writeFile(workbook, 'your_file_name.xlsx');
+  };
 
     const handleBranchChange = useCallback((e: SelectChangeEvent) => {
         setBranch(e.target.value)
@@ -187,7 +217,7 @@ const PayrollAdvice = () => {
                                                         )
                                                     })
                                                 }
-                                            </TableBody>
+                                            </TableBody> 
                                         </Table>
                                     </TableContainer>
                                     <CardContent>
@@ -214,6 +244,7 @@ const PayrollAdvice = () => {
             <Grid item xl={3} md={4} xs={12}>
                 <Card>
                     <CardContent>
+                        <Grid mb={4}>
                         <Button
                             fullWidth
                             target='_blank'
@@ -223,6 +254,16 @@ const PayrollAdvice = () => {
                             href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
                         >
                             Print
+                        </Button>
+                        </Grid>
+                       
+                        <Button
+                            fullWidth
+                            color='primary'
+                            variant='outlined'
+                            onClick={generateExcelFile}
+                        >
+                            Download
                         </Button>
                     </CardContent>
                 </Card>

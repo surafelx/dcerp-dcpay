@@ -35,15 +35,21 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         if (!isMatch) {
             throw createError.Unauthorized('Invalid Username and/or Password')
         }
-        const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
+        const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION  || 34000})
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
+        const nextPeriod = await periodService.getNextPeriod(user.organization_id)
         const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
+        console.log(`const organizationId = '${user.organization_id}'`)
+    console.log(`const userId = '${user.id}'`)
+    console.log(`const periodId = '${currentPeriod[0].id}'`)
+
         res.send({
             accessToken,
             userData: {
                 ...user,
                 password: undefined,
                 currentPeriod: currentPeriod[0],
+                nextPeriod: nextPeriod[0],
                 organizationName
             }
         })
@@ -65,7 +71,6 @@ router.get('/me', async (req: Request, res, next) => {
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
-            branchId: user.branch_id,
             currentPeriod,
             organizationName
         }

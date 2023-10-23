@@ -113,12 +113,26 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     pt.transaction_amount as basic_salary,
     pd1.parameter_name as employee_title_name
     FROM employee e
-    LEFT JOIN pay_transaction pt ON pt.employee_id = e.id
-    LEFT JOIN parameter_definition pd1 ON pd1.id = e.employee_title
-    WHERE e.organization_id=$1 AND
+    INNER JOIN period_transactions pt ON pt.employee_id = e.id
+    INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
+    WHERE e.organization_id = $1 AND 
+    pt.organization_id = $1 AND
     pt.transaction_id = $2`,
         [organizationId, basicSalaryId])
     return employees
+}
+
+
+
+export const getInfo = async (employeeId: any): Promise<any> => {
+    const { rows: employees } = await pool.query(`
+    SELECT 
+    *
+    FROM employee
+    WHERE id=$1`,
+        [employeeId])
+    
+    return employees[0]
 }
 
 
@@ -206,5 +220,6 @@ export default {
     create,
     deleteEmployee,
     getAllFromOrganization,
+    getInfo,
     updateEmployee
 }

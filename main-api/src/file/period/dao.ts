@@ -84,7 +84,7 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     period_report,
     period_process
     FROM periods
-    WHERE organization_id=$1`,
+    WHERE organization_id=$1 ORDER BY CAST(period_count AS NUMERIC) ASC`,
         [organizationId])
     return Periods
 }
@@ -174,6 +174,57 @@ export const getCurrentPeriod = async (organizationId: string): Promise<any> => 
     return Periods
 }
 
+export const getNextPeriod = async (organizationId: string): Promise<any> => {
+    const { rows: periods } = await pool.query(`
+    SELECT 
+    id,
+    organization_id,
+    period_count,
+    period_name, 
+    period_year,
+    month_name, 
+    start_date,
+    end_date,
+    period_paid,
+    period_current,
+    period_back,
+    period_proof,
+    period_final,
+    period_report,
+    period_process
+    FROM periods
+    WHERE organization_id=$1 AND
+    period_current = true`,
+        [organizationId])
+    
+    const current = periods[0]
+        const nextPeriod = {
+            periodCount: Number(current.period_count) + 1,
+        };
+        const { rows: nextPeriods } = await pool.query(`
+        SELECT 
+        id,
+        organization_id,
+        period_count,
+        period_name, 
+        period_year,
+        month_name, 
+        start_date,
+        end_date,
+        period_paid,
+        period_current,
+        period_back,
+        period_proof,
+        period_final,
+        period_report,
+        period_process
+        FROM periods
+        WHERE organization_id=$1 AND
+        period_count = $2`,
+            [organizationId, nextPeriod.periodCount])
+    return nextPeriods
+}
+
 
 const generateGregorianPeriod = async (currentPeriod: number, organizationId: string) => {
 
@@ -227,7 +278,7 @@ const generateEthiopianPeriod = async (ethiopianStartingPeriod: any, currentPeri
 
     ]
 
-    const gregorianDate = ethiopic.toGregorian(2014, 11, 1)
+    const gregorianDate = ethiopic.toGregorian(ethiopianStartingPeriod, 11, 1)
     const startingPeriod: Date = new Date(gregorianDate);
     let currentYear = startingPeriod.getFullYear();
 
@@ -356,5 +407,6 @@ export default {
     // setupPeriod,
     getAllFromOrganization,
     getCurrentPeriod,
+    getNextPeriod,
     updatePeriod
 }

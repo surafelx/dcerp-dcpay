@@ -132,14 +132,23 @@ const defaultTransactionCalculations = [
         rate: '1'
     },
     {
-        firstTransaction: 'Transport Allowance', 
+        firstTransaction: 'Salary', 
         secondTransaction: 'Basic Salary',
-        calculationUnit: 'Monthly',
-        firstOption: '=',
-        thirdTransaction: 'Acting Allowance',
-        secondOption: '=',
+        calculationUnit: 'Daily',
+        firstOption: '*',
+        thirdTransaction: 'Days Worked',
+        secondOption: '*',
         rate: '1'
     },
+    // {
+    //     firstTransaction: 'Transport Allowance', 
+    //     secondTransaction: 'Basic Salary',
+    //     calculationUnit: 'Monthly',
+    //     firstOption: '=',
+    //     thirdTransaction: 'Acting Allowance',
+    //     secondOption: '=',
+    //     rate: '1'
+    // },
     {
         firstTransaction: 'Overtime Amount 125%',
         secondTransaction: 'Basic Salary',
@@ -180,7 +189,7 @@ const defaultTransactionCalculations = [
         firstTransaction: 'Pension Company',
         secondTransaction: 'Basic Salary',
         calculationUnit: 'Monthly',
-        firstOption: '*',
+        firstOption: '=',
         thirdTransaction: 'None',
         secondOption: '=',
         rate: '0.11'
@@ -189,9 +198,9 @@ const defaultTransactionCalculations = [
         firstTransaction: 'Pension Employee',
         secondTransaction: 'Basic Salary',
         calculationUnit: 'Monthly',
-        firstOption: '*',
-        thirdTransaction: 'None',
-        secondOption: '=',
+        firstOption: '=',
+        thirdTransaction: 'Days Worked',
+        secondOption: '*',
         rate: '0.07'
     },
     {
@@ -221,15 +230,15 @@ const defaultTransactionCalculations = [
         secondOption: '=',
         rate: '0.1'
     },
-    {
-        firstTransaction: 'Provident Fund EBS Amount',
-        secondTransaction: 'Basic Salary',
-        calculationUnit: 'Monthly',
-        firstOption: '*',
-        thirdTransaction: 'Provident Fund EBS Rate',
-        secondOption: '*',
-        rate: '1'
-    },
+    // {
+    //     firstTransaction: 'Provident Fund EBS Amount',
+    //     secondTransaction: 'Basic Salary',
+    //     calculationUnit: 'Monthly',
+    //     firstOption: '*',
+    //     thirdTransaction: 'Provident Fund EBS Rate',
+    //     secondOption: '*',
+    //     rate: '1'
+    // },
     {
         firstTransaction: 'Edir',
         secondTransaction: 'Basic Salary',

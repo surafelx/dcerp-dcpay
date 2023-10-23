@@ -42,7 +42,6 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
 }
 
 export const getInfo = async (holidayId: string) => {
-    console.log(holidayId)
     const { rows: holidays } = await pool.query(`
     SELECT 
     *

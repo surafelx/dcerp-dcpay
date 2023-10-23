@@ -7,6 +7,7 @@ CREATE TABLE organizations (
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
   organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+    menu_code VARCHAR(40), 
   parent_id VARCHAR(40),
   menu_title VARCHAR(50) NOT NULL,
   menu_path VARCHAR(100) NOT NULL,
@@ -155,12 +156,12 @@ CREATE TABLE employee (
 		contract_start_date DATE,
 		contract_end_date DATE,
 		monthly_working_hours VARCHAR(40) NOT NULL,
+		pension_status BOOLEAN NOT NULL,
 		pension_number VARCHAR(40),
 		tin_number VARCHAR(40),
 		working_days VARCHAR(40),
 		employee_position VARCHAR(40) NOT NULL REFERENCES parameter_definition(id)
 );
-
 
 
 CREATE TABLE employee_bank_account (
@@ -237,11 +238,22 @@ CREATE TABLE transaction_calculation (
 CREATE TABLE tax_rate (
 	id VARCHAR(40) NOT NULL UNIQUE,
 	organization_id VARCHAR(40) NOT NULL,
-	branch_id VARCHAR(40) NOT NULL,
 	tax_rate_code VARCHAR(40) NOT NULL,
 	lowest_range VARCHAR(40) NOT NULl,
 	highest_range VARCHAR(40) NOT NULL,
 	tax_rate VARCHAR(40) NOT NULL
 );
 
-
+CREATE TABLE period_transactions (
+	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+	period_id VARCHAR(40) NOT NULL REFERENCES periods(id),
+	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
+	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
+	transaction_amount VARCHAR(40) NOT NULL,
+	transaction_affected_amount VARCHAR(40) NOT NULL,
+	transaction_printed_flag BOOLEAN NOT NULL,
+	transaction_user_id VARCHAR(40) NOT NULL REFERENCES user_accounts(id),
+	transaction_record_number VARCHAR(40) NOT NULL,
+	transaction_date DATE NOT NULL
+);

@@ -1,9 +1,7 @@
 
-import payrollSheetDao from './dao'
+import payrollDisplayDao from './dao'
 
-const getAllFromOrganization = async (organizationId: any, employeeId: any): Promise<any> => await payrollSheetDao.getAllFromOrganization(organizationId, employeeId)
-
-
+const getAllFromOrganization = async (organizationId: any, employeeId: any, userInfo: any): Promise<any> => await payrollDisplayDao.getAllFromOrganization(organizationId, employeeId, userInfo)
 
 export default {
     getAllFromOrganization,

@@ -8,8 +8,8 @@ services:
   postgres:
     build: ./db
     environment:
-      - POSTGRES_USER=dpadmin
-      - POSTGRES_PASSWORD=dppassword
-      - POSTGRES_DB=dpdb
+      - POSTGRES_USER=dcpayrolladmin
+      - POSTGRES_PASSWORD=maxmax
+      - POSTGRES_DB=dcpayrolldb
     ports:
       - "5432:5432"

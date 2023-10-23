@@ -13,7 +13,7 @@ const defaultParameters = [
     { parentParameter: 'Transaction Group', parameters: ['Loan', 'Absence', 'Membership', 'NA'] },
     { parentParameter: 'Calculation Unit', parameters: ['Hourly', 'Monthly', 'Daily'] },
     { parentParameter: 'Transaction Calculation', parameters: ['*', '='] },
-    { parentParameter: 'Transaction Update Type', parameters: ['Input', 'Calculation'] },
+    { parentParameter: 'Transaction Update Type', parameters: ['Input', 'Calculation', 'Not Editable'] },
 ];
 
 
