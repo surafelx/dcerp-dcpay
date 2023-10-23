@@ -32,6 +32,10 @@ const ACTIVE_STATUS = '14001'
 const SUSPENDED_STATUS = '14002'
 const TERMINATED_STATUS = '14003'
 
+const BANK_CBE = '15001'
+const BANK_NA = '0'
+
+
 
 export const getByNameAndOrganization = async (organizationId: string, transactionName: string) => {
     const { rows: employees } = await pool.query(`
@@ -124,8 +128,8 @@ export const create = async (newMenu: any): Promise<any> => {
         pensionNumber,
         tinNumber,
         workingDays,
-        // employeeBank,
-        // employeeBankAccount,
+        employeeBank,
+        employeeBankAccount,
         employeeBranch,
         employeeDepartment,
         employeePosition
@@ -157,11 +161,13 @@ export const create = async (newMenu: any): Promise<any> => {
             monthly_working_hours,
             pension_status,
             pension_number,
+            employee_bank,
+            employee_account_number,
             tin_number,
             working_days,
             employee_position
             ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -183,6 +189,8 @@ export const create = async (newMenu: any): Promise<any> => {
         monthlyWorkingHours,
         employeePensionStatus,
         pensionNumber,
+        employeeBank,
+        employeeBankAccount,
         tinNumber,
         workingDays,
         employeePosition
@@ -192,32 +200,36 @@ export const create = async (newMenu: any): Promise<any> => {
 }
 
 
-export const getBranchByName = async (branchName: any): Promise<any> => {
+export const getBranchByOrganizationByName = async (organizationId: any, branchName: any): Promise<any> => {
 
     const query = `
 	SELECT
         *
     FROM 
     branch WHERE
-    branch_name=$1
+    organization_id = $1 AND
+    branch_name= $2
     `
     const res = await pool.query(query, [
+    organizationId,
       branchName
     ])
     const branch = res.rows[0]
     return branch
 }
 
-export const getDepartmentByName = async (branchName: any): Promise<any> => {
+export const getDepartmentByOrganizationByName = async (organizationId: any, branchName: any): Promise<any> => {
 
     const query = `
 	SELECT
         *
     FROM 
     department WHERE
-    department_name=$1
+    organization_id = $1 AND
+    department_name= $2
     `
     const res = await pool.query(query, [
+        organizationId, 
       branchName
     ])
     const branch = res.rows[0]
@@ -267,8 +279,10 @@ const processCSV = async (organizationId: any,csvFile: any) => {
             const lastName = ''
             const pensionNumber = row['Emppensionno']
             const pensionStatus = row['EmpPension']
+            const accountNo = row['EmpAccountNo']
+            const bankName = row['EmpBankname']
 
-           
+
             const employee = {
                 employeeCode,
                 empGender,
@@ -288,8 +302,9 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                 firstName,
                 middleName,
                 lastName,
-                pensionNumber
-
+                pensionNumber,
+                accountNo,
+                bankName
             };
             resultArray.push(employee);
         };
@@ -313,56 +328,56 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                     
 
                         if (employee.branchCode ==  MANAGEMENT_GROUP_BRANCH) {
-                            const branch = await getBranchByName('Management Group')
+                            const branch = await getBranchByOrganizationByName(organizationId, 'Management Group')
                             employee.employeeBranch = branch.id
                         }
                         if (employee.branchCode ==  COMMERCE_AND_FINANCE_BRANCH) {
-                            const branch = await getBranchByName('Commerce and Finance')
+                            const branch = await getBranchByOrganizationByName(organizationId, 'Commerce and Finance')
                             employee.employeeBranch = branch.id
                         }
                         if (employee.branchCode ==  PRODUCTION_OPERATION_BRANCH) {
-                            const branch = await getBranchByName('Production Operation')
+                            const branch = await getBranchByOrganizationByName(organizationId, 'Production Operation')
                             employee.employeeBranch = branch.id
                         }
                         if (employee.branchCode ==  CONTRACT_EMPLOYEE_BRANCH) {
-                            const branch = await getBranchByName('Contract Employee')
+                            const branch = await getBranchByOrganizationByName(organizationId, 'Contract Employee')
                             employee.employeeBranch = branch.id
                         }
                         if (employee.branchCode ==  ALL_BRANCH) {
-                            const branch = await getBranchByName('All')
+                            const branch = await getBranchByOrganizationByName(organizationId, 'All')
                             employee.employeeBranch = branch.id
                         }
     
                         if (employee.departmentCode ==  MANAGEMENT_DEPARTMENT) {
-                            const department = await getDepartmentByName('Management')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Management')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  FINANCE_DEPARTMENT) {
-                            const department = await getDepartmentByName('Finance ')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Finance ')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  FABRICATION_DEPARTMENT) {
-                            const department = await getDepartmentByName('Fabrication')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Fabrication')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  CONTRACT_DEPARTMENT) {
-                            const department = await getDepartmentByName('Contract ')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Contract ')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  MARKETING_DEPARTMENT) {
-                            const department = await getDepartmentByName('Marketing ')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Marketing ')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode == TENDER_AND_QUOTATION_DEPARTMENT) {
-                            const department = await getDepartmentByName('Tender and Quoatation')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Tender and Quoatation')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  MACHINE_SHOP_DEPARTMENT) {
-                            const department = await getDepartmentByName('Machine Shop')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'Machine Shop')
                             employee.employeeDepartment = department.id
                         }
                         if (employee.departmentCode ==  ALL_MANUFACTURING_SUPPORTER) {
-                            const department = await getDepartmentByName('All Manufacturing Supporter')
+                            const department = await getDepartmentByOrganizationByName(organizationId, 'All Manufacturing Supporter')
                             employee.employeeDepartment = department.id
                         }
     
@@ -413,7 +428,17 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                             employee.employeePosition = employeePositionParameter
                         }
     
-                       
+                       if(employee.bankName == BANK_CBE) {
+                            const employeeBankParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Bank', 'CBE')
+                            employee.employeeBank = employeeBankParameter
+                       }
+
+                       if(employee.bankName == BANK_NA) {
+                        const employeeBankParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Bank', 'NA')
+                        employee.employeeBank = employeeBankParameter
+                   }
+
+                        employee.employeeBankAccount = employee.accountNo
                         employee.organizationId = organizationId
                         const newEmployee = await create(employee)
                         employee.id = newEmployee.id

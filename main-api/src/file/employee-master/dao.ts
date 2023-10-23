@@ -2,6 +2,32 @@ import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
 
 
+// employeePosition: 'c699c41e-81b6-4e91-8d72-3ab8f9358bf4',
+// employeeDepartment: 'f51e2c05-d6b6-4a44-ada5-1a23ee8ee044',
+// employeeBranch: '2f95afb7-152a-4c0b-818b-55649be3da44',
+// employeeBank: '3b3397d3-2741-42c3-ac24-440d94714d33',
+// employeeBankAccount: '121',
+// workingDays: 2,
+// tinNumber: '121',
+// pensionStatus: '',
+// pensionNumber: '1212',
+// basicSalary: '20000',
+// monthlyWorkingHours: '121',
+// employeeType: '58752f6c-f232-4683-a19a-fa56d654ed18',
+// employeeStatus: '05a75f7a-594e-40d1-bc48-e60498ddd7c2',
+// employmentDate: 'Tue Sep 05 2023 00:00:00 GMT+0300 (East Africa Time)',
+// contractEndDate: '',
+// contractStartDate: '',
+// sex: 'be40291d-5b94-4ca6-896a-545af4e95d70',
+// lastName: '1212',
+// middleName: '1212',
+// firstName: '121',
+// employeeTitle: '00a74e38-f627-4658-9470-7185d949ed83',
+// employeeCode: '21212',
+// id: '',
+// employeeTypeName: '',
+// contractDate: ''
+
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
     const {
@@ -19,10 +45,11 @@ export const create = async (newMenu: any): Promise<any> => {
         employeeType,
         monthlyWorkingHours,
         pensionNumber,
+        pensionStatus,
         tinNumber,
         workingDays,
-        // employeeBank,
-        // employeeBankAccount,
+        employeeBank,
+        employeeBankAccount,
         employeeBranch,
         employeeDepartment,
         employeePosition
@@ -31,6 +58,7 @@ export const create = async (newMenu: any): Promise<any> => {
     const refactoredEmpDate = !employmentDate ? null : new Date(employmentDate)
     const refactoredContEnd = !contractEndDate ? null : new Date(contractEndDate)
     const refactoredContStart = !contractStartDate ? null : new Date(contractStartDate)
+    const refactoredPension = pensionStatus ? true : false
     const query = `
 	INSERT INTO 
         employee 
@@ -52,11 +80,14 @@ export const create = async (newMenu: any): Promise<any> => {
             contract_end_date,
             monthly_working_hours,
             pension_number,
+            pension_status,
             tin_number,
+            employee_bank,
+            employee_account_number,
             working_days,
             employee_position
             ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -77,7 +108,10 @@ export const create = async (newMenu: any): Promise<any> => {
         refactoredContEnd,
         monthlyWorkingHours,
         pensionNumber,
+        refactoredPension,
         tinNumber,
+        employeeBank,
+        employeeBankAccount,
         workingDays,
         employeePosition
     ])
@@ -107,14 +141,21 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
     e.contract_end_date,
     e.monthly_working_hours,
     e.pension_number,
+    e.pension_status,
     e.tin_number,
     e.working_days,
     e.employee_position,
+    e.employee_bank,
+    e.employee_account_number,
     pt.transaction_amount as basic_salary,
-    pd1.parameter_name as employee_title_name
+    pd1.parameter_name as employee_title_name,
+    pd2.parameter_name as employee_bank_name,
+    pd3.parameter_name as employee_type_name
     FROM employee e
     INNER JOIN period_transactions pt ON pt.employee_id = e.id
     INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
+    INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
+    INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
     WHERE e.organization_id = $1 AND 
     pt.organization_id = $1 AND
     pt.transaction_id = $2`,
@@ -159,8 +200,8 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         contractStartDate,
         contractEndDate,
         monthlyWorkingHours,
-        basicSalary,
         pensionNumber,
+        pensionStatus,
         tinNumber,
         workingDays,
         employeePosition,
@@ -170,7 +211,7 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
     SET branch_id = $1,
     department_id = $2,
     employee_code = $3,
-    employee_title = $4
+    employee_title = $4,
     first_name = $5,
     middle_name = $6,
     last_name = $7,
@@ -179,14 +220,14 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
     employee_type = $10,
     employment_date = $11, 
     contract_start_date = $12,
-    contract_end_date = $11,
-    monthly_working_hours = $13,
-    basic_salary = $14,
+    contract_end_date = $13,
+    monthly_working_hours = $14,
     pension_number = $15,
     tin_number = $16,
     working_days = $17,
-    employee_position = $18
-    WHERE id = $19
+    employee_position = $18,
+    pension_status = $19
+    WHERE id = $20
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -204,11 +245,11 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         new Date(contractStartDate),
         new Date(contractEndDate),
         monthlyWorkingHours,
-        basicSalary,
         pensionNumber,
         tinNumber,
         workingDays,
         employeePosition,
+        pensionStatus,
         id])
     const branchId = res.rows[0]
     return branchId

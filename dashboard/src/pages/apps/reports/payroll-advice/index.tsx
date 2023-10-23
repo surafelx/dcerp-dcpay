@@ -97,6 +97,7 @@ const PayrollAdvice = () => {
 
 
   const generateExcelFile = () => {
+
     // Your data should be structured as an array of arrays
 
 
@@ -111,14 +112,11 @@ const PayrollAdvice = () => {
         ]),
       ]
       console.log(store, tableData)
-          // Create a new workbook
     const workbook = utils.book_new();
-    // Create a worksheet and add your data
     const worksheet = utils.aoa_to_sheet(tableData);
-    // Add the worksheet to the workbook
+
     utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    // Generate the Excel file
     writeFile(workbook, 'your_file_name.xlsx');
   };
 

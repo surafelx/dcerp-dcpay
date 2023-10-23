@@ -11,6 +11,7 @@ export type EmployeesType = {
   employeeBranch: string
   employeeTitle: string
   employeeTitleName: string
+  employeeTypeName: string
   employeeDepartment: string
   firstName: string
   middleName: string
@@ -25,6 +26,7 @@ export type EmployeesType = {
   contractEndDate: string
   monthlyWorkingHours: string
   pensionNumber: string
+  pensionStatus: string
   tinNumber: string
   workingDays: string
   employeeBankAccount: string

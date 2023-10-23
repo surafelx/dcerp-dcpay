@@ -113,62 +113,6 @@ export const createProcessedTransactions = async (newMenu: any): Promise<any> =>
 }
 
 
-const calculateNetPay = async (organizationId: any, transactions: any) => {
-    let grossSalary = 0
-    let unTaxableTrans = 0
-    let totalDeductions = 0
-    transactions.map((tran: any) => {
-        if (tran.transaction_type_name === 'Earning Amount')
-            grossSalary += parseFloat(tran.transaction_amount)
-        if (tran.transaction_type_name === 'Deduction Amount')
-            totalDeductions += parseFloat(tran.transaction_amount)
-        if (!tran.taxable)
-            unTaxableTrans += parseFloat(tran.transaction_amount)
-    })
-
-
-    const grossTaxableSalary = grossSalary - unTaxableTrans
-    const tax = await taxRateService.calculateTaxRate(organizationId, grossTaxableSalary)
-    totalDeductions += tax
-    const netPay = grossSalary - totalDeductions
-
-    return { grossTaxableSalary, netPay, tax, grossSalary, totalDeductions, unTaxableTrans }
-}
-
-// const processNotEditableTransactions = async (organizationId: any, employeeId: any,) => {
-//     const { rows: processedPeriodTransactions } = await pool.query(`
-//     SELECT 
-//     td.id,
-//     td.transaction_code,
-//     td.transaction_name,
-//     td.taxable,
-//     pt.transaction_amount,
-//     pd1.parameter_name as update_type_name,
-//     pd2.parameter_name as transaction_group_name,
-//     pd3.parameter_name as transaction_type_name
-//     FROM period_transactions pt
-//     INNER JOIN transaction_definition td ON td.id = pt.transaction_id
-//     INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
-//     INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
-//     INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
-//     WHERE pt.employee_id=$1 
-//     ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;`,
-//     [employeeId])
-
-//     console.log(processedPeriodTransactions, processedPeriodTransactions.length)
-//     const {grossTaxableSalary,
-//         netPay,
-//         tax,
-//         grossSalary,
-//         totalDeductions,
-//         unTaxableTrans} = await calculateNetPay(organizationId, processedPeriodTransactions)
-//         console.log(grossTaxableSalary,
-//             netPay,
-//             tax,
-//             grossSalary,
-//             totalDeductions,
-//             unTaxableTrans)
-// }
 const processPayLoanMembershipTransactions = async (organizationId: any, employeeId: any, periodTransactions: any, userInfo: any) => {
 
     const { userId, periodId } = userInfo

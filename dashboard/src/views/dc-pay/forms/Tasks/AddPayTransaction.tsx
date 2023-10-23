@@ -131,8 +131,9 @@ const AddMenuLevelTwo = ({
                             rules={{ required: true }}
                             render={({ field: { value, onChange, onBlur } }) => (
                                 <>
-                                    <InputLabel id='demo-simple-select-autoWidth-label'>Employee</InputLabel>
+                                    <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Employee</InputLabel>
                                     <Select
+                                        size={'small'}
                                         label='Employee'
                                         value={value}
                                         id='demo-simple-select-autoWidth'
@@ -161,8 +162,9 @@ const AddMenuLevelTwo = ({
                             rules={{ required: true }}
                             render={({ field: { value, onChange, onBlur } }) => (
                                 <>
-                                    <InputLabel id='demo-simple-select-autoWidth-label'>Transaction</InputLabel>
+                                    <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Transaction</InputLabel>
                                     <Select
+                                        size={'small'}
                                         label='Transaction'
                                         placeholder='Select Transaction'
                                         value={value}
@@ -191,6 +193,7 @@ const AddMenuLevelTwo = ({
                             rules={{ required: true }}
                             render={({ field: { value, onChange, onBlur } }) => (
                                 <TextField
+                                    size={'small'}
                                     autoFocus
                                     label='Transaction Amount'
                                     value={value}

@@ -54,7 +54,7 @@ const emptyValues = {
 }
 
 
-const AddMonthClosing = ({ formData, setLoading }: any) => {
+const AddMonthClosing = ({ formData }: any) => {
  
 
     // ** Hooks
@@ -99,7 +99,7 @@ const AddMonthClosing = ({ formData, setLoading }: any) => {
                             control={control}
                            
                             rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
+                            render={({ field: { onChange, onBlur } }) => (
                                 <TextField
                                     autoFocus
                                     label='Current Period'
@@ -119,7 +119,7 @@ const AddMonthClosing = ({ formData, setLoading }: any) => {
                             name='Next Period'
                             control={control}
                             rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
+                            render={({ field: {  onChange, onBlur } }) => (
                                 <TextField
                                     autoFocus
                                     label='Next Period'

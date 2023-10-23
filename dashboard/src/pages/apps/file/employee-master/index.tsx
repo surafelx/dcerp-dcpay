@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -43,7 +43,8 @@ import { RootState, AppDispatch } from 'src/store'
 import { EmployeesType } from 'src/types/apps/File/employeesTypes'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
+// import TableHeader from 'src/views/apps/user/list/TableHeader'
+
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
 
@@ -71,7 +72,7 @@ const UserList = () => {
     
     // ** State
     const [role] = useState<string>('')
-    const [value, setValue] = useState<string>('')
+    const [value,] = useState<string>('')
     const [status] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
@@ -89,9 +90,11 @@ const UserList = () => {
         sex: '',
         employeeStatus: '',
         employeeType: '',
+        employeeTypeName: '',
         monthlyWorkingHours: '',
         basicSalary: '',
         pensionNumber: '',
+        pensionStatus: '',
         tinNumber: '',
         workingDays: '',
         employeeBank: '',
@@ -107,6 +110,7 @@ const UserList = () => {
         contractEndDate,
         employmentDate,
         employeeTitle,
+        employeeTypeName,
         firstName,
         middleName,
         lastName,
@@ -116,6 +120,7 @@ const UserList = () => {
         monthlyWorkingHours,
         basicSalary,
         pensionNumber,
+        pensionStatus,
         tinNumber,
         workingDays,
         employeeBank,
@@ -157,12 +162,14 @@ const UserList = () => {
                     monthlyWorkingHours,
                     basicSalary,
                     pensionNumber,
+                    pensionStatus,
                     tinNumber,
                     workingDays,
                     employeeBank,
                     employeeBankAccount,
                     employeeBranch,
                     employeeDepartment,
+                    employeeTypeName,
                     employeePosition
                 }
             )
@@ -223,17 +230,40 @@ const UserList = () => {
 
     const columns = [
         {
+            minWidth: 100,
+            field: 'code',
+            headerName: 'Code',
+            renderCell: ({ row }: CellType) => {
+                const { employeeCode } = row
+
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                                <Typography
+                                    noWrap
+                                    component='a'
+                                    variant='body2'
+                                    sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                                >
+                                    {`${employeeCode}`}
+                                </Typography>
+                        </Box>
+                    </Box>
+                )
+            }
+        },
+        {
             flex: 0.2,
             minWidth: 230,
             field: 'fullName',
             headerName: 'Name',
             renderCell: ({ row }: CellType) => {
-                const { id, employeeTitleName, firstName, middleName, lastName } = row
+                const { employeeTitleName, firstName, middleName, lastName } = row
 
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                            <Link href={`/apps/user/view/${id}`} passHref>
+                            {/* <Link href={`/apps/user/view/${id}`} passHref> */}
                                 <Typography
                                     noWrap
                                     component='a'
@@ -242,7 +272,7 @@ const UserList = () => {
                                 >
                                     {`${employeeTitleName} ${firstName} ${middleName} ${lastName}`}
                                 </Typography>
-                            </Link>
+                            {/* </Link> */}
                         </Box>
                     </Box>
                 )
@@ -250,7 +280,7 @@ const UserList = () => {
         },
         {
             flex: 0.2,
-            minWidth: 250,
+            minWidth: 150,
             field: 'basicSalary',
             headerName: 'Basic Salary',
             renderCell: ({ row }: CellType) => {
@@ -271,7 +301,7 @@ const UserList = () => {
 
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                        <Typography noWrap variant='body2'>
                             {`${moment(row.employmentDate).format("YYYY-MM-DD")}`}
                         </Typography>
                     </Box>
@@ -302,12 +332,14 @@ const UserList = () => {
                     contractEndDate={row.contractEndDate}
                     monthlyWorkingHours={row.monthlyWorkingHours}
                     pensionNumber={row.pensionNumber}
+                    pensionStatus={row.pensionStatus}
                     tinNumber={row.tinNumber}
                     workingDays={row.workingDays}
                     employeeBankAccount={row.employeeBankAccount}
                     employeeBank={row.employeeBank}
                     employeeTitle={row.employeeTitle}
                     employeeTitleName={row.employeeTitleName}
+                    employeeTypeName={row.employeeTypeName}
                     middleName={row.middleName}
 
                 />)
@@ -334,33 +366,28 @@ const UserList = () => {
 
 
 
-    const handleFilter = useCallback((val: string) => {
-        setValue(val)
-    }, [])
 
 
     const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={12} md={12} lg={5}>
                 <DatePickerWrapper>
                     <AddEmployee formData={formData} />
                 </DatePickerWrapper>
             </Grid>
-            <Grid item xs={12} md={12} lg={12}>
+            <Grid item xs={12} md={12} lg={7}>
                 <Card>
                     <CardHeader title='Employees' />
                     <CardContent>
                         <Grid item xs={12}>
-                            <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
                             <DataGrid
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                                checkboxSelection
-                                pageSize={pageSize}
                                 disableSelectionOnClick
+                                pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />

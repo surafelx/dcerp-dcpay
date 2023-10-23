@@ -4,6 +4,7 @@
     employeeId: string;
     transactionId: string;
     transactionName: string;
+    transactionTypeName: string;
     transactionAmount: string;
   }
   

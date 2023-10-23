@@ -13,6 +13,9 @@ import FormHelperText from '@mui/material/FormHelperText'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
+
 // ** Third Party Imports
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
@@ -49,7 +52,7 @@ interface CustomInputProps {
 }
 
 const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
-    return <TextField inputRef={ref} {...props} sx={{ width: '100%' }} />
+    return <TextField size={'small'} inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
 
@@ -65,7 +68,7 @@ const RangeCustomInput = forwardRef((props: PickerProps, ref) => {
 
     const value = `${startDate}${endDate !== null ? endDate : ''}`
 
-    return <TextField inputRef={ref} label={props.label || ''} sx={{ width: '100%' }}  {...props} value={value} />
+    return <TextField size={'small'} inputRef={ref} label={props.label || ''} sx={{ width: '100%' }}  {...props} value={value} />
 })
 
 
@@ -85,6 +88,7 @@ const schema = yup.object().shape({
     monthlyWorkingHours: yup.string(),
     basicSalary: yup.string(),
     pensionNumber: yup.string(),
+    pensionStatus: yup.string(),
     tinNumber: yup.string(),
     workingDays: yup.string(),
     employeeBankAccount: yup.string(),
@@ -100,6 +104,7 @@ const emptyValues = {
     employeeTitle: '',
     contractStartDate: '',
     contractEndDate: '',
+    employeeTypeName: '',
     employmentDate: '',
     firstName: '',
     middleName: '',
@@ -110,6 +115,7 @@ const emptyValues = {
     monthlyWorkingHours: '',
     basicSalary: '',
     pensionNumber: '',
+    pensionStatus: '',
     tinNumber: '',
     workingDays: '',
     employeeBank: '',
@@ -194,12 +200,11 @@ const AddMenuLevelTwo = ({
 
     const onSubmit = (data: any) => {
         data.workingDays = workingDaysPeriod
-        if(data.contractDate) {
-            console.log(data.contractDate)
+        if (data.contractDate) {
             data.contractStartDate = data.contractDate[0]
             data.contractEndDate = data.contractDate[1]
         }
-       
+
         if (data.id) {
             dispatch(editEmployee({ ...data }))
         } else {
@@ -251,28 +256,25 @@ const AddMenuLevelTwo = ({
 
 
     return (
-        <Card>
-            <CardHeader title='Add Employee' titleTypographyProps={{ variant: 'h6' }} />
+        <Card><CardHeader title='Add Employee' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
-
-
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={5}>
-                        <Grid item xs={12} sm={1}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={3}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeCode'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Code'
                                             value={value}
                                             onBlur={onBlur}
                                             onChange={(e) => {
                                                 onChange(e)
-                                                console.log(e.target.value)
                                             }
                                             }
                                             placeholder='Code'
@@ -282,16 +284,85 @@ const AddMenuLevelTwo = ({
                                 {errors.employeeCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeCode.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={2}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Grid item sm={3}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='firstName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='First'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.firstName)}
+                                            placeholder='First'
+                                        />
+                                    )}
+                                />
+                                {errors.firstName && <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={3}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='middleName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Middle'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={(e) => {
+                                                onChange(e)
+                                            }
+                                            }
+                                            placeholder='Middle'
+                                        />
+                                    )}
+                                />
+                                {errors.employeeCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeCode.message}</FormHelperText>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={3}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='lastName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Last'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.lastName)}
+                                            placeholder='Last'
+                                        />
+                                    )}
+                                />
+                                {errors.lastName && <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeTitle'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Title</InputLabel>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Title</InputLabel>
                                             <Select
+                                                size={'small'}
                                                 label='Title'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
@@ -313,83 +384,17 @@ const AddMenuLevelTwo = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                    name='firstName'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <TextField
-                                            autoFocus
-                                            label='First Name'
-                                            value={value}
-                                            onBlur={onBlur}
-                                            onChange={onChange}
-                                            error={Boolean(errors.firstName)}
-                                            placeholder='First Name'
-                                        />
-                                    )}
-                                />
-                                {errors.firstName && <FormHelperText sx={{ color: 'error.main' }}>{errors.firstName.message}</FormHelperText>}
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                    name='middleName'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <TextField
-                                            autoFocus
-                                            label='Midle Name'
-                                            value={value}
-                                            onBlur={onBlur}
-                                            onChange={(e) => {
-                                                onChange(e)
-                                                console.log(e.target.value)
-                                            }
-                                            }
-                                            placeholder='Middle Name'
-                                        />
-                                    )}
-                                />
-                                {errors.employeeCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeCode.message}</FormHelperText>}
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                    name='lastName'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <TextField
-                                            autoFocus
-                                            label='Last Name'
-                                            value={value}
-                                            onBlur={onBlur}
-                                            onChange={onChange}
-                                            error={Boolean(errors.lastName)}
-                                            placeholder='Last Name'
-                                        />
-                                    )}
-                                />
-                                {errors.lastName && <FormHelperText sx={{ color: 'error.main' }}>{errors.lastName.message}</FormHelperText>}
-                            </FormControl>
-                        </Grid>
-                        {/* {workin} */}
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='sex'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Sex</InputLabel>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Sex</InputLabel>
                                             <Select
+                                                size={'small'}
                                                 label='Sex'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
@@ -412,16 +417,48 @@ const AddMenuLevelTwo = ({
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='employeeBranch'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Branch</InputLabel>
+                                            <Select
+                                                size={'small'}
+                                                label='Branch'
+                                                value={value}
+                                                id='demo-simple-select-autoWidth'
+                                                labelId='demo-simple-select-autoWidth-label'
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                            >
+                                                {
+                                                    branchOptions.data.map(({ id, branchName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{branchName}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </>
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeStatus'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Employee Status</InputLabel>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Status</InputLabel>
                                             <Select
-                                                label='Employee Status'
+                                                size={'small'}
+                                                label='Status'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
                                                 labelId='demo-simple-select-autoWidth-label'
@@ -442,17 +479,80 @@ const AddMenuLevelTwo = ({
                                 />
                             </FormControl>
                         </Grid>
-
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='employeeDepartment'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Department</InputLabel>
+                                            <Select
+                                                size={'small'}
+                                                label='Department'
+                                                value={value}
+                                                id='demo-simple-select-autoWidth'
+                                                labelId='demo-simple-select-autoWidth-label'
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                            >
+                                                {
+                                                    departmentOptions.data.map(({ id, departmentName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{departmentName}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </>
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='employeePosition'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Position</InputLabel>
+                                            <Select
+                                                size={'small'}
+                                                label='Position'
+                                                value={value}
+                                                placeholder='Position'
+                                                id='demo-simple-select-autoWidth'
+                                                labelId='demo-simple-select-autoWidth-label'
+                                                onBlur={onBlur}
+                                                onChange={onChange}
+                                            >
+                                                {
+                                                    employeePositionOptions.map(({ id, parameterName }, index) => {
+                                                        return (
+                                                            <MenuItem key={index} value={id}>{parameterName}</MenuItem>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        </>
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeType'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Employee Type</InputLabel>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Employee Type</InputLabel>
                                             <Select
+                                                size={'small'}
                                                 label='Employee Type'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
@@ -461,7 +561,6 @@ const AddMenuLevelTwo = ({
                                                 onChange={(e) => {
                                                     onChange(e)
                                                     const selectedType: any = employmentTypeOptions.find((obj: any) => obj.id === e.target.value);
-                                                    console.log(selectedType)
                                                     setEmploymentTypeValue(selectedType.parameterName)
                                                 }
                                                 }
@@ -479,113 +578,107 @@ const AddMenuLevelTwo = ({
                                 />
                             </FormControl>
                         </Grid>
-                        {employmentTypeValue === '' && (
-                            <Grid item xs={12} sm={6}>
-                            </Grid>
-                        )}
-                        {employmentTypeValue === 'Contract' && (
-                            <>
-                                <>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth sx={{ mb: 4 }}>
-                                            <Controller
-                                                name='contractDate'
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field: { value, onChange } }) => (
-                                                    <DatePicker
-                                                        selectsRange
-                                                        monthsShown={2}
-                                                        endDate={contractEnd}
-                                                        minDate={new Date(startDate)}
-                                                        selected={contractStart}
-                                                        startDate={contractStart}
-                                                        shouldCloseOnSelect={true}
-                                                        id='date-range-picker-months'
-                                                        onChange={(e) => {
-                                                            onChange(e)
-                                                            handleOnChangeRange(e)
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
+                                {((formData.id && formData.employeeTypeName === 'Permanent') || employmentTypeValue === 'Permanent') ? (
+                                    <>
+                                        <Controller
+                                            name='employmentDate'
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field: { value, onChange } }) => (
+                                                <DatePicker
 
-                                                        }
-                                                        }
-                                                        value={value}
-                                                       
-                                                        customInput={
-                                                            <RangeCustomInput
-                                                                label='Contract Dates'
-                                                                end={contractEnd as Date | number}
-                                                                start={contractStart as Date | number}
-                                                            />
-                                                        }
-                                                    />
-                                                )}
-                                            />
-                                            {errors.contractStartDate && (
-                                                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                                                    This field is required
-                                                </FormHelperText>
+                                                    selected={value ? new Date(value) : null}
+                                                    minDate={new Date(startDate)}
+                                                    maxDate={new Date(endDate)}
+                                                    onChange={(e: any) => {
+                                                        onChange(e)
+                                                        const timeDiff = new Date(endDate).getTime() - new Date(e).getTime()
+                                                        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+                                                        setWorkingDaysPeriod(daysDiff)
+                                                        formData.workingDays = workingDaysPeriod
+                                                    }}
+                                                    placeholderText='MM/DD/YYYY'
+                                                    customInput={
+                                                        <CustomInput
+                                                            value={value ? new Date(value) : null}
+                                                            onChange={onChange}
+                                                            label='Employment Date'
+                                                            error={Boolean(errors.employmentDate)}
+                                                            aria-describedby='validation-basic-dob'
+                                                        />
+                                                    }
+                                                />
                                             )}
-                                            {errors.contractStartDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.contractStartDate.message}</FormHelperText>}
-                                        </FormControl>
-                                    </Grid>
-                                </>
-                            </>
-                        )}
-                        {employmentTypeValue === 'Permanent' && (
-                            <>
-                                <>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth sx={{ mb: 4 }}>
-                                            <Controller
-                                                name='employmentDate'
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field: { value, onChange } }) => (
-                                                    <DatePicker
-                                                        selected={value ? new Date(value) : null}
-                                                        minDate={new Date(startDate)}
-                                                        maxDate={new Date(endDate)}
-                                                        onChange={(e: any) => {
-                                                            onChange(e)
-                                                            const timeDiff = new Date(endDate).getTime() - new Date(e).getTime()
-                                                            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
-                                                            setWorkingDaysPeriod(daysDiff)
-                                                            formData.workingDays = workingDaysPeriod
-                                                        }}
-                                                        placeholderText='MM/DD/YYYY'
-                                                        customInput={
-                                                            <CustomInput
-                                                                value={value ? new Date(value) : null}
-                                                                onChange={onChange}
-                                                                label='Employment Date'
-                                                                error={Boolean(errors.employmentDate)}
-                                                                aria-describedby='validation-basic-dob'
-                                                            />
-                                                        }
-                                                    />
-                                                )}
-                                            />
-                                            {errors.employmentDate && (
-                                                <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
-                                                    This field is required
-                                                </FormHelperText>
+                                        />
+                                        {errors.employmentDate && (
+                                            <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                                                This field is required
+                                            </FormHelperText>
+                                        )}
+                                        {errors.employmentDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.employmentDate.message}</FormHelperText>}
+                                    </>
+                                ) : ((formData.id && formData.employeeTypeName === 'Contract') || employmentTypeValue === 'Contract')  ? (
+                                    <>
+                                        <Controller
+                                            name='contractDate'
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field: { value, onChange } }) => (
+                                                <DatePicker
+                                                    selectsRange
+                                                    monthsShown={2}
+                                                    endDate={contractEnd}
+                                                    minDate={new Date(startDate)}
+                                                    selected={contractStart}
+                                                    startDate={contractStart}
+                                                    shouldCloseOnSelect={true}
+                                                    id='date-range-picker-months'
+                                                    onChange={(e) => {
+                                                        onChange(e)
+                                                        handleOnChangeRange(e)
+
+                                                    }
+                                                    }
+                                                    value={value}
+
+                                                    customInput={
+                                                        <RangeCustomInput
+                                                            label='Contract Dates'
+                                                            end={contractEnd as Date | number}
+                                                            start={contractStart as Date | number}
+                                                        />
+                                                    }
+                                                />
                                             )}
-                                            {errors.employmentDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.employmentDate.message}</FormHelperText>}
-                                        </FormControl>
-                                    </Grid>
-                                </>
-                            </>
-                        )}
+                                        />
+                                        {errors.contractStartDate && (
+                                            <FormHelperText sx={{ mx: 3.5, color: 'error.main' }} id='validation-basic-dob'>
+                                                This field is required
+                                            </FormHelperText>
+                                        )}
+                                        {errors.contractStartDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.contractStartDate.message}</FormHelperText>}
+                                    </>
+                                ): (
+                                    <>
+                                    </>
+                                )}
+                            </FormControl>
+
+                        </Grid>
 
 
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='basicSalary'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Basic Salary'
                                             value={value}
@@ -599,16 +692,17 @@ const AddMenuLevelTwo = ({
                                 {errors.basicSalary && <FormHelperText sx={{ color: 'error.main' }}>{errors.basicSalary.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Grid item xs={12} sm={3}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='workingDays'
                                     control={control}
                                     rules={{ required: true }}
-                                    render={({ field: {  onChange, onBlur } }) => (
+                                    render={({ field: { onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
-                                            label='Working Days'
+                                            label='Days'
                                             value={workingDaysPeriod}
                                             onBlur={onBlur}
                                             onChange={onChange}
@@ -619,81 +713,61 @@ const AddMenuLevelTwo = ({
                                 {errors.workingDays && <FormHelperText sx={{ color: 'error.main' }}>{errors.workingDays.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Grid item xs={12} sm={3}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='monthlyWorkingHours'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
-                                            label='Monthly Working Hours'
+                                            label='Hours'
                                             value={value}
                                             onBlur={onBlur}
                                             onChange={onChange}
                                             error={Boolean(errors.monthlyWorkingHours)}
-                                            placeholder='Monthly Working Hours'
+                                            placeholder='Hours'
                                         />
                                     )}
                                 />
                                 {errors.monthlyWorkingHours && <FormHelperText sx={{ color: 'error.main' }}>{errors.monthlyWorkingHours.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                    name='pensionNumber'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <TextField
-                                            autoFocus
-                                            label='Pension Number'
-                                            value={value}
-                                            onBlur={onBlur}
-                                            onChange={onChange}
-                                            error={Boolean(errors.pensionNumber)}
-                                            placeholder='Pension Number'
-                                        />
-                                    )}
-                                />
-                                {errors.pensionNumber && <FormHelperText sx={{ color: 'error.main' }}>{errors.pensionNumber.message}</FormHelperText>}
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='tinNumber'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
-                                            label='TIN Number'
+                                            label='TIN'
                                             value={value}
                                             onBlur={onBlur}
                                             onChange={onChange}
                                             error={Boolean(errors.tinNumber)}
-                                            placeholder='TIN Number'
+                                            placeholder='TIN'
                                         />
                                     )}
                                 />
                                 {errors.tinNumber && <FormHelperText sx={{ color: 'error.main' }}>{errors.tinNumber.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeBank'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Select Bank Account</InputLabel>
+                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Select Bank Account</InputLabel>
                                             <Select
+                                                size={'small'}
                                                 label='Select Bank Account'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
@@ -715,13 +789,14 @@ const AddMenuLevelTwo = ({
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth >
                                 <Controller
                                     name='employeeBankAccount'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Bank Account'
                                             value={value}
@@ -735,94 +810,41 @@ const AddMenuLevelTwo = ({
                                 {errors.employeeBankAccount && <FormHelperText sx={{ color: 'error.main' }}>{errors.employeeBankAccount.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth >
                                 <Controller
-                                    name='employeeBranch'
+                                    name='pensionStatus'
                                     control={control}
                                     rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Branch</InputLabel>
-                                            <Select
-                                                label='Branch'
-                                                value={value}
-                                                id='demo-simple-select-autoWidth'
-                                                labelId='demo-simple-select-autoWidth-label'
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                            >
-                                                {
-                                                    branchOptions.data.map(({ id, branchName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{branchName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </>
+                                    render={({ field: { value, onChange } }) => (
+                                        <FormControlLabel
+                                            label='Pension'
+                                            control={<Checkbox checked={Boolean(value)} onChange={onChange} name='controlled' />}
+                                        />
                                     )}
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
                                 <Controller
-                                    name='employeeDepartment'
+                                    name='pensionNumber'
                                     control={control}
-                                    rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
-                                        <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Department</InputLabel>
-                                            <Select
-                                                label='Department'
-                                                value={value}
-                                                id='demo-simple-select-autoWidth'
-                                                labelId='demo-simple-select-autoWidth-label'
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                            >
-                                                {
-                                                    departmentOptions.data.map(({ id, departmentName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{departmentName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </>
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Pension Number'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.pensionNumber)}
+                                            placeholder='Pension Number'
+                                        />
                                     )}
                                 />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={4}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
-                                <Controller
-                                    name='employeePosition'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <>
-                                            <InputLabel id='demo-simple-select-autoWidth-label'>Position</InputLabel>
-                                            <Select
-                                                label='Position'
-                                                value={value}
-                                                id='demo-simple-select-autoWidth'
-                                                labelId='demo-simple-select-autoWidth-label'
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                            >
-                                                {
-                                                    employeePositionOptions.map(({ id, parameterName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{parameterName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </>
-                                    )}
-                                />
+                                {errors.pensionNumber && <FormHelperText sx={{ color: 'error.main' }}>{errors.pensionNumber.message}</FormHelperText>}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -834,7 +856,7 @@ const AddMenuLevelTwo = ({
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>
-                                <Button color='secondary' fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                <Button color='secondary' fullWidth size='large' onClick={() => reset(emptyValues)} type='reset' variant='contained' sx={{ mb: 7 }}>
                                     Reset
                                 </Button>
                             </FormControl>
