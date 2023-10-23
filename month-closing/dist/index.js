@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const periodClosing_1 = __importDefault(require("./tableUpdator/periodClosing"));
+const period_1 = __importDefault(require("./tableUpdator/period"));
 const setupProcess = async () => {
     try {
-        const organizationId = '27abdc7f-e2b0-4417-8316-97203482f4f0';
-        const userId = '02e2b06a-f904-4456-a491-68c6e1e676c1';
-        const periodId = '3d45c460-4b8f-4f9d-8347-ea945093e60f';
-        await (0, periodClosing_1.default)(organizationId, periodId, userId);
+        const organizationId = '8b83e53d-2d13-4f04-b824-034ae6014876';
+        const userId = '3bd71963-890e-4941-9248-12a5b3afc844';
+        const periodId = 'b46db380-bbd9-447c-96b3-3de6ec8caf3c';
+        await (0, period_1.default)(organizationId, periodId, userId);
     }
     catch (error) {
         console.log(error);

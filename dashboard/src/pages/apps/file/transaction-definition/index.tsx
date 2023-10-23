@@ -188,8 +188,8 @@ const UserList = () => {
 
     const columns = [
         {
-            flex: 0.2,
-            minWidth: 230,
+            flex: 0.1,
+            minWidth: 100,
             field: 'transactionCode',
             headerName: 'Code',
             renderCell: ({ row }: CellType) => {
@@ -635,15 +635,13 @@ return (
                     <CardHeader title='Transaction Definition' />
                     <CardContent>
                         <Grid item xs={12}>
-                            <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
+                            {/* <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} /> */}
                             <DataGrid
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
-                                disableSelectionOnClick
-                                rowsPerPageOptions={[10, 25, 50]}
+                                rowsPerPageOptions={[30, 30, 30]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />
                         </Grid>

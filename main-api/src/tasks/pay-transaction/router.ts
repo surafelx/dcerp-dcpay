@@ -9,11 +9,13 @@ router.get('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
-            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const { organization_id: organizationId, } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
             const { q = '', employee = null } = req.query ?? ''
             const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
-            const payTransactions = await payTransactionService.getAllFromOrganization(organizationId, employeeId)
+            const payTransactions = await payTransactionService.getAllFromOrganization(organizationId, employeeId, userInfo)
             const renamedPayTransactions = payTransactions.map(({
                 id,
                 employee_id,

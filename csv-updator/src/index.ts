@@ -9,9 +9,9 @@ import processPayTransactionCSV from './tableUpdator/payTransaction'
 
 const setupProcess = async () => {
     try {
-        const organizationId = '7e9930a4-a730-4f61-bac5-73e8cf6f280d'
-        const userId = 'f31daea5-e386-4730-b8af-d11128ea3289'
-        const periodId = 'b2a09233-e8e2-4521-b942-6e9cac61198b'
+        const organizationId = '47d7d65d-9e8a-403b-8d55-e2be0ce6b573'
+        const userId = '8b188a17-d684-4d22-8f83-0274812ee87f'
+        const periodId = '5eedb218-ad0d-4692-8bbc-3492766a1418'
 
         const userInfo = {organizationId, userId, periodId}
 
@@ -25,6 +25,9 @@ const setupProcess = async () => {
         console.log(loanTransactions.length, "Loan Transactions Added")
         const payTransactions = await processPayTransactionCSV(organizationId, './data/processedtransactions.csv', userInfo)
         console.log(payTransactions.length, "Pay Transactions Added")
+
+        //  const advances = await processPayTransactionCSV(organizationId, './data/advance.csv', userInfo)
+        // console.log(advances.length, "Absence and Advance Transactions Added")
     } catch (error) {
         console.log(error)
 

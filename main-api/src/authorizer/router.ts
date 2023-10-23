@@ -37,6 +37,7 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         }
         const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION  || 34000})
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
+        const nextPeriod = await periodService.getNextPeriod(user.organization_id)
         const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
         console.log(`const organizationId = '${user.organization_id}'`)
     console.log(`const userId = '${user.id}'`)
@@ -48,6 +49,7 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
                 ...user,
                 password: undefined,
                 currentPeriod: currentPeriod[0],
+                nextPeriod: nextPeriod[0],
                 organizationName
             }
         })

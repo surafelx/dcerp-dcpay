@@ -20,7 +20,7 @@ return createdPayTransaction
 
 const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
 
-const getAllFromOrganization = async (organizationId: any, employeeId: any): Promise<any[]> => await payTransactionDao.getAllFromOrganization(organizationId, employeeId)
+const getAllFromOrganization = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganization(organizationId, employeeId, userInfo)
 
 const deletePayTransaction = async (payTransactionId: string, userInfo: any): Promise<any> => {
     const payTransaction = await getById(payTransactionId)

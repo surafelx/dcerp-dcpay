@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "strict": true,
+        "module": "commonjs",
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "target": "ESNext",
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "paths": {
+            "@src/*": [
+                "./src/*"
+            ]
+        },
+        "types": [
+            "node",
+            "dotenv"
+        ],
+        "incremental": true,
+        "lib": [
+            "ESNext"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "test",
+        "dist",
+        "*.d.ts",
+        "data"
+    ],
+}

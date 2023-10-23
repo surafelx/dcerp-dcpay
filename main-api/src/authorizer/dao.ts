@@ -31,7 +31,7 @@ export const getNavigationMenu = async (roleId: string) => {
         json_build_object(
             'title', child.menu_title,
             'path', child.menu_path
-        )
+        ) ORDER BY CAST(child.menu_code AS NUMERIC) ASC
     ) AS children
 FROM
     menu_items AS parent
@@ -41,9 +41,10 @@ WHERE
     role_menu.read_allowed = TRUE
     AND role_menu.role_id = $1
 GROUP BY
-    parent.menu_title, parent.id
+    parent.menu_title, parent.id, parent.menu_code
 HAVING
-    COUNT(child.id) > 0;
+    COUNT(child.id) > 0
+ORDER BY CAST(parent.menu_code AS NUMERIC) ASC;
     `, [roleId])
     const rawNavigationMenu = navigationQueryResponse.rows
     return rawNavigationMenu

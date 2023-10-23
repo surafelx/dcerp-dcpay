@@ -107,7 +107,8 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN parameter_definition pd1 ON transaction_definition.transaction_type = pd1.id
     INNER JOIN parameter_definition pd2 ON transaction_definition.transaction_group = pd2.id
     INNER JOIN parameter_definition pd3 ON transaction_definition.update_type = pd3.id
-    WHERE transaction_definition.organization_id=$1`,
+    WHERE transaction_definition.organization_id=$1
+    ORDER BY CAST(transaction_definition.transaction_code AS NUMERIC) ASC`,
         [organizationId])
     return employees
 }
@@ -372,7 +373,7 @@ const defaultTransactions = [
         shortName: 'Acting All',
         transactionType: 'Earning Amount',
         updateType: 'Input',
-        permanent: false,
+        permanent: true,
         taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
@@ -390,7 +391,7 @@ const defaultTransactions = [
         shortName: 'Transport All',
         transactionType: 'Earning Amount',
         updateType: 'Input',
-        permanent: false,
+        permanent: true,
         taxable: false,
         unTaxableLimit: '',
         affectByLeave: false,
@@ -626,7 +627,7 @@ const defaultTransactions = [
         shortName: 'Pension Company',
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
-        permanent: false,
+        permanent: true,
         taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,
@@ -644,7 +645,7 @@ const defaultTransactions = [
         shortName: 'Pension Employee',
         transactionType: 'Deduction Amount',
         updateType: 'Calculation',
-        permanent: false,
+        permanent: true,
         taxable: true,
         unTaxableLimit: '',
         affectByLeave: false,

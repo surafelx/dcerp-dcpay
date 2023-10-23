@@ -222,7 +222,7 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
             }
         }
         if (td.update_type_name === 'Calculation' && td.transaction_group_name != 'Membership') {
-            const transactionCalculationFormat = await getTransactionCalculationFormat(employeeId, td.id)
+            const transactionCalculationFormat = await getTransactionCalculationFormat(employeeId, td.id, periodId)
             if (transactionCalculationFormat.length > 0) {
                 const calculatedTransaction = calculateTransactionCalculations(transactionCalculationFormat[0])
                 if (!periodTransactionExists) {
@@ -256,7 +256,7 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
 
 
         if (td.transaction_code == '21') {
-            const periodTransactionsForGrossSalary = await getPeriodTransactions(employeeId)
+            const periodTransactionsForGrossSalary = await getPeriodTransactions(employeeId, periodId)
             grossSalary = periodTransactionsForGrossSalary
                 .filter((pt: any) => pt.transaction_type_name == 'Earning Amount')
                 .reduce((total: any, fpt: any) => total + parseFloat(fpt.transaction_amount), 0);
@@ -316,7 +316,7 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
     return processedTransactions
 }
 
-const getTransactionCalculationFormat = async (employeeId: any, transactionId: any) => {
+const getTransactionCalculationFormat = async (employeeId: any, transactionId: any, periodId: any) => {
     const { rows: tranCal } = await pool.query(`
             SELECT 
             DISTINCT
@@ -345,12 +345,12 @@ const getTransactionCalculationFormat = async (employeeId: any, transactionId: a
             INNER JOIN parameter_definition pd5 ON pd5.id = td1.update_type
             INNER JOIN parameter_definition pd6 ON pd6.id = td1.transaction_group
             INNER JOIN transaction_definition td2 ON td2.id = tc.second_transaction_id
-            LEFT JOIN pay_transaction pt1 ON pt1.transaction_id = tc.second_transaction_id
-            LEFT JOIN pay_transaction pt2 ON pt2.transaction_id = tc.third_transaction_id 
+            LEFT JOIN period_transactions pt1 ON pt1.transaction_id = tc.second_transaction_id
+            LEFT JOIN period_transactions pt2 ON pt2.transaction_id = tc.third_transaction_id 
             INNER JOIN employee e1 ON e1.id = pt1.employee_id
-            WHERE e1.id = $1 AND tc.first_transaction_id=$2 AND pt1.employee_id = $1 AND pt2.employee_id = $1
+            WHERE e1.id = $1 AND tc.first_transaction_id=$2 AND pt1.employee_id = $1 AND pt2.employee_id = $1 AND pt1.period_id = $3 AND pt2.period_id=$3
             `,
-        [employeeId, transactionId])
+        [employeeId, transactionId, periodId])
     return tranCal
 }
 // const processTransactions = async (organizationId: any, employeeId: any, periodTransactions: any, userInfo: any) => {
@@ -364,7 +364,7 @@ const getTransactionCalculationFormat = async (employeeId: any, transactionId: a
 
 // }
 
-const getPeriodTransactions = async (employeeId: any) => {
+const getPeriodTransactions = async (employeeId: any, periodId: any) => {
     const { rows: periodTransactions } = await pool.query(`
     SELECT 
     pt.id,
@@ -381,9 +381,9 @@ const getPeriodTransactions = async (employeeId: any) => {
     INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
     INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
     INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
-    WHERE pt.employee_id=$1 
+    WHERE pt.employee_id=$1 AND pt.period_id=$2
     ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;`,
-        [employeeId])
+        [employeeId, periodId])
     return periodTransactions
 }
 
@@ -391,9 +391,9 @@ const getAllFromOrganization = async (organizationId: string, employeeId: string
     if (!employeeId)
         return []
 
-    const periodTransactions = await getPeriodTransactions(employeeId)
+    const periodTransactions = await getPeriodTransactions(employeeId, userInfo.periodId)
     await processPayLoanMembershipTransactions(organizationId, employeeId, periodTransactions, userInfo)
-    const processedPeriodTransactions = await getPeriodTransactions(employeeId)
+    const processedPeriodTransactions = await getPeriodTransactions(employeeId, userInfo.periodId)
     return processedPeriodTransactions
 }
 

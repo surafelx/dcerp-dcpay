@@ -36,7 +36,7 @@ const setupApp =  async (companyData: any): Promise<any> => {
         const newBranch = { branchCode, branchName, organizationId }
         const { id: branchId } = await branchDao.create(newBranch)
         
-        const startingPeriod = '2015,11,1';
+        const startingPeriod = 2015;
 
         const {calendar, currentPeriod } = period
 

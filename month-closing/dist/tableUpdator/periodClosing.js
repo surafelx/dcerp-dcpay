@@ -30,7 +30,7 @@ const createPayTransaction = async (newMenu, periodId) => {
         transactionAmount
     ]);
     return res.rows[0];
-};
+}; a
 exports.createPayTransaction = createPayTransaction;
 const createPeriodTransaction = async (newPeriodTransaction) => {
     const id = (0, uuid_1.v4)();

@@ -386,12 +386,8 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={store.data}
-
-                                // @ts-ignore */
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
-                                disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />
