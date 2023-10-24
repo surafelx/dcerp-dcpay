@@ -5,7 +5,7 @@ import employeeService from '../../file/employee-master/service'
 import { v4 as uuid } from 'uuid'
 
 
-export const createPayTransaction = async (newMenu: any): Promise<any> => {
+export const createPayTransaction = async (newMenu: any, periodId: any): Promise<any> => {
     const id = uuid()
     const {
         employeeId,
@@ -19,9 +19,10 @@ export const createPayTransaction = async (newMenu: any): Promise<any> => {
             id,
             employee_id,
             transaction_id,
+            period_id,
             transaction_amount 
             ) 
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -154,7 +155,7 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
         if (td.update_type_name == 'Input' || td.transaction_name == 'None') {
             if (td.transaction_code !== 'Not Editable') {
                 if (!periodTransactionExists) {
-                    await createPayTransaction({ employeeId, transactionId: td.id, transactionAmount: 0 })
+                    await createPayTransaction({ employeeId, transactionId: td.id, transactionAmount: 0 }, periodId)
                     await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
                 }
             }

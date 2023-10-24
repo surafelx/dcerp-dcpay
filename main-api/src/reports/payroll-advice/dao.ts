@@ -7,7 +7,6 @@ const getAllFromOrganization = async(organizationId: string, branchId: string, d
     let fixedBranchId: string | null = branchId
     let fixedDepartmentId: string | null = departmentId
 
-
     if(branchId === 'All')
         fixedBranchId = null 
         

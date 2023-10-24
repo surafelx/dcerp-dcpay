@@ -50,7 +50,7 @@ export const createPeriodTransaction = async (newPeriodTransaction: any): Promis
 }
 
 
-export const create = async (newMenu: any): Promise<any> => {
+export const create = async (newMenu: any, periodId: any): Promise<any> => {
     const id = uuid()
     const {
         employeeId,
@@ -63,15 +63,17 @@ export const create = async (newMenu: any): Promise<any> => {
         (
             id,
             employee_id,
+            period_id,
             transaction_id,
             transaction_amount 
             ) 
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `
     const res = await pool.query(query, [
         id,
         employeeId,
+        periodId,
         transactionId,
         transactionAmount
     ])
@@ -110,7 +112,7 @@ export const getTransactionByTransactionCodeByOrganization = async (organization
 const processCSV = async (organizationId: any, csvFile: any, userInfo: any) => {
     try {
         const resultArray: any = [];
-        const { organizationId, periodId, userId } = userInfo
+        const {  periodId, userId } = userInfo
 
         // Define your conditions for each column here
         const processRow = (row: any) => {
@@ -150,7 +152,7 @@ const processCSV = async (organizationId: any, csvFile: any, userInfo: any) => {
                             );
                             payTransaction.transactionId = transactionId;
                             if(updateTypeName == 'Input' && transactionCode != '10' && transactionCode != '12' && transactionCode != '14' && transactionCode != '16') {
-                                const createdPayTransaction = await create(payTransaction);
+                                const createdPayTransaction = await create(payTransaction, periodId);
                                 const newPeriodTransaction = { 
                                     employeeId: createdPayTransaction.employee_id,
                                     transactionId: createdPayTransaction.transaction_id,

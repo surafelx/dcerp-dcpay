@@ -9,9 +9,9 @@ import processPayTransactionCSV from './tableUpdator/payTransaction'
 
 const setupProcess = async () => {
     try {
-        const organizationId = 'be56c879-b1f6-44cb-a4d7-2784a535e1cc'
-        const userId = '3b24fe26-7e51-4622-8210-f505c801bb3b'
-        const periodId = 'f9f8ed80-8c6b-4a45-9d23-12c8bf8e1bae'
+        const organizationId = '69dabef7-595e-45c3-9ef1-c32028ca2601'
+        const userId = '6ec91d4a-081e-4dfd-ae1e-f0691e9cad02'
+        const periodId = '591601a5-48dd-4646-8981-99320b688e67'
         
         const userInfo = {organizationId, userId, periodId}
 
@@ -19,7 +19,7 @@ const setupProcess = async () => {
         console.log(branches.length, "Branches Added")
         const departments = await processDepartmentCSV(organizationId,'./data/department.csv')
         console.log(departments.length, "Departments Added")
-        const employees = await processEmployeeCSV(organizationId, './data/employee.csv')
+        const employees = await processEmployeeCSV(organizationId, './data/employee.csv', userInfo)
         console.log(employees.length, "Employees Added")
         const loanTransactions = await processLoanTransactionCSV(organizationId, './data/loantransactions2.csv', userInfo)
         console.log(loanTransactions.length, "Loan Transactions Added")

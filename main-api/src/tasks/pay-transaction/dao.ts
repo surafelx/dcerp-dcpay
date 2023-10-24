@@ -1,7 +1,7 @@
 import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
 
-export const create = async (newMenu: any): Promise<any> => {
+export const create = async (newMenu: any, periodId: any): Promise<any> => {
     const id = uuid()
     const {
         employeeId,
@@ -15,15 +15,17 @@ export const create = async (newMenu: any): Promise<any> => {
             id,
             employee_id,
             transaction_id,
+            period_id,
             transaction_amount 
             ) 
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `
     const res = await pool.query(query, [
         id,
         employeeId,
         transactionId,
+        periodId,
         transactionAmount
     ])
     return res.rows[0]
@@ -45,7 +47,7 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     td.transaction_name,
     td.transaction_code,
     pd.parameter_name as transaction_type_name
-    FROM period_transactions pt
+    FROM pay_transaction pt
     INNER JOIN employee e1 ON pt.employee_id = e1.id
     INNER JOIN transaction_definition td ON pt.transaction_id = td.id
     INNER JOIN parameter_definition pd ON pd.id = td.transaction_type
