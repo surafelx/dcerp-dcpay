@@ -72,7 +72,7 @@ export const getByNameAndOrganization = async (organizationId: string, transacti
     return employees[0]
 }
 
-export const createPT = async (newMenu: any): Promise<any> => {
+export const createPT = async (newMenu: any, periodId: any): Promise<any> => {
     const id = uuid()
     const {
         employeeId,
@@ -86,15 +86,17 @@ export const createPT = async (newMenu: any): Promise<any> => {
             id,
             employee_id,
             transaction_id,
+            period_id,
             transaction_amount 
             ) 
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
     `
     const res = await pool.query(query, [
         id,
         employeeId,
         transactionId,
+        periodId,
         transactionAmount
     ])
     return res.rows[0]
@@ -102,10 +104,10 @@ export const createPT = async (newMenu: any): Promise<any> => {
 
 
 
-export const createPayTransaction = async (employee:any) => {
+export const createPayTransaction = async (employee:any, periodId: any) => {
     const basicSalaryId = await getByNameAndOrganization(employee.organizationId, 'Basic Salary')
     const calculatedSalary = employee.workingDays == 0 ? employee.basicSalary : (employee.basicSalary*employee.workingDays)/30
-    await createPT({employeeId: employee.id, transactionId: basicSalaryId?.id, transactionAmount: calculatedSalary})
+    await createPT({employeeId: employee.id, transactionId: basicSalaryId?.id, transactionAmount: calculatedSalary}, periodId)
 }
 
 export const create = async (newMenu: any): Promise<any> => {
@@ -253,9 +255,10 @@ export const getSubParameterIdByNameByOrganization = async (organizationId: stri
 
 
 
-const processCSV = async (organizationId: any,csvFile: any) => {
+const processCSV = async (organizationId: any,csvFile: any, userInfo: any) => {
     try {
         const resultArray: any = [];
+        const {periodId} = userInfo
 
         // Define your conditions for each column here
         const processRow = (row: any) => {
@@ -442,7 +445,7 @@ const processCSV = async (organizationId: any,csvFile: any) => {
                         employee.organizationId = organizationId
                         const newEmployee = await create(employee)
                         employee.id = newEmployee.id
-                         await createPayTransaction(employee)
+                         await createPayTransaction(employee, periodId)
                     }
                     catch(err) {
                         console.log(employee)

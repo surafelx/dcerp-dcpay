@@ -199,6 +199,7 @@ CREATE TABLE loan_transaction (
 CREATE TABLE pay_transaction (
 	id VARCHAR(40) NOT NULL UNIQUE,
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
+	period_id VARCHAR(40) NOT NULL REFERENCES periods(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 	transaction_amount VARCHAR(40) NOT NULL
 );
