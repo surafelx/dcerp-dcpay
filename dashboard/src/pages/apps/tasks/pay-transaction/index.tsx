@@ -1,8 +1,10 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
+
+import Autocomplete from '@mui/material/Autocomplete'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -76,6 +78,7 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 const UserList = () => {
     // ** State
     const [employee, setEmployee] = useState<string>('')
+    const [employeeObject, setEmployeeObject] = useState<any>(null)
     const [transaction, setTransaction] = useState<string>('')
     const [value] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
@@ -257,11 +260,6 @@ const UserList = () => {
     const earningStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && Number(transactionAmount))
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
-    const handleEmployeeChange = useCallback((e: SelectChangeEvent) => {
-        setEmployee(e.target.value)
-    }, [])
-
-
     const handleTransactionChange = (e: SelectChangeEvent) => {
         const selectedTransactionId = e.target.value
         const existingObject: any = store.data.find(obj => (obj["transactionId"] === selectedTransactionId))
@@ -312,6 +310,14 @@ const UserList = () => {
         reset(emptyValues)
     }
 
+    const handleChange = (e: any, newValue: any) => {
+        console.log(e.target, newValue, "Hello")
+        if(newValue?.id) {
+            setEmployeeObject(newValue)
+            setEmployee(newValue.id)
+            console.log(e, newValue, "Hello")
+        }
+      }
 
     const onSubmit = (data: any) => {
         data.employeeId = employee
@@ -334,31 +340,55 @@ const UserList = () => {
                         <CardHeader title='Pay Transaction'  />
                         <CardContent>
                             <Grid container spacing={3}>
-                                <Grid item xs={4}>
+                            <Grid item xs={2}>
                                     <FormControl fullWidth>
-                                        <InputLabel size={'small'} id='employee-select'>Select Employee</InputLabel>
-                                        <Select
+                                        <Autocomplete
                                             size={'small'}
-                                            fullWidth
-                                            value={employee}
-                                            id='select-employee'
-                                            label='Select Employee'
-                                            labelId='employee-select'
-                                            onChange={handleEmployeeChange}
-                                            inputProps={{ placeholder: 'Select Employee' }}
-                                        >
-                                            {
-                                                employeeStore.data.map(({ id, firstName, lastName }, index) => {
-                                                    return (
-                                                        <MenuItem key={index} value={id}>{`${firstName} ${lastName}`}</MenuItem>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
+                                            autoSelect
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleChange}
+                                            isOptionEqualToValue={(option: any, value: any) => { 
+                                                console.log(option, value)
+
+                                                return (option.employeeCode == value.employeeCode)}}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.employeeCode}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     <FormControl fullWidth>
+                                        <Autocomplete
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => { 
+                                                console.log(option, value)
+
+                                                return (option.firstName == value.firstName)}}
+                                            getOptionLabel={(option: any) => option.firstName}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth>
+                                    {/* <Autocomplete
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={transactionDefinitionStore.data}
+                                            onChange={handleChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option, value) => { 
+                                                console.log(option, value)
+                                                return (option.firstName == value.firstName)}}
+                                            getOptionLabel={option => option.firstName}
+                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                        /> */}
                                         <InputLabel size={'small'} >Select Transaction</InputLabel>
                                         <Select
                                         size={'small'}

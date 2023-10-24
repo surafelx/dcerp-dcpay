@@ -67,7 +67,7 @@ const AutocompleteProps = () => {
       />
       <Autocomplete
         clearOnBlur
-        sx={{ width: 250 }}
+      sx={{ width: 250 }}
         options={top100Films}
         id='autocomplete-clearOnBlur'
         getOptionLabel={option => option.title}

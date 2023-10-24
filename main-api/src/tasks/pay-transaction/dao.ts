@@ -52,6 +52,7 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     WHERE e1.organization_id=$1 AND
     e1.id = $2 AND 
     pt.period_id = $3
+    ORDER BY CAST(e1.employee_code AS NUMERIC) ASC
     `,
         [organizationId, employeeId, periodId])
     return payTransactions
@@ -96,6 +97,7 @@ export const getById = async (payTransactionId: string): Promise<any> => {
     id = $1
     `,
     [payTransactionId])
+    console.log(payTransactions, payTransactionId)
     return payTransactions[0]
 }
 

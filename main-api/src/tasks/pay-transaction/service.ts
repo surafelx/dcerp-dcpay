@@ -24,17 +24,17 @@ const getAllFromOrganization = async (organizationId: any, employeeId: any, user
 
 const deletePayTransaction = async (payTransactionId: string, userInfo: any): Promise<any> => {
     const payTransaction = await getById(payTransactionId)
-    const {userId, organizationId, periodId} = userInfo
-    await payTransactionDao.deletePayTransaction(payTransactionId)
-    const deletedPayTransaction = { 
-        employeeId: payTransaction.employee_id,
-        transactionId: payTransaction.transaction_id,
-        organizationId,
-        transactionAmount: payTransaction.transaction_amount,
-        userId, 
-        periodId
-    }
-    await periodTransactionsService.deletePeriodTransactionByPayTransaction(deletedPayTransaction)
+    // const {userId, organizationId, periodId} = userInfo
+    // await payTransactionDao.deletePayTransaction(payTransactionId)
+    // const deletedPayTransaction = { 
+    //     employeeId: payTransaction.employee_id,
+    //     transactionId: payTransaction.transaction_id,
+    //     organizationId,
+    //     transactionAmount: payTransaction.transaction_amount,
+    //     userId, 
+    //     periodId
+    // }
+    // await periodTransactionsService.deletePeriodTransactionByPayTransaction(deletedPayTransaction)
 }
 
 const updatePayTransaction = async (newPayTransaction: any, userInfo: any): Promise<any> => {
