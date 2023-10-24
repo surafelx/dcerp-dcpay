@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 
 
@@ -23,11 +23,9 @@ import { styled } from '@mui/material/styles'
 import { BoxProps } from '@mui/material/Box'
 
 
-import FormLabel from '@mui/material/FormLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 
-import ListItemText from '@mui/material/ListItemText'
 import LinearProgress from '@mui/material/LinearProgress'
 
 // ** Store  Imports
@@ -63,6 +61,8 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import TextField from '@mui/material/TextField'
 
 const PayrollAdvice = () => {
+
+
     // ** State
     const [branch, setBranch] = useState<string>('')
     const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
@@ -81,6 +81,33 @@ const PayrollAdvice = () => {
     const branchStore = useSelector((state: RootState) => state.branches)
 
 
+    const [progress, setProgress] = useState(0); // Initial progress value
+    
+    // const generateExcelFile = () => {
+    //     // Your data processing logic here
+    
+    //     const dataProcessingDelay = 1000;
+    //     const steps = 10;
+    //     let currentProgress = 0;
+    
+    //     const processStep = () => {
+    //       if (currentProgress < 100) {
+    //         currentProgress += 100 / steps;
+            
+    //         setProgress(currentProgress);
+    //         if (currentProgress < 100) {
+    //           setTimeout(processStep, dataProcessingDelay / steps);
+    //         }
+    //       }
+    //     };
+    
+    //     processStep();
+    //   };
+
+  
+      useEffect(() => {
+        setProgress(0);
+      }, []);
 
     useEffect(() => {
         dispatch(
@@ -110,12 +137,8 @@ const PayrollAdvice = () => {
 
 
     const generateExcelFile = () => {
-
-        // Your data should be structured as an array of arrays
-
-
         const tableData = [
-            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
+            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'],
             ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
                 employeeCode,
                 employeeName,
@@ -126,9 +149,7 @@ const PayrollAdvice = () => {
         ]
         const workbook = utils.book_new();
         const worksheet = utils.aoa_to_sheet(tableData);
-
         utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
         writeFile(workbook, 'your_file_name.xlsx');
     };
 
@@ -263,7 +284,7 @@ const PayrollAdvice = () => {
                             </Grid>
                               <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <LinearProgress value={75} variant='determinate' sx={{
+                                    <LinearProgress   value={progress} variant='determinate' sx={{
                                         mr: 4,
                                         height: 6,
                                         width: '100%',
@@ -273,7 +294,7 @@ const PayrollAdvice = () => {
                                             borderRadius: 8
                                         }
                                     }} />
-                                    <Typography variant='body2'>75%</Typography>
+                                   <Typography variant='body2'>{`${progress.toFixed(2)}%`}</Typography>
                                 </Box>
                             </Grid>
                         </Grid>
