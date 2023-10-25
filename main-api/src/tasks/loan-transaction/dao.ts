@@ -29,14 +29,14 @@ export const create = async (newMenu: any): Promise<any> => {
         transactionId,
         totalLoan,
         transactionAmount,
-       totalLoan
+        totalLoan
     ])
     return res.rows[0]
 }
 
 
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
-    const { rows: loanTransactions } = await pool.query(`
+export const getAllFromOrganization = async (organizationId: string, employeeId: any): Promise<any> => {
+    let query = `
     SELECT 
     lt.id,
     lt.employee_id,
@@ -52,9 +52,17 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     FROM loan_transaction lt
     INNER JOIN employee e1 ON lt.employee_id = e1.id
     INNER JOIN transaction_definition td ON lt.transaction_id = td.id
-    WHERE e1.organization_id=$1`,
-        [organizationId])
-    return loanTransactions
+    WHERE e1.organization_id=$1`;
+
+    const queryParams = [organizationId];
+
+    if (employeeId) {
+        query += ` AND e1.id = $2`;
+        queryParams.push(employeeId);
+    }
+
+    const { rows: loanTransactions } = await pool.query(query, queryParams);
+    return loanTransactions;
 }
 
 
@@ -64,31 +72,38 @@ export const deleteLoanTransaction = async (branchId: string): Promise<any> => {
 }
 
 
-export const updateLoanTransaction = async (updatedLoanTransaction: any): Promise<string> => {
+export const updateLoanTransaction = async (updatedLoanTransaction: any): Promise<any> => {
     const {
         id,
-        employeeId,
-        transactionId,
         totalLoan,
         transactionAmount
     } = updatedLoanTransaction
     const query = `
     UPDATE loan_transaction
-    SET employee_id = $1,
-    transaction_id = $2,
-    total_loan = $3,
-    transaction_amount = $4 
-    WHERE id = $5
+    SET 
+    total_loan = $1,
+    transaction_amount = $2 
+    WHERE id = $3
     RETURNING *;
     `
     const res = await pool.query(query, [
-        employeeId,
-        transactionId,
         totalLoan,
         transactionAmount,
         id])
     const branchId = res.rows[0]
     return branchId
+}
+
+export const getById = async (loanTransactionId: string): Promise<any> => {
+    const { rows: payTransactions } = await pool.query(`
+    SELECT 
+    *
+    FROM loan_transaction
+    WHERE
+    id = $1
+    `,
+    [loanTransactionId])
+    return payTransactions[0]
 }
 
 
@@ -97,5 +112,6 @@ export default {
     create,
     deleteLoanTransaction,
     getAllFromOrganization,
+    getById,
     updateLoanTransaction
 }

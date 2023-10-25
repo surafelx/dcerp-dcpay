@@ -169,15 +169,16 @@ return (
             <CardHeader title='Add Transaction Definition' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <Grid container spacing={5}>
+                    <Grid container spacing={3}>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='transactionCode'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Transaction Code'
                                             value={value}
@@ -191,13 +192,14 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='transactionName'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Name'
                                             value={value}
@@ -211,13 +213,14 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='shortName'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Short Name'
                                             value={value}
@@ -231,7 +234,7 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='transactionType'
                                     control={control}
@@ -262,20 +265,20 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='updateType'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
                                         <>
-                                            <FormLabel sx={{ mb: 4 }} >Update Type</FormLabel>
+                                            <FormLabel >Update Type</FormLabel>
                                             <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={onChange}>
                                             {
                                                     updateTypeOptions.map(({ id, parameterName }: any, index: any) => {
                                                        
                                                         return (
-                                                            <FormControlLabel key={index} value={id} control={<Radio />} label={parameterName} />
+                                                            <FormControlLabel key={index} value={id} control={<Radio  size={'small'}  />} label={parameterName} />
                                                         )
                                                     })
                                                 }
@@ -288,13 +291,14 @@ return (
                         <Grid item xs={12} sm={12}>
                             <FormGroup row>
                                 <Controller
+                               
                                     name='permanent'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
                                         <FormControlLabel
                                             label='Permanent'
-                                            control={<Checkbox checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox  size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -306,20 +310,21 @@ return (
                                     render={({ field: { value, onChange } }) => (
                                         <FormControlLabel
                                             label='Taxable'
-                                            control={<Checkbox checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
                             </FormGroup>
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='unTaxableLimit'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'} 
                                             autoFocus
                                             label='UnTaxable Limit'
                                             value={value}
@@ -333,7 +338,7 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <FormGroup row sx={{ mb: 4 }}>
+                            <FormGroup row>
                                 <Controller
                                     name='affectByLeave'
                                     control={control}
@@ -341,18 +346,19 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Affect By Leave'
-                                            control={<Checkbox checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
                             </FormGroup>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='leaveDays'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'} 
                                             autoFocus
                                             label='Leave Days'
                                             value={value}
@@ -374,7 +380,7 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Affect Back Payroll'
-                                            control={<Checkbox checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -385,7 +391,7 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Beneficiary'
-                                            control={<Checkbox checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -393,7 +399,7 @@ return (
                             </FormGroup>
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='transactionGroup'
                                     control={control}
@@ -424,7 +430,7 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={12}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='glEntryBy'
                                     control={control}
@@ -433,10 +439,10 @@ return (
                                         <>
                                             <FormLabel>GL-Entry By</FormLabel>
                                             <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={onChange}>
-                                                <FormControlLabel value='total' control={<Radio />} label='Total' />
-                                                <FormControlLabel value='department' control={<Radio />} label='Department' />
-                                                <FormControlLabel value='individual' control={<Radio />} label='Individual' />
-                                                <FormControlLabel value='na' control={<Radio />} label='N/A' />
+                                                <FormControlLabel value='total' control={<Radio  size={'small'}  />} label='Total' />
+                                                <FormControlLabel value='department' control={<Radio  size={'small'} />} label='Department' />
+                                                <FormControlLabel value='individual' control={<Radio  size={'small'} />} label='Individual' />
+                                                <FormControlLabel value='na' control={<Radio  size={'small'} />} label='N/A' />
                                             </RadioGroup>
                                         </>
                                     )}
@@ -444,13 +450,14 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='directAccount'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                        size={'small'} 
                                             autoFocus
                                             label='Direct Account'
                                             value={value}
@@ -464,13 +471,15 @@ return (
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth sx={{ mb: 4 }}>
+                            <FormControl fullWidth>
                                 <Controller
                                     name='contractGLAccount'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                 size={'small'} 
+
                                             autoFocus
                                             label='Contra. GL Account'
                                             value={value}

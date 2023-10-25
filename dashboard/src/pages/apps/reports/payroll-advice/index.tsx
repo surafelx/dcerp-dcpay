@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 
 
@@ -7,13 +7,10 @@ import { useState, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TableContainer from '@mui/material/TableContainer'
 import Link from 'next/link'
 import Table from '@mui/material/Table'
@@ -24,10 +21,12 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import { styled } from '@mui/material/styles'
 import { BoxProps } from '@mui/material/Box'
+import TextField from '@mui/material/TextField'
 
 // ** Store  Imports
 import { useDispatch, useSelector } from 'react-redux'
 import Button from '@mui/material/Button'
+import Autocomplete from '@mui/material/Autocomplete'
 
 // ** Actions Imports
 import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
@@ -56,7 +55,9 @@ import {utils, writeFile} from 'xlsx';
 const PayrollAdvice = () => {
     // ** State
     const [branch, setBranch] = useState<string>('')
+    const [branchObject, setBranchObject] = useState<any>(null)
     const [department, setDepartment] = useState<string>('')
+    const [departmentObject, setDepartmentObject] = useState<any>(null)
     const [value] = useState<string>('')
     const [status,] = useState<string>('')
 
@@ -119,16 +120,20 @@ const PayrollAdvice = () => {
 
     writeFile(workbook, 'your_file_name.xlsx');
   };
+  const handleBranchChange = (e: any, newValue: any) => {
+    if(newValue?.id) {
+        setBranchObject(newValue)
+        setBranch(newValue.id)
+    }
+  }
 
-    const handleBranchChange = useCallback((e: SelectChangeEvent) => {
-        setBranch(e.target.value)
-    }, [])
-
-    const handleDepartmentChange = useCallback((e: SelectChangeEvent) => {
-        setDepartment(e.target.value)
-    }, [])
-
-
+  const handleDepartmentChange = (e: any, newValue: any) => {
+    if(newValue?.id) {
+        setDepartmentObject(newValue)
+        setDepartment(newValue.id)
+    }
+  }
+  
     return (
         <Grid container spacing={6}>
             <Grid item xl={9} md={8} xs={12}>
@@ -137,51 +142,38 @@ const PayrollAdvice = () => {
                         <Card>
                             <CardHeader title='Payroll Advice' />
                             <CardContent>
-                                <Grid container spacing={6}>
-                                    <Grid item sm={6} xs={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id='branch-select'>Select Branch</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                value={branch}
-                                                id='select-branch'
-                                                label='Select Branch'
-                                                labelId='branch-select'
-                                                onChange={handleBranchChange}
-                                                inputProps={{ placeholder: 'Select Branch' }}
-                                            >
-                                                {
-                                                    [{ id: 'All', branchName: 'All' }, ...branchStore.data].map(({ id, branchName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{`${branchName}`}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item sm={6} xs={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id='department-select'>Select Department</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                value={department}
-                                                id='select-department'
-                                                label='Select Department'
-                                                labelId='department-select'
-                                                onChange={handleDepartmentChange}
-                                                inputProps={{ placeholder: 'Select Department' }}
-                                            >
-                                                {
-                                                    [{ id: 'All', departmentName: 'All' }, ...departmentStore.data].map(({ id, departmentName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{`${departmentName}`}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
+                                <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={branchObject}
+                                            options={branchStore.data}
+                                            onChange={handleBranchChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.branchName}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={departmentObject}
+                                            options={departmentStore.data}
+                                            onChange={handleDepartmentChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
+                                            getOptionLabel={(option: any) => option.departmentName}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                   
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -216,7 +208,7 @@ const PayrollAdvice = () => {
                                                     })
                                                 }
                                             </TableBody> 
-                                        </Table>
+                                        </Table> 
                                     </TableContainer>
                                     <CardContent>
                                         <Grid container>

@@ -29,6 +29,7 @@ export const createPayTransaction = async (newMenu: any, periodId: any): Promise
         id,
         employeeId,
         transactionId,
+        periodId,
         transactionAmount
     ])
     return res.rows[0]
@@ -373,5 +374,6 @@ const calculateTransactionCalculations = (transaction: any) => {
 
 export default {
     getAllFromOrganization,
-    processPayLoanMembershipTransactions
+    processPayLoanMembershipTransactions,
+    getPeriodTransactions
 }
