@@ -1,21 +1,19 @@
 // ** React Imports
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import { DataGrid } from '@mui/x-data-grid'
-import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 import TextField from '@mui/material/TextField'
 
+import Autocomplete from '@mui/material/Autocomplete'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -39,6 +37,7 @@ interface CellType {
 const UserList = () => {
     // ** State
     const [employee, setEmployee] = useState<string>('')
+    const [employeeObject, setEmployeeObject] = useState<any>(null)
     const [value] = useState<string>('')
     const [status,] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
@@ -67,19 +66,35 @@ const UserList = () => {
             }
         },
         {
-            flex: 0.2,
-            minWidth: 250,
-            field: 'transactionAmount',
-            headerName: 'Amount',
+            flex: 0.15,
+            field: 'transactionQuantity',
+            minWidth: 150,
+            headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
-
                 return (
-                    <Typography noWrap variant='body2'>
-                        {Number(row.transactionAmount).toFixed(2)}
-                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? row.transactionAmount : ''}
+                        </Typography>
+                    </Box>
                 )
             }
-        }
+        },
+        {
+            flex: 0.15,
+            field: 'transactionAmount',
+            minWidth: 150,
+            headerName: 'Amount',
+            renderCell: ({ row }: CellType) => {
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? row.transactionAmount : ''}
+                        </Typography>
+                    </Box>
+                )
+            }
+        },
     ]
 
 
@@ -112,10 +127,12 @@ const UserList = () => {
     }, [dispatch, employee, status, value])
 
 
-
-    const handleEmployeeChange = useCallback((e: SelectChangeEvent) => {
-        setEmployee(e.target.value)
-    }, [])
+    const handleEmployeeChange = (e: any, newValue: any) => {
+        if(newValue?.id) {
+            setEmployeeObject(newValue)
+            setEmployee(newValue.id)
+        }
+      }
 
     return (
         <Grid container spacing={6}>
@@ -124,27 +141,35 @@ const UserList = () => {
                     <CardHeader title='Payroll Display' />
                     <CardContent>
                         <Grid container spacing={6}>
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='employee-select'>Select Employee</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={employee}
-                                        id='select-employee'
-                                        label='Select Employee'
-                                        labelId='employee-select'
-                                        onChange={handleEmployeeChange}
-                                        inputProps={{ placeholder: 'Select Employee' }}
-                                    >
-                                        {
-                                            employeeStore.data.map(({ id, firstName, lastName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${firstName} ${lastName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
+                            <Grid item xs={2}>
+                            <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleEmployeeChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.employeeCode}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleEmployeeChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
+                                            getOptionLabel={(option: any) => option.firstName}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
                             </Grid>
 
                         </Grid>
@@ -160,9 +185,7 @@ const UserList = () => {
                                 autoHeight
                                 rows={earningStore}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
-                                disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />
@@ -175,9 +198,7 @@ const UserList = () => {
                                 autoHeight
                                 rows={deductionStore}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
-                                disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import loanTransactionService from './service'
 import userService from '../../settings/user-management/users/service'
+import periodService from '../../file/period/service'
 
 const router = Router()
 
@@ -9,9 +10,10 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '' } = req.query ?? ''
+            const { q = '', employee=null } = req.query ?? ''
+            const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
-            const loanTransactions = await loanTransactionService.getAllFromOrganization(organizationId)
+            const loanTransactions = await loanTransactionService.getAllFromOrganization(organizationId, employeeId)
             const renamedLoanTransactions = loanTransactions.map(({
                 id,
                 employee_id,
@@ -61,7 +63,11 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const createdLoanTransaction = await loanTransactionService.create({ ...req.body.data })
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const createdLoanTransaction = await loanTransactionService.create({ ...req.body.data }, userInfo)
             res.send(createdLoanTransaction)
         } catch (err) {
             res.status(400).send(err)
@@ -73,7 +79,11 @@ router.delete('/:id',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params
-            await loanTransactionService.deleteLoanTransaction(String(id))
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            await loanTransactionService.deleteLoanTransaction(String(id), userInfo)
             res.send(200)
         } catch (err) {
             console.log(err)
@@ -85,7 +95,11 @@ router.delete('/:id',
 router.put('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updatedLoanTransaction = await loanTransactionService.updateLoanTransaction(req.body.data)
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const updatedLoanTransaction = await loanTransactionService.updateLoanTransaction(req.body.data, userInfo)
             res.send(updatedLoanTransaction)
         } catch (err) {
             console.log(err)

@@ -11,6 +11,7 @@ router.get('/parameter',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const { main, sub } = req.query
+            console.log(main, sub, "Hello")
             const transactionGroupId = await parameterDefinitionService.getSubParameterIdByName(main, sub)
             const transactionDefinition = await transactionDefinitionService.getAllFromTransactionGroup(organizationId, main, transactionGroupId)
             const renamedTransactionDefinition = transactionDefinition.map(({

@@ -26,7 +26,7 @@ import { BoxProps } from '@mui/material/Box'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 
-import LinearProgress from '@mui/material/LinearProgress'
+// import LinearProgress from '@mui/material/LinearProgress'
 
 // ** Store  Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -40,7 +40,9 @@ import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManageme
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 
-
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
 const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -52,6 +54,16 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     }
 }))
 
+const emptyValues = {
+    branch: '',
+    department: ''
+}
+
+
+const schema = yup.object().shape({
+   branch: yup.string(),
+   department: yup.string()
+})
 
 
 import { utils, writeFile } from 'xlsx';
@@ -71,7 +83,8 @@ const PayrollAdvice = () => {
     const [filterValue, setFilterValue] = useState<any>('Select')
 
     const [value] = useState<string>('')
-    const [status,] = useState<string>('')
+    
+    // const [status,] = useState<string>('')
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -81,7 +94,7 @@ const PayrollAdvice = () => {
     const branchStore = useSelector((state: RootState) => state.branches)
 
 
-    const [progress, setProgress] = useState(0); // Initial progress value
+    // const [progress, setProgress] = useState(0); // Initial progress value
     
     // const generateExcelFile = () => {
     //     // Your data processing logic here
@@ -105,20 +118,20 @@ const PayrollAdvice = () => {
     //   };
 
   
-      useEffect(() => {
-        setProgress(0);
-      }, []);
+    //   useEffect(() => {
+    //     setProgress(0);
+    //   }, []);
 
-    useEffect(() => {
-        dispatch(
-            fetchData({
-                branch,
-                department,
-                q: value,
-                currentPlan: ''
-            })
-        )
-    }, [dispatch, branch, department, status, value])
+    // useEffect(() => {
+    //     dispatch(
+    //         fetchData({
+    //             branch,
+    //             department,
+    //             q: value,
+    //             currentPlan: ''
+    //         })
+    //     )
+    // }, [dispatch, branch, department, status, value])
 
 
     useEffect(() => {
@@ -175,16 +188,42 @@ const PayrollAdvice = () => {
     const handleFilterChange = (e: any) => {
         const selectedFilter = e.target.value
         setFilterValue(selectedFilter)
+        setBranchObject({id: '', branchName: ''})
+        setDepartmentObject({id: '', departmentName: ''})
         if (selectedFilter == 'All') {
+            setBranch('All')
+            setDepartment('All')
         } else {
         }
 
     }
 
 
+    const {
+        handleSubmit,
+    } = useForm({
+        defaultValues: emptyValues,
+        mode: 'onBlur',
+        resolver: yupResolver(schema)
+    })
+
+    const onSubmit = (data: any) => {
+        data.branch = branch
+        data.department = department
+        dispatch(
+                    fetchData({
+                        branch,
+                        department,
+                        q: value,
+                        currentPlan: ''
+                    })
+                )
+    }
+
     return (
         <Grid container spacing={3}>
             <Grid item xl={12} md={12} xs={12}>
+            <form noValidate autoComplete='on' onSubmit={handleSubmit(onSubmit)}>
                 <Card>
                     <CardHeader title='Payroll Process' />
                     <CardContent>
@@ -205,7 +244,7 @@ const PayrollAdvice = () => {
                                                 autoSelect
                                                 size={'small'}
                                                 value={branchObject}
-                                                options={[...branchStore.data, { id: 'all', branchName: 'All' }]}
+                                                options={[...branchStore.data,]}
                                                 onChange={handleBranchChange}
                                                 isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
                                                 id='autocomplete-controlled'
@@ -238,13 +277,10 @@ const PayrollAdvice = () => {
                           
                             <Grid item sm={3} xs={12}>
                                 <Button
-                                    size='small'
-                                    fullWidth
-                                    target='_blank'
-                                    component={Link}
-                                    color='primary'
-                                    variant='outlined'
-                                    href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
+                                   color='primary' 
+                                   fullWidth size='small' 
+                                   type='submit' 
+                                   variant='contained'
                                 >
                                     Process
                                 </Button>
@@ -253,7 +289,7 @@ const PayrollAdvice = () => {
                                 <Button
                                     size='small'
                                     fullWidth
-                                    color='secondary'
+                                    color='primary'
                                     variant='outlined'
                                     onClick={generateExcelFile}
                                 >
@@ -261,13 +297,15 @@ const PayrollAdvice = () => {
                                 </Button>
                             </Grid>
                             <Grid item sm={3} xs={12}>
-                                <Button
-                                    size='small'
-                                    fullWidth
-                                    color='secondary'
-                                    variant='outlined'
-                                    onClick={generateExcelFile}
-                                >
+                            <Button
+                            fullWidth
+                            size={'small'}
+                            target='_blank'
+                            component={Link}
+                            color='primary'
+                            variant='outlined'
+                            href={`/apps/process/payroll-process/print?branch=${branch}&department=${department}`}
+                        >
                                     Print
                                 </Button>
                             </Grid>
@@ -275,14 +313,14 @@ const PayrollAdvice = () => {
                                 <Button
                                     size='small'
                                     fullWidth
-                                    color='secondary'
+                                    color='primary'
                                     variant='outlined'
                                     onClick={generateExcelFile}
                                 >
                                     Download
                                 </Button>
                             </Grid>
-                              <Grid item xs={12}>
+                              {/* <Grid item xs={12}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <LinearProgress   value={progress} variant='determinate' sx={{
                                         mr: 4,
@@ -296,11 +334,12 @@ const PayrollAdvice = () => {
                                     }} />
                                    <Typography variant='body2'>{`${progress.toFixed(2)}%`}</Typography>
                                 </Box>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                         
                     </CardContent>
                 </Card>
+                </form>
             </Grid>
             <Grid item xs={12}>
                 <Card>

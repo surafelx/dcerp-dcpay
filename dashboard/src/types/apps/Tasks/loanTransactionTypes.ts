@@ -8,5 +8,6 @@ export type LoanTransactionsType = {
     totalLoan: string;
     transactionAmount: string;
     remainingBalance: string;
+    employeeCode: string;
   }
   

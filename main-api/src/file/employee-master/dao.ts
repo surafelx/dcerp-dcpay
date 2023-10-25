@@ -119,47 +119,49 @@ export const create = async (newMenu: any): Promise<any> => {
     return branch
 }
 
-
 export const getAllFromOrganization = async (organizationId: string, basicSalaryId: string): Promise<any> => {
     const { rows: employees } = await pool.query(`
-    SELECT 
-    DISTINCT
-    e.id,
-    e.organization_id,
-    e.branch_id,
-    e.department_id,
-    e.employee_code,
-    e.employee_title,
-    e.first_name,
-    e.middle_name,
-    e.last_name,
-    e.sex,
-    e.employee_status,
-    e.employee_type,
-    e.employment_date, 
-    e.contract_start_date,
-    e.contract_end_date,
-    e.monthly_working_hours,
-    e.pension_number,
-    e.pension_status,
-    e.tin_number,
-    e.working_days,
-    e.employee_position,
-    e.employee_bank,
-    e.employee_account_number,
-    pt.transaction_amount as basic_salary,
-    pd1.parameter_name as employee_title_name,
-    pd2.parameter_name as employee_bank_name,
-    pd3.parameter_name as employee_type_name
-    FROM employee e
-    INNER JOIN period_transactions pt ON pt.employee_id = e.id
-    INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
-    INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
-    INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
-    WHERE e.organization_id = $1 AND 
-    pt.organization_id = $1 AND
-    pt.transaction_id = $2`,
-        [organizationId, basicSalaryId])
+    SELECT *
+    FROM (
+        SELECT DISTINCT
+            e.id,
+            e.organization_id,
+            e.branch_id,
+            e.department_id,
+            e.employee_code,
+            e.employee_title,
+            e.first_name,
+            e.middle_name,
+            e.last_name,
+            e.sex,
+            e.employee_status,
+            e.employee_type,
+            e.employment_date, 
+            e.contract_start_date,
+            e.contract_end_date,
+            e.monthly_working_hours,
+            e.pension_number,
+            e.pension_status,
+            e.tin_number,
+            e.working_days,
+            e.employee_position,
+            e.employee_bank,
+            e.employee_account_number,
+            pt.transaction_amount as basic_salary,
+            pd1.parameter_name as employee_title_name,
+            pd2.parameter_name as employee_bank_name,
+            pd3.parameter_name as employee_type_name
+        FROM employee e
+        INNER JOIN period_transactions pt ON pt.employee_id = e.id
+        INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
+        INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
+        INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
+        WHERE e.organization_id = $1 AND 
+            pt.organization_id = $1 AND
+            pt.transaction_id = $2
+    ) AS subquery
+    ORDER BY CAST(subquery.employee_code AS NUMERIC) ASC`,
+    [organizationId, basicSalaryId])
     return employees
 }
 

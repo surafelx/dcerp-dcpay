@@ -78,7 +78,7 @@ const InvoicePrint = () => {
   useEffect(() => {
     setTimeout(() => {
       window.print()
-    }, 3000)
+    }, 10000)
   }, [])
 
 

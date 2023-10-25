@@ -836,7 +836,7 @@ const defaultTransactions = [
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Loan',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -854,7 +854,7 @@ const defaultTransactions = [
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Loan',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''
@@ -872,7 +872,7 @@ const defaultTransactions = [
         leaveDays: '',
         affectBackPayroll: false,
         affectBeneficiary: false,
-        transactionGroup: 'NA',
+        transactionGroup: 'Loan',
         glEntryBy: '',
         directAccount: '',
         contractGlAccount: ''

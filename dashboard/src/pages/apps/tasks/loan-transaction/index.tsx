@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback, } from 'react'
+import { useState, useEffect, MouseEvent, } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -15,20 +15,8 @@ import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-
-// ** Icons Imports
-// import Laptop from 'mdi-material-ui/Laptop'
-// import ChartDonut from 'mdi-material-ui/ChartDonut'
-// import CogOutline from 'mdi-material-ui/CogOutline'
-// import EyeOutline from 'mdi-material-ui/EyeOutline'
-// import DotsVertical from 'mdi-material-ui/DotsVertical'
-// import PencilOutline from 'mdi-material-ui/PencilOutline'
-// import DeleteOutline from 'mdi-material-ui/DeleteOutline'
-// import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 
 // ** Store Imports
@@ -38,22 +26,42 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Actions Imports
 import { fetchData, deleteLoanTransaction } from 'src/store/apps/Tasks/LoanTransaction'
 import { fetchData as fetchEmployee } from 'src/store/apps/File/EmployeeMaster'
-import { fetchTransactionDefinitionByGroup } from 'src/store/apps/File/TransactionDefinition'
+import { fetchData as fetchTransactionDefinition } from 'src/store/apps/File/TransactionDefinition'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 import { LoanTransactionsType } from 'src/types/apps/Tasks/loanTransactionTypes'
 
-// ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
+import FormHelperText from '@mui/material/FormHelperText'
+import { addLoanTransaction, editLoanTransaction } from 'src/store/apps/Tasks/LoanTransaction'
+
+import Autocomplete from '@mui/material/Autocomplete'
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
 
 
-import AddLoanTransaction from 'src/views/dc-pay/forms/Tasks/AddLoanTransaction'
+
+const emptyValues = {
+    id: '',
+    employeeId: '',
+    transactionId: '',
+    transactionAmount: '',
+    totalLoan: '',
+    remainingBalance: ''
+}
 
 
+const schema = yup.object().shape({
+    employeeId: yup.string(),
+    transactionId: yup.string(),
+    transactionAmount: yup.string(),
+    remainingBalance: yup.string(),
+    totalLoan: yup.string()
 
-
-
+})
 
 interface CellType {
     row: LoanTransactionsType
@@ -73,10 +81,11 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 const UserList = () => {
     // ** State
     const [employee, setEmployee] = useState<string>('')
-    const [value, setValue] = useState<string>('')
+    const [employeeObject, setEmployeeObject] = useState<any>(null)
     const [transaction, setTransaction] = useState<string>('')
+    const [transactionObject, setTransactionObject] = useState<any>(null)
+    const [value,] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-    const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
 
     const [formData, setFormData] = useState({
         id: '',
@@ -112,16 +121,29 @@ const UserList = () => {
         }
 
         const handleEdit = () => {
-            setFormData(
+            setEmployeeObject(employeeStore.data.filter((employee: any) => employee.id == employeeId)[0])
+            setTransactionObject(transactionDefinitionStore.data.filter((tran: any) => tran.id == transactionId)[0])
+            reset(
                 {
                     id,
                     employeeId,
-                    transactionId,
+                    transactionId: transaction,
                     totalLoan,
                     transactionAmount,
                     remainingBalance
                 }
             )
+            setFormData(
+                {
+                    id,
+                    employeeId,
+                    transactionId: transaction,
+                    totalLoan,
+                    transactionAmount,
+                    remainingBalance
+                }
+            )
+            
         }
 
 
@@ -181,13 +203,37 @@ const UserList = () => {
     const columns = [
         {
             flex: 0.2,
+            minWidth: 110,
+            field: 'employeeCode',
+            headerName: 'Code',
+            renderCell: ({ row }: CellType) => {
+                const { employeeCode } = row
+                
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${employeeCode}`}
+                            </Typography>
+                        </Box>
+                    </Box>
+                )
+            }
+        },
+        {
+            flex: 0.2,
             minWidth: 230,
             field: 'employeeFirstName',
             headerName: 'Employee',
             renderCell: ({ row }: CellType) => {
                 const { employeeFirstName, employeeLastName } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -279,6 +325,17 @@ return (
         }
     ]
 
+    const onSubmit = (data: any) => {
+        data.employeeId = employee
+        data.transactionId = transaction
+        if (data.id) {
+            dispatch(editLoanTransaction({ ...data }))
+        } else {
+            dispatch(addLoanTransaction({ ...data }))
+        }
+        setTransaction('')
+        reset({ transactionAmount: '' })
+    }
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -300,102 +357,236 @@ return (
                 q: ''
             })
         )
-    }, [dispatch])
-
-
-    useEffect(() => {
         dispatch(
-            fetchTransactionDefinitionByGroup({
-                group: 'loan'
+            fetchTransactionDefinition({
+                q: ''
             })
         )
     }, [dispatch])
 
-
-    const handleFilter = useCallback((val: string) => {
-        setValue(val)
-    }, [])
-
-    const handleEmployee = useCallback((e: SelectChangeEvent) => {
-        setEmployee(e.target.value)
-    }, [])
-
-    const handleTransactionDefinitionChange = useCallback((e: SelectChangeEvent) => {
-        setTransaction(e.target.value)
-    }, [])
-
-    const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
+    const clearAllFields = () => {
+        setEmployeeObject({id: '', firstName: '', employeeCode: ''})
+        setTransactionObject({id: '', transactionName: ''})
+        setEmployee('')
+        setTransaction('')
+        reset(emptyValues)
+    }
 
 
     const employeeStore = useSelector((state: RootState) => state.employee)
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
+    console.log(transactionDefinitionStore)
+
+    const handleTransactionValue = (transactionValue: any) => {
+        const selectedTransactionId = transactionValue
+        const existingObject: any = store.data.find(obj => (obj["transactionId"] === selectedTransactionId))
+        if (existingObject) {
+            reset(
+                {
+                    id: existingObject.id,
+                    employeeId: employee,
+                    transactionId: selectedTransactionId,
+                    transactionAmount: existingObject.transactionAmount
+                }
+            )
+        } else {
+            reset({
+                transactionAmount: ''
+            })
+        }
+
+        setTransaction(selectedTransactionId)
+    }
+
+    const handleEmployeeChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setEmployeeObject(newValue)
+            setEmployee(newValue.id)
+            setTransactionObject({ id: '', transactionName: '' })
+            reset({ transactionAmount: '' })
+        }
+    }
+
+    const handleTransactionChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setTransactionObject(newValue)
+            handleTransactionValue(newValue.id)
+        }
+    }
+
+
+
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors }
+    } = useForm({
+        defaultValues: emptyValues,
+        mode: 'onBlur',
+        resolver: yupResolver(schema)
+    })
 
     return (
-        <Grid container spacing={6}>
-            <Grid item  xs={12} md={12} lg={4}>
-                <AddLoanTransaction formData={formData} />
-            </Grid>
-            <Grid item  xs={12} md={12} lg={8}>
-                <Card>
-                    <CardHeader title='Loan Transaction' />
-                    <CardContent>
-                        <Grid container spacing={6}>
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='employee-select'>Select Employee</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={employee}
-                                        id='select-employee'
-                                        label='Select Employee'
-                                        labelId='employee-select'
-                                        onChange={handleEmployee}
-                                        inputProps={{ placeholder: 'Select Employee' }}
-                                    >
-                                        {
-                                            employeeStore.data.map(({ id, firstName, lastName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${firstName} ${lastName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
+        <Grid container spacing={3}>
+            <Grid item xs={12}>
+                <form noValidate autoComplete='on' onSubmit={handleSubmit(onSubmit)}>
+
+                    <Card>
+                        <CardHeader title='Loan Transaction' />
+                        <CardContent>
+                            <Grid container spacing={3}>
+                                <Grid item xs={2}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleEmployeeChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.employeeCode}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={employeeObject}
+                                            options={employeeStore.data}
+                                            onChange={handleEmployeeChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
+                                            getOptionLabel={(option: any) => option.firstName}
+                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={transactionObject}
+                                            options={transactionDefinitionStore.data.filter((tran: any) => tran.transactionGroupName == 'Loan')}
+                                            onChange={handleTransactionChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
+                                            getOptionLabel={option => option.transactionName}
+                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth sx={{ mb: 3 }}>
+                                        <Controller
+                                            name='transactionAmount'
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field: { value, onChange, onBlur } }) => (
+                                                <TextField
+                                                    size={'small'}
+                                                    autoFocus
+                                                    label='Transaction Amount'
+                                                    value={value}
+                                                    onBlur={onBlur}
+                                                    onChange={onChange}
+                                                    error={Boolean(errors.transactionAmount)}
+                                                    placeholder='Enter Transaction Amount'
+                                                />
+                                            )}
+                                        />
+                                        {errors.transactionAmount && <FormHelperText sx={{ color: 'error.main' }}>{errors.transactionAmount.message}</FormHelperText>}
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth sx={{ mb: 3 }}>
+                                        <Controller
+                                            name='totalLoan'
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field: { value, onChange, onBlur } }) => (
+                                                <TextField
+                                                    size={'small'}
+                                                    autoFocus
+                                                    label='Total Loan'
+                                                    value={value}
+                                                    onBlur={onBlur}
+                                                    onChange={onChange}
+                                                    error={Boolean(errors.totalLoan)}
+                                                    placeholder='Enter Total Loan'
+                                                />
+                                            )}
+                                        />
+                                        {errors.totalLoan && <FormHelperText sx={{ color: 'error.main' }}>{errors.totalLoan.message}</FormHelperText>}
+                                    </FormControl>
+                                </Grid>
+                                
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth sx={{ mb: 3 }}>
+                                        <Controller
+                                            name='remainingBalance'
+                                            control={control}
+                                            rules={{ required: true }}
+                                            render={({ field: { value, onChange, onBlur } }) => (
+                                                <TextField
+                                                    size={'small'}
+                                                    autoFocus
+                                                    label='Remaining Balance'
+                                                    value={value}
+                                                    onBlur={onBlur}
+                                                    disabled={true}
+                                                    onChange={onChange}
+                                                    error={Boolean(errors.remainingBalance)}
+                                                    placeholder='Enter Remaining Balance'
+                                                />
+                                            )}
+                                        />
+                                        {errors.remainingBalance && <FormHelperText sx={{ color: 'error.main' }}>{errors.remainingBalance.message}</FormHelperText>}
+                                    </FormControl>
+                                </Grid>
+                              
+                            </Grid>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormControl fullWidth>
+                                        <Button color='primary' fullWidth size='small' type='submit' variant='contained'>
+                                            Submit
+                                        </Button>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={3}>
+                                    <FormControl fullWidth>
+                                        <Button color='secondary' fullWidth size='small' onClick={() => clearAllFields()} type='reset' variant='contained'>
+                                            Reset
+                                        </Button>
+                                    </FormControl>
+                                </Grid>
                             </Grid>
 
-                            <Grid item sm={4} xs={12}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='transaction-select'>Select Transaction</InputLabel>
-                                    <Select
-                                        fullWidth
-                                        value={transaction}
-                                        id='select-transaction'
-                                        label='Select Status'
-                                        labelId='transaction-select'
-                                        onChange={handleTransactionDefinitionChange}
-                                        inputProps={{ placeholder: 'Select Role' }}
-                                    >
-                                        {
-                                            transactionDefinitionStore.data.map(({ id, transactionName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${transactionName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
+                        </CardContent>
+                    </Card>
+                </form>
+            </Grid>
+            {/* <Grid item xs={12} md={12} lg={4}>
+                <AddLoanTransaction formData={formData} />
+            </Grid> */}
+            <Grid item xs={12} md={12} lg={12}>
+                <Card>
+                    <CardContent>
                         <Grid item xs={12}>
-                            <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
                             <DataGrid
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                                checkboxSelection
                                 pageSize={pageSize}
-                                disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />
