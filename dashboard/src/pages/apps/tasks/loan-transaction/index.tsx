@@ -143,7 +143,7 @@ const UserList = () => {
                     remainingBalance
                 }
             )
-            
+
         }
 
 
@@ -208,7 +208,7 @@ const UserList = () => {
             headerName: 'Code',
             renderCell: ({ row }: CellType) => {
                 const { employeeCode } = row
-                
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -269,11 +269,11 @@ const UserList = () => {
             headerName: 'Total Loan',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.totalLoan}
-                        </Typography>
-                    </Box>
+                    <div style={{ width: '100%' }}>
+                        <div style={{ 'textAlign': 'right' }}>
+                            {parseFloat(row.totalLoan).toFixed(2)}
+                        </div>
+                    </div>
                 )
             }
         },
@@ -284,11 +284,11 @@ const UserList = () => {
             headerName: 'Transaction Amount',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                        {parseFloat(row.transactionAmount).toFixed(2) }
-                        </Typography>
-                    </Box>
+                    <div style={{ width: '100%' }}>
+                        <div style={{ 'textAlign': 'right' }}>
+                            {parseFloat(row.transactionAmount).toFixed(2)}
+                        </div>
+                    </div>
                 )
             }
         },
@@ -299,11 +299,11 @@ const UserList = () => {
             headerName: 'Remaining Balance',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.remainingBalance}
-                        </Typography>
-                    </Box>
+                    <div style={{ width: '100%' }}>
+                        <div style={{ 'textAlign': 'right' }}>
+                            {parseFloat(row.remainingBalance).toFixed(2)}
+                        </div>
+                    </div>
                 )
             }
         },
@@ -365,8 +365,8 @@ const UserList = () => {
     }, [dispatch])
 
     const clearAllFields = () => {
-        setEmployeeObject({id: '', firstName: '', employeeCode: ''})
-        setTransactionObject({id: '', transactionName: ''})
+        setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
+        setTransactionObject({ id: '', transactionName: '' })
         setEmployee('')
         setTransaction('')
         reset(emptyValues)
@@ -490,6 +490,7 @@ const UserList = () => {
                                                 <TextField
                                                     size={'small'}
                                                     autoFocus
+                                                    dir={'rtl'}
                                                     label='Transaction Amount'
                                                     value={value}
                                                     onBlur={onBlur}
@@ -512,6 +513,7 @@ const UserList = () => {
                                                 <TextField
                                                     size={'small'}
                                                     autoFocus
+                                                    dir={'rtl'}
                                                     label='Total Loan'
                                                     value={value}
                                                     onBlur={onBlur}
@@ -524,7 +526,7 @@ const UserList = () => {
                                         {errors.totalLoan && <FormHelperText sx={{ color: 'error.main' }}>{errors.totalLoan.message}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
-                                
+
                                 <Grid item xs={4}>
                                     <FormControl fullWidth sx={{ mb: 3 }}>
                                         <Controller
@@ -536,6 +538,7 @@ const UserList = () => {
                                                     size={'small'}
                                                     autoFocus
                                                     label='Remaining Balance'
+                                                    dir={'rtl'}
                                                     value={value}
                                                     onBlur={onBlur}
                                                     disabled={true}
@@ -548,7 +551,7 @@ const UserList = () => {
                                         {errors.remainingBalance && <FormHelperText sx={{ color: 'error.main' }}>{errors.remainingBalance.message}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
-                              
+
                             </Grid>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6}>

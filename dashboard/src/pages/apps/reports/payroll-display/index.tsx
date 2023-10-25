@@ -108,8 +108,9 @@ const UserList = () => {
     const totalDeductions = deductionAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const earningAmounts = earningStore.filter((transaction: any) => transaction.transactionTypeName == 'Earning Amount')
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
+    const grossTaxable = store.data.filter(({ transactionName }) => (transactionName === "Gross Taxable Salary"))
 
-
+    console.log(store.data)
 
     useEffect(() => {
         dispatch(
@@ -216,7 +217,7 @@ const UserList = () => {
                                         dir={'rtl'}
                                         disabled={true}
                                         label='Gross Taxable'
-                                        value={'0'}
+                                        value={`${Number(grossTaxable[0]?.transactionAmount).toFixed(2)}`}
                                         placeholder='Gross Taxable'
                                     />
                                 </FormControl>
