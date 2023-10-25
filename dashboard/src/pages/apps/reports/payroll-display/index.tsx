@@ -108,7 +108,7 @@ const UserList = () => {
     const totalDeductions = deductionAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const earningAmounts = earningStore.filter((transaction: any) => transaction.transactionTypeName == 'Earning Amount')
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
-    const grossTaxable = store.data.filter(({ transactionName }) => (transactionName === "Gross Taxable Salary"))
+    const grossTaxable: any = store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary"))
 
     console.log(store.data)
 
