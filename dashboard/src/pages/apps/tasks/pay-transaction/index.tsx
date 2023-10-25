@@ -212,7 +212,7 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? row.transactionAmount : ''}
+                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(row.transactionAmount).toFixed(2)  : ''}
                         </Typography>
                     </Box>
                 )
@@ -227,7 +227,7 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? row.transactionAmount : ''}
+                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2)  : ''}
                         </Typography>
                     </Box>
                 )

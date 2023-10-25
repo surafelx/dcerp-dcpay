@@ -72,11 +72,11 @@ const UserList = () => {
             headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? row.transactionAmount : ''}
-                        </Typography>
-                    </Box>
+                    <div style={{width: '100%'}}>
+                        <div style={{'textAlign': 'right'}}>
+                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                        </div>
+                    </div>
                 )
             }
         },
@@ -87,11 +87,11 @@ const UserList = () => {
             headerName: 'Amount',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? row.transactionAmount : ''}
-                        </Typography>
-                    </Box>
+                    <div style={{width: '100%'}}>
+                    <div style={{'textAlign': 'right'}}>
+                    {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                    </div>
+                </div>
                 )
             }
         },
@@ -213,6 +213,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
+                                        dir={'rtl'}
                                         disabled={true}
                                         label='Gross Taxable'
                                         value={'0'}
@@ -224,6 +225,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
+                                         dir={'rtl'}
                                         disabled={true}
                                         label='Total Earning'
                                         value={`${Number(totalEarnings).toFixed(2)}`}
@@ -234,6 +236,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
+                                        dir={'rtl'}
                                         disabled={true}
                                         label='Total Deductions'
                                         value={`${Number(totalDeductions).toFixed(2)}`}
@@ -244,6 +247,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
+                                         dir={'rtl'}
                                         disabled={true}
                                         label='Net Pay'
                                         value={`${Number(totalEarnings - totalDeductions).toFixed(2)}`}

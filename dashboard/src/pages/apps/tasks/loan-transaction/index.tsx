@@ -286,7 +286,7 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-                            {row.transactionAmount}
+                        {parseFloat(row.transactionAmount).toFixed(2) }
                         </Typography>
                     </Box>
                 )
@@ -376,8 +376,6 @@ const UserList = () => {
     const employeeStore = useSelector((state: RootState) => state.employee)
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
-    console.log(transactionDefinitionStore)
-
     const handleTransactionValue = (transactionValue: any) => {
         const selectedTransactionId = transactionValue
         const existingObject: any = store.data.find(obj => (obj["transactionId"] === selectedTransactionId))
@@ -409,7 +407,7 @@ const UserList = () => {
     }
 
     const handleTransactionChange = (e: any, newValue: any) => {
-        if (newValue?.id) {
+        if (newValue?.id && employee) {
             setTransactionObject(newValue)
             handleTransactionValue(newValue.id)
         }
