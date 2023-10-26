@@ -364,8 +364,6 @@ const InvoiceList = () => {
               pagination
               rows={store.data}
               columns={columns}
-              checkboxSelection
-              disableSelectionOnClick
               pageSize={Number(pageSize)}
               rowsPerPageOptions={[10, 25, 50]}
               onSelectionModelChange={rows => setSelectedRows(rows)}

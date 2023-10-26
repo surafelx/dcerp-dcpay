@@ -40,8 +40,8 @@ export const create = async (newDepartment: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
-    const { rows: departments } = await pool.query(`
+export const getAllFromOrganization = async (organizationId: string, branchId: any): Promise<any> => {
+    let query = `
     SELECT 
     department.id, 
     department.branch_id, 
@@ -52,11 +52,18 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     department.contract_account
     FROM department
     INNER JOIN branch ON department.branch_id = branch.id
-    WHERE department.organization_id=$1`,
-        [organizationId])
-    return departments
-}
+    WHERE department.organization_id=$1`;
 
+    const queryParams = [organizationId];
+
+    if (branchId) {
+        query += ` AND department.branch_id = $2`;
+        queryParams.push(branchId);
+    }
+
+    const { rows: departments } = await pool.query(query, queryParams);
+    return departments;
+}
 
 
 export const deleteDepartment = async (departmentId: string): Promise<any> => {

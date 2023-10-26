@@ -4,7 +4,8 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import MonthClosing from 'src/views/dc-pay/tables/Utilities/Closing/MonthTable'
-import YearClosing from 'src/views/dc-pay/tables/Utilities/Closing/YearTable'
+
+// import YearClosing from 'src/views/dc-pay/tables/Utilities/Closing/YearTable'
 
 const TabsNav = () => {
     const [value, setValue] = useState<string>('1')
@@ -24,21 +25,21 @@ return (
                     href='/monthclosing'
                     onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
                 />
-                <Tab
+                {/* <Tab
                     value='2'
                     component='a'
                     label='Year'
                     href='/yearclosing'
                     onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                />
+                /> */}
               
             </TabList>
             <TabPanel value='1'>
                 <MonthClosing />
             </TabPanel>
-            <TabPanel value='2'>
+            {/* <TabPanel value='2'>
                 <YearClosing />
-            </TabPanel>
+            </TabPanel> */}
         </TabContext>
     )
 }

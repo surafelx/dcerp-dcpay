@@ -1,5 +1,5 @@
 // ** React Imports
-import {  useEffect } from 'react'
+import { useEffect } from 'react'
 
 
 // ** MUI Imports
@@ -21,6 +21,7 @@ import FormControl from '@mui/material/FormControl'
 // import EmailOutline from 'mdi-material-ui/EmailOutline'
 // import AccountOutline from 'mdi-material-ui/AccountOutline'
 // import MessageOutline from 'mdi-material-ui/MessageOutline'
+import Grid from '@mui/material/Grid'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -55,8 +56,8 @@ const emptyValues = {
 }
 
 
-const AddBranch = ({ formData, setLoading }: any) => {
- 
+const AddBranch = ({ formData }: any) => {
+
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -69,7 +70,7 @@ const AddBranch = ({ formData, setLoading }: any) => {
         )
     }, [dispatch])
 
-   
+
 
     const {
         control,
@@ -87,73 +88,81 @@ const AddBranch = ({ formData, setLoading }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        setLoading(true)
-        setTimeout(() => {
-            if (data.id) {
-                dispatch(editBranch({ ...data, }))
-            } else {
-                dispatch(addBranch({ ...data, }))
-            }
-            reset(emptyValues)
-            setLoading(false)
-        }, 3000) 
+
+        if (data.id) {
+            dispatch(editBranch({ ...data, }))
+        } else {
+            dispatch(addBranch({ ...data, }))
+        }
+        reset(emptyValues)
+
     }
-    
+
     return (
         <Card>
-            
-                <CardHeader title='Add Branch' titleTypographyProps={{ variant: 'h6' }} />
+
+            <CardHeader title='Add Branch' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='branchCode'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Branch Code'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.branchCode)}
-                                    placeholder='Branch Code'
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='branchCode'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Branch Code'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.branchCode)}
+                                            placeholder='Branch Code'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                        {/* {errors.branchCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchCode.message}</FormHelperText>} */}
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='branchName'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Branch Name'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.branchName)}
-                                    placeholder='Branch Name'
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='branchName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Branch Name'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.branchName)}
+                                            placeholder='Branch Name'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                        {/* {errors.branchName && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchName.message}</FormHelperText>} */}
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Submit
-                        </Button>
-                    </FormControl>
+                                {/* {errors.branchName && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchName.message}</FormHelperText>} */}
+                            </FormControl>
+                        </Grid>
+                        <Grid item sm={6}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained'>
+                                    Submit
+                                </Button>
+                            </FormControl>
+                        </Grid>
 
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                            Reset
-                        </Button>
-                    </FormControl>
+                        <Grid item sm={6}>                    <FormControl fullWidth>
+                            <Button fullWidth size='small' color='secondary' onClick={() => reset({emptyValues})} type='reset' variant='contained'>
+                                Reset
+                            </Button>
+                        </FormControl>
+                        </Grid>
+                    </Grid>
 
                 </form>
             </CardContent>

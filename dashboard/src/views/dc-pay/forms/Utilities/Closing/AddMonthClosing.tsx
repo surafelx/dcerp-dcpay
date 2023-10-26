@@ -1,8 +1,9 @@
 // ** React Imports
-import {  useEffect } from 'react'
+import { useEffect } from 'react'
 
 
 // ** MUI Imports
+import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -55,17 +56,17 @@ const emptyValues = {
 
 
 const AddMonthClosing = ({ formData }: any) => {
- 
+
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
-        
+
     // @ts-ignore
     const userData = JSON.parse(window.localStorage.getItem('userData'))
-    const {start_date: startDate, end_date: endDate} = userData.currentPeriod || {start_date: '', end_date: ''}
-    const {start_date: nextStartDate, end_date: nextEndDate} = userData.nextPeriod || {start_date: '', end_date: ''}
+    const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
+    const { start_date: nextStartDate, end_date: nextEndDate } = userData.nextPeriod || { start_date: '', end_date: '' }
 
-   
+
 
     const {
         control,
@@ -86,59 +87,69 @@ const AddMonthClosing = ({ formData }: any) => {
         dispatch(addMonthClosing({ ...data, }))
         reset(emptyValues)
     }
-    
+
     return (
         <Card>
-            
-                <CardHeader title='Month End Closing' titleTypographyProps={{ variant: 'h6' }} />
+            <CardHeader title='Month End Closing' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='currentPeriod'
-                            control={control}
-                           
-                            rules={{ required: true }}
-                            render={({ field: { onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Current Period'
-                                    value= {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
-                                    disabled={true}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.branchCode)}
-                                    placeholder='Current Period'
+                    <Grid container spacing={3}>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <Controller
+                                    name='currentPeriod'
+                                    control={control}
+
+                                    rules={{ required: true }}
+                                    render={({ field: { onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Current Period'
+                                            value={`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
+                                            disabled={true}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.branchCode)}
+                                            placeholder='Current Period'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                        {/* {errors.branchCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchCode.message}</FormHelperText>} */}
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='Next Period'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: {  onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Next Period'
-                                    value= {`${moment(nextStartDate).format("YYYY/MM/DD") || ""} - ${moment(nextEndDate).format("YYYY/MM/DD") || ""}`}
-                                    disabled={true}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.branchName)}
-                                    placeholder='Next Period'
+                                {/* {errors.branchCode && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchCode.message}</FormHelperText>} */}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <Controller
+                                    name='Next Period'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Next Period'
+                                            value={`${moment(nextStartDate).format("YYYY/MM/DD") || ""} - ${moment(nextEndDate).format("YYYY/MM/DD") || ""}`}
+                                            disabled={true}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.branchName)}
+                                            placeholder='Next Period'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                        {/* {errors.branchName && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchName.message}</FormHelperText>} */}
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Continue
-                        </Button>
-                    </FormControl>
+                                {/* {errors.branchName && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchName.message}</FormHelperText>} */}
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={8}></Grid>
+                        <Grid item xs={4}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained'>
+                                    Continue
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </form>
             </CardContent>
         </Card >

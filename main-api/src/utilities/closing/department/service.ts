@@ -9,7 +9,7 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
 }
 
 
-const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await departmentDao.getAllFromOrganization(organizationId)
+const getAllFromOrganization = async (organizationId: any, branchId: any): Promise<any[]> => await departmentDao.getAllFromOrganization(organizationId, branchId)
 
 const deleteDepartment = async (userId: string): Promise<any> => await departmentDao.deleteDepartment(userId)
 

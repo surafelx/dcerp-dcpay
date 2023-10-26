@@ -1,28 +1,26 @@
 // ** React Imports
-import {useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
+import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 
-import InputLabel from '@mui/material/InputLabel'
 
-
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 
 
 // ** Third Party Imports
 import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 
-
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
 import { RootState } from 'src/store'
 
 
@@ -58,6 +56,11 @@ const AddMembership = ({
     formData,
 }: any) => {
 
+    const [employee, setEmployee] = useState<string>('')
+    const [employeeObject, setEmployeeObject] = useState<any>(null)
+    const [transaction, setTransaction] = useState<string>('')
+    const [transactionObject, setTransactionObject] = useState<any>(null)
+
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -83,9 +86,7 @@ const AddMembership = ({
 
 
 
-
     const {
-        control,
         handleSubmit,
         reset,
     } = useForm({
@@ -100,6 +101,8 @@ const AddMembership = ({
 
     // any type used
     const onSubmit = (data: any) => {
+        data.transactionId = transaction
+        data.employeeId = employee
         if (data.id) {
             dispatch(editMembership({ ...data }))
         } else {
@@ -107,6 +110,21 @@ const AddMembership = ({
         }
         reset(emptyValues)
         setMainParameterDefinition('')
+    }
+
+    const handleEmployeeChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setEmployeeObject(newValue)
+            setEmployee(newValue.id)
+            setTransactionObject({ id: '', transactionName: '' })
+        }
+    }
+
+    const handleTransactionChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setTransactionObject(newValue)
+            setTransaction(newValue.id)
+        }
     }
 
 
@@ -118,77 +136,69 @@ const AddMembership = ({
             <CardHeader title='Add Membership' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='employeeId'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <>
-                                    <InputLabel id='demo-simple-select-autoWidth-label'>Employee</InputLabel>
-                                    <Select
-                                        label='Employee'
-                                        value={value}
-                                        id='demo-simple-select-autoWidth'
-                                        labelId='demo-simple-select-autoWidth-label'
-                                        placeholder='Select Employee'
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                    >
-                                        {
-                                            employeeStore.data.map(({ id, firstName, lastName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${firstName} ${lastName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </>
-
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='transactionId'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <>
-                                    <InputLabel id='demo-simple-select-autoWidth-label'>Transaction</InputLabel>
-                                    <Select
-                                        label='Transaction'
-                                        placeholder='Select Transaction'
-                                        value={value}
-                                        id='demo-simple-select-autoWidth'
-                                        labelId='demo-simple-select-autoWidth-label'
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                    >
-                                        {
-                                            transactionDefinitionStore.data.map(({ id, transactionName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{`${transactionName}`}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </>
-
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Submit
-                        </Button>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                            Reset
-                        </Button>
-                    </FormControl>
+                    <Grid container spacing={3}>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={employeeObject}
+                                    options={employeeStore.data}
+                                    onChange={handleEmployeeChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.employeeCode}
+                                    renderInput={params => <TextField {...params} label='Select Employee' />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={employeeObject}
+                                    options={employeeStore.data}
+                                    onChange={handleEmployeeChange}
+                                    id='autocomplete-controlled'
+                                    isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
+                                    getOptionLabel={(option: any) => option.firstName}
+                                    renderInput={params => <TextField {...params} label='Select Employee' />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={4} >
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={transactionObject}
+                                    options={transactionDefinitionStore.data.filter((tran: any) => tran.updateTypeName === 'Input' && tran.transactionGroupName !== 'Loan' && tran.transactionName !== 'None')}
+                                    onChange={handleTransactionChange}
+                                    id='autocomplete-controlled'
+                                    isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
+                                    getOptionLabel={option => option.transactionName}
+                                    renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained'>
+                                    Submit
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={3}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' color='secondary' onClick={() => reset()} type='reset' variant='contained'>
+                                    Reset
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
 
                 </form>
 

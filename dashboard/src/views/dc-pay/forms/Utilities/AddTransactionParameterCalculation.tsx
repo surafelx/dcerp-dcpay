@@ -1,6 +1,6 @@
 
 // ** React Imports
-import {  useState,  useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 
 // ** MUI Imports
@@ -135,11 +135,11 @@ const AddTransactionParameterCalculation = ({
     }
 
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
-    
-    
+
+
     const subParameters = useSelector((state: RootState) => state.subParameterDefinition)
     const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
-    
+
     const filterSubParametersByName = (parentParamName: any) => {
         const parent: any = mainParameters.allData.find((parent: any) => parent.parameterName === parentParamName);
         if (!parent) {
@@ -147,13 +147,13 @@ const AddTransactionParameterCalculation = ({
         }
 
         const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
-        
-return filteredChild
+
+        return filteredChild
     }
 
     const calculationUnitOptions = filterSubParametersByName('Calculation Unit')
     const transactionCalculationOptions = filterSubParametersByName('Transaction Calculation')
-    
+
     const inputTransactionDefs = transactionDefinitionStore.data.filter((tran: any) => tran.updateTypeName === 'Input')
 
 
@@ -206,6 +206,7 @@ return filteredChild
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             disabled={true}
                                             label='='
@@ -365,7 +366,7 @@ return filteredChild
                                                 onChange={onChange}
                                             >
                                                 {
-                                                    transactionCalculationOptions.map(({ id, parameterName , index}) => {
+                                                    transactionCalculationOptions.map(({ id, parameterName, index }) => {
                                                         return (
                                                             <MenuItem key={index} value={id}>{parameterName}</MenuItem>
                                                         )
@@ -386,6 +387,7 @@ return filteredChild
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
+                                            size={'small'}
                                             autoFocus
                                             label='Rate'
                                             value={value}
