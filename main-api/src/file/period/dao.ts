@@ -149,6 +149,46 @@ export const updatePeriod = async (updatedPeriod: any): Promise<string> => {
     return branchId
 }
 
+export const updatePeriodProcess = async (periodId: any, processValue: any): Promise<string> => {
+    const query = `
+    UPDATE 
+    periods
+    SET 
+    period_process = $1
+    WHERE id = $2
+    RETURNING *;
+    `
+    const res = await pool.query(query, [
+        processValue, periodId])
+    const branchId = res.rows[0]
+    return branchId
+}
+
+export const getInfo = async (periodId: string): Promise<any> => {
+    const { rows: periods } = await pool.query(`
+    SELECT 
+    id,
+    organization_id,
+    period_count,
+    period_name, 
+    period_year,
+    month_name, 
+    start_date,
+    end_date,
+    period_paid,
+    period_current,
+    period_back,
+    period_proof,
+    period_final,
+    period_report,
+    period_process
+    FROM periods
+    WHERE id=$1 `,
+        [periodId])
+    return periods
+}
+
+
 export const getCurrentPeriod = async (organizationId: string): Promise<any> => {
     const { rows: Periods } = await pool.query(`
     SELECT 
@@ -405,8 +445,10 @@ export default {
     generateGregorianPeriod,
     generateEthiopianPeriod,
     // setupPeriod,
+    getInfo,
     getAllFromOrganization,
     getCurrentPeriod,
     getNextPeriod,
-    updatePeriod
+    updatePeriod,
+    updatePeriodProcess
 }

@@ -1,7 +1,7 @@
 import pool from '../../config/pool'
 import taxRateService from '../../utilities/tax-rate/service'
 import employeeService from '../../file/employee-master/service'
-import payrollProcessDao from '../../process/payroll-process/dao'
+
 
 
 import { v4 as uuid } from 'uuid'
@@ -83,7 +83,7 @@ export const createProcessedTransactions = async (newMenu: any): Promise<any> =>
     } = newMenu
     const query = `
 	INSERT INTO 
-        period_transactions 
+        processed_transactions 
         (
             id,
             organization_id,
@@ -117,7 +117,18 @@ export const createProcessedTransactions = async (newMenu: any): Promise<any> =>
 }
 
 
-const processPayLoanMembershipTransactions = async (organizationId: any, employeeId: any, periodTransactions: any, userInfo: any) => {
+const processPayLoanMembershipTransactions = async (organizationId: any, employeeId: any, userInfo: any) => {
+    await pool.query(`
+    WITH DeleteEmployeeData AS (
+        DELETE FROM processed_transactions
+        WHERE employee_id = $1 AND 
+        period_id = $2
+        RETURNING *
+      )
+      SELECT CASE WHEN EXISTS (SELECT 1 FROM DeleteEmployeeData) THEN 'Data Deleted' ELSE 'No Data Found' END AS result;
+`,
+        [employeeId, userInfo.periodId])
+
 
     const { userId, periodId } = userInfo
     let processedTransactions: any = []
@@ -134,53 +145,47 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
     const { rows: transactionDefinitions } = await pool.query(`
     SELECT 
     td.id,
-    transaction_name,
-    transaction_code,
+    td.transaction_name,
+    td.transaction_code,
     td.taxable,
     pd2.parameter_name as update_type_name,
     pd1.parameter_name as transaction_type_name,
-    pd3.parameter_name as transaction_group_name
-    FROM transaction_definition td
-    INNER JOIN parameter_definition pd1 ON pd1.id = td.transaction_type
-    INNER JOIN parameter_definition pd2 ON pd2.id = td.update_type  
-    INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_group
-    WHERE td.organization_id=$1
-    ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;`,
-        [organizationId])
+    pd3.parameter_name as transaction_group_name,
+    COALESCE(pert.transaction_amount, '0') AS transaction_amount
+FROM transaction_definition td
+INNER JOIN parameter_definition pd1 ON pd1.id = td.transaction_type
+INNER JOIN parameter_definition pd2 ON pd2.id = td.update_type  
+INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_group
+LEFT JOIN (
+    SELECT DISTINCT ON (pt.transaction_id) pt.id, pt.transaction_id, pt.transaction_amount
+    FROM period_transactions pt
+    WHERE pt.employee_id = $2
+) AS pert ON pert.transaction_id = td.id
+WHERE td.organization_id = $1
+ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
+`,
+        [organizationId, employeeId])
 
-
-    // const filteredTDs = transactionDefinitions.filter((td: any) => {
-    //     return ![...periodTransactions].some((et: any) => et.transaction_id === td.id);
-    // })
 
     for (const td of transactionDefinitions) {
-        const periodTransactionExists = periodTransactions.some((periodTran: any) => periodTran.transaction_id == td.id);
         if (td.update_type_name == 'Input' || td.transaction_name == 'None') {
             if (td.transaction_code !== 'Not Editable') {
-                if (!periodTransactionExists) {
-                    await createPayTransaction({ employeeId, transactionId: td.id, transactionAmount: 0 }, periodId)
-                    await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
-                }
+                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: td.transaction_amount, userId, periodId, organizationId })
             }
         }
         if (td.transaction_group_name == 'Loan') {
-            if (!periodTransactionExists) {
-                await createLoanTransaction({ employeeId, transactionId: td.id, totalLoan: 0, remainingBalance: 0, transactionAmount: 0 })
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
-            }
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: td.transaction_amount, userId, periodId, organizationId })
         }
         if (td.update_type_name === 'Calculation' && td.transaction_group_name != 'Membership') {
             const transactionCalculationFormat = await getTransactionCalculationFormat(employeeId, td.id, periodId)
             if (transactionCalculationFormat.length > 0) {
                 const calculatedTransaction = calculateTransactionCalculations(transactionCalculationFormat[0])
-                if (!periodTransactionExists) {
-                    const { pension_status: pensionStatus } = await employeeService.getInfo(employeeId)
-                    if(pensionStatus && td.transaction_code == '23')
-                        await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
-                    if(td.transaction_code != '23')
-                        await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
+                const { pension_status: pensionStatus } = await employeeService.getInfo(employeeId)
+                if (pensionStatus && td.transaction_code == '23')
+                    await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
+                if (td.transaction_code != '23')
+                    await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
 
-                }
                 if (calculatedTransaction.transaction_type_name == 'Deduction Amount') {
                     totalDeductions += parseFloat(calculatedTransaction.transaction_amount) || 0
                 }
@@ -200,62 +205,57 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
             totalOvertime += parseFloat(td.transaction_amount) || 0
         }
 
-
-
-
         if (td.transaction_code == '21') {
-            const periodTransactionsForGrossSalary = await getPeriodTransactions(employeeId, periodId)
+            const periodTransactionsForGrossSalary = await getProcessedTransactions(employeeId, periodId)
             grossSalary = periodTransactionsForGrossSalary
                 .filter((pt: any) => pt.transaction_type_name == 'Earning Amount')
                 .reduce((total: any, fpt: any) => total + parseFloat(fpt.transaction_amount), 0);
 
-            const nonTaxableTransactionAmount = periodTransactions
+            const nonTaxableTransactionAmount = periodTransactionsForGrossSalary
                 .filter((pt: any) => !pt.taxable)
                 .reduce((total: any, fpt: any) => total + parseFloat(fpt.transaction_amount), 0);
             grossTaxableSalary = grossSalary - nonTaxableTransactionAmount
             tax = await taxRateService.calculateTaxRate(organizationId, grossTaxableSalary)
-            if (!periodTransactionExists) {
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: tax, userId, periodId, organizationId })
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: tax, userId, periodId, organizationId })
 
-            }
             totalDeductions += tax
         }
 
         if (td.transaction_code == '50') {
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: totalOvertime, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: totalOvertime, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '51') {
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossTaxableSalary, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossTaxableSalary, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '52') {
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossSalary, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossSalary, userId, periodId, organizationId })
         }
 
 
         if (td.transaction_code == '97') {
             if (totalDeductions > grossSalary)
                 overPay = totalDeductions - grossSalary
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: lastOverpay, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: lastOverpay, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '98') {
             if (overPay > 0)
                 overPay = totalDeductions - grossSalary
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: overPay, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: overPay, userId, periodId, organizationId })
         }
 
 
         if (td.transaction_code == '99') {
             netPay = grossSalary - totalDeductions
-            if (!periodTransactionExists)
-                await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: netPay, userId, periodId, organizationId })
+
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: netPay, userId, periodId, organizationId })
         }
 
     }
@@ -301,16 +301,6 @@ const getTransactionCalculationFormat = async (employeeId: any, transactionId: a
         [employeeId, transactionId, periodId])
     return tranCal
 }
-// const processTransactions = async (organizationId: any, employeeId: any, periodTransactions: any, userInfo: any) => {
-//     const {userId, periodId} = userInfo 
-
-
-
-//         for (const td of periodTransactions) {
-
-//     }
-
-// }
 
 const getPeriodTransactions = async (employeeId: any, periodId: any) => {
     const { rows: periodTransactions } = await pool.query(`
@@ -335,17 +325,110 @@ const getPeriodTransactions = async (employeeId: any, periodId: any) => {
     return periodTransactions
 }
 
-const getAllFromOrganization = async (organizationId: string, employeeId: string, userInfo: any) => {
-    if (!employeeId)
-        return []
-
-    await payrollProcessDao.processPayLoanMembershipTransactions(organizationId, employeeId, userInfo)
-    const processedPeriodTransactions = await payrollProcessDao.getProcessedTransactionsByEmployee(userInfo.periodId, employeeId)
-    return processedPeriodTransactions
+const getProcessedTransactions = async (employeeId: any, periodId: any) => {
+    const { rows: periodTransactions } = await pool.query(`
+    SELECT 
+    pt.id,
+    td.id as transaction_id,
+    td.transaction_code,
+    td.transaction_name,
+    td.taxable,
+    pt.transaction_amount,
+    pd1.parameter_name as update_type_name,
+    pd2.parameter_name as transaction_group_name,
+    pd3.parameter_name as transaction_type_name
+    FROM processed_transactions pt
+    INNER JOIN transaction_definition td ON td.id = pt.transaction_id
+    INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
+    INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
+    INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
+    WHERE pt.employee_id=$1 AND pt.period_id=$2
+    ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;`,
+        [employeeId, periodId])
+    return periodTransactions
 }
 
+const getAllFromOrganization = async (organizationId: string, branchId: string, departmentId: string, userInfo: any): Promise<any[]> => {
+    let fixedBranchId: string | null = branchId
+    let fixedDepartmentId: string | null = departmentId
 
-// Fetch from Period Transaction
+    if (branchId === 'All' || !branchId)
+        fixedBranchId = null
+
+    if (departmentId === 'All' || !departmentId)
+        fixedDepartmentId = null
+
+
+
+    const employees = await getEmployeeByBranchByDepartment(organizationId, fixedBranchId, fixedDepartmentId)
+    await Promise.all(employees.map(async (employee: any) => {
+        await processPayLoanMembershipTransactions(organizationId, employee.id, userInfo)
+    }))
+
+    const { rows: processedTransactions } = await pool.query(`
+        WITH EmployeeTransactionData AS (
+            SELECT
+              employee.id AS employee_id,
+              employee.first_name,
+              employee.last_name,
+              employee.employee_code,
+              pt.id AS processed_transaction_id,
+              td.id AS transaction_id,
+              td.transaction_code,
+              td.transaction_name,
+              td.taxable,
+              pt.transaction_amount,
+              pd1.parameter_name AS update_type_name,
+              pd2.parameter_name AS transaction_group_name,
+              pd3.parameter_name AS transaction_type_name
+            FROM processed_transactions pt
+            INNER JOIN transaction_definition td ON td.id = pt.transaction_id
+            INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
+            INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
+            INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
+            INNER JOIN employee ON pt.employee_id = employee.id
+            WHERE pt.period_id = $1
+          )
+          SELECT
+            employee_id AS id,
+            employee_code,
+            first_name,
+            ARRAY_AGG(
+              JSONB_BUILD_OBJECT(
+                'processed_transaction_id', processed_transaction_id,
+                'transaction_id', transaction_id,
+                'transaction_code', transaction_code,
+                'transaction_name', transaction_name,
+                'taxable', taxable,
+                'transaction_amount', transaction_amount,
+                'update_type_name', update_type_name,
+                'transaction_group_name', transaction_group_name,
+                'transaction_type_name', transaction_type_name
+              )
+            ) AS transactions
+          FROM EmployeeTransactionData
+          GROUP BY employee_id, employee_code, first_name
+          ORDER BY CAST(employee_code AS NUMERIC) ASC;
+          `,
+        [userInfo.periodId])
+
+    return processedTransactions
+}
+
+const getEmployeeByBranchByDepartment = async (organizationId: any, branchId: any, departmentId: any): Promise<any[]> => {
+    const { rows: employees } = await pool.query(`
+    SELECT 
+    id, 
+    employee_code,
+    first_name,
+    last_name
+    FROM employee e1
+    WHERE e1.organization_id = $1 
+    AND e1.branch_id = COALESCE($2, e1.branch_id)
+    AND e1.department_id = COALESCE($3, e1.department_id)`,
+        [organizationId, branchId, departmentId])
+    return employees
+}
 
 const calculateTransactionCalculations = (transaction: any) => {
     let transaction_amount: any = 0
@@ -372,9 +455,35 @@ const calculateTransactionCalculations = (transaction: any) => {
 }
 
 
+const getProcessedTransactionsByEmployee = async (periodId: any, employeeId: any): Promise<any[]> => {
+    const { rows: processedTransactions } = await pool.query(`
+    SELECT
+    pt.id,
+    td.id AS transaction_id,
+    td.transaction_code,
+    td.transaction_name,
+    td.taxable,
+    pt.transaction_amount,
+    pd1.parameter_name AS update_type_name,
+    pd2.parameter_name AS transaction_group_name,
+    pd3.parameter_name AS transaction_type_name
+  FROM processed_transactions pt
+  INNER JOIN transaction_definition td ON td.id = pt.transaction_id
+  INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
+  INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
+  INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
+  WHERE pt.period_id = $1
+  AND pt.employee_id = $2
+          `,
+        [periodId, employeeId]); // Pass the employee's ID as the second parameter
+
+    return processedTransactions
+}
+
 
 export default {
     getAllFromOrganization,
     processPayLoanMembershipTransactions,
+    getProcessedTransactionsByEmployee,
     getPeriodTransactions
 }

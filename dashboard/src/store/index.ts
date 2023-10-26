@@ -42,6 +42,9 @@ import discontinuation from 'src/store/apps/Tasks/Discontinuation'
 import membership from 'src/store/apps/Tasks/Membership'
 
 
+// ** Process - Payroll Process
+import payrollProcess from 'src/store/apps/Process/PayrollProcess'
+
 
 // ** Reports - Payroll Display
 import payrollDisplay from 'src/store/apps/Reports/PayrollDisplay'
@@ -68,6 +71,7 @@ import menuRight from 'src/store/apps/Settings/RightsManagement/Menu'
 
 // ** Utilities - Tax Rate  
 import taxRate from 'src/store/apps/Utilities/TaxRate'
+
 
 // ** Utilities - Transaction Parameter Calculation
 import transactionParameterCalculation from 'src/store/apps/Utilities/TransactionParameterCalculation'
@@ -111,6 +115,8 @@ export const store = configureStore({
       // ** Tasks - Discontinuation
     discontinuation,
 
+    payrollProcess,
+    
      // ** Reports - Payroll Display
      payrollDisplay,
 

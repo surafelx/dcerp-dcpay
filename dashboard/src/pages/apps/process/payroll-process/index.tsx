@@ -33,7 +33,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Button from '@mui/material/Button'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
+import { fetchData } from 'src/store/apps/Process/PayrollProcess'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
 
@@ -55,8 +55,8 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 }))
 
 const emptyValues = {
-    branch: '',
-    department: ''
+    branch: 'All',
+    department: 'All'
 }
 
 
@@ -80,13 +80,13 @@ const PayrollAdvice = () => {
     const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
     const [department, setDepartment] = useState<string>('')
     const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
-    const [filterValue, setFilterValue] = useState<any>('Select')
+    const [filterValue, setFilterValue] = useState<any>('All')
 
     const [value] = useState<string>('')
     
 
     const dispatch = useDispatch<AppDispatch>()
-    const store = useSelector((state: RootState) => state.payrollAdvice)
+    const store = useSelector((state: RootState) => state.payrollProcess)
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
@@ -103,7 +103,6 @@ const PayrollAdvice = () => {
             })
         )
     }, [dispatch])
-
 
 
     const generateExcelFile = () => {
@@ -147,11 +146,10 @@ const PayrollAdvice = () => {
         setFilterValue(selectedFilter)
         setBranchObject({id: '', branchName: ''})
         setDepartmentObject({id: '', departmentName: ''})
-        if (selectedFilter == 'All') {
+        if (filterValue == 'All') {
             setBranch('All')
             setDepartment('All')
-        } else {
-        }
+        } 
     }
 
 
@@ -166,6 +164,10 @@ const PayrollAdvice = () => {
     const onSubmit = (data: any) => {
         data.branch = branch
         data.department = department
+        if(filterValue == 'All') {
+                setBranch('All')
+                setDepartment('All')
+        }
         dispatch(
                     fetchData({
                         branch,
@@ -297,13 +299,17 @@ const PayrollAdvice = () => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }, index) => {
+                                    store.data.map(({ employeeCode, employeeName, transactions, }: any, index) => {
+                                        const grossSalary = transactions?.filter(({transaction_code}: any) => transaction_code == '52')[0]?.transaction_amount
+                                        const netPay = transactions?.filter(({transaction_code}: any) => transaction_code == '99')[0]?.transaction_amount
+                                        const totalDeductions = grossSalary - netPay
+
                                         return (
                                             <TableRow key={index}>
                                                 <TableCell>{`${employeeCode}`}</TableCell>
                                                 <TableCell>{`${employeeName}`}</TableCell>
                                                 <TableCell>{`${Number(totalDeductions).toFixed(2)}`}</TableCell>
-                                                <TableCell>{`${Number(totalEarnings).toFixed(2)}`}</TableCell>
+                                                <TableCell>{`${Number(grossSalary).toFixed(2)}`}</TableCell>
                                                 <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
                                             </TableRow>
                                         )
