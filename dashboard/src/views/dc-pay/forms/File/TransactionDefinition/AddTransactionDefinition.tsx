@@ -241,9 +241,8 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel  size={'small'} id='demo-simple-select-autoWidth-label'>Transaction Type</InputLabel>
+                                            <InputLabel id='demo-simple-select-autoWidth-label'>Transaction Type</InputLabel>
                                             <Select
-                                                size={'small'}
                                                 label='Transaction Type'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'
@@ -407,9 +406,8 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <>
-                                            <InputLabel  size={'small'} id='demo-simple-select-autoWidth-label'>Transaction Group</InputLabel>
+                                            <InputLabel id='demo-simple-select-autoWidth-label'>Transaction Group</InputLabel>
                                             <Select
-                                                 size={'small'}
                                                 label='Transaction Group'
                                                 value={value}
                                                 id='demo-simple-select-autoWidth'

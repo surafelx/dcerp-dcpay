@@ -87,7 +87,7 @@ const schema = yup.object().shape({
     employeeType: yup.string(),
     monthlyWorkingHours: yup.string(),
     basicSalary: yup.string(),
-    pensionNumber: yup.string(),
+pensionNumber: yup.string().nullable(),
     pensionStatus: yup.string(),
     tinNumber: yup.string(),
     workingDays: yup.string(),

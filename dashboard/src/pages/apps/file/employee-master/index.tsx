@@ -388,7 +388,6 @@ const UserList = () => {
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                                disableSelectionOnClick
                                 pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}

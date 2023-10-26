@@ -55,6 +55,7 @@ const AuthProvider = ({ children }: Props) => {
             setUser({ ...response.data.userData })
           })
           .catch(() => {
+            handleLogout()
             window.localStorage.removeItem('userData')
             window.localStorage.removeItem('refreshToken')
             window.localStorage.removeItem('accessToken')
