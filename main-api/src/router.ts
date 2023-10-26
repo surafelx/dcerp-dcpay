@@ -3,6 +3,7 @@ import authorizationRoute from './authorizer/router'
 import fileRouter from './file/router'
 import tasksRouter from './tasks/router'
 import reportsRouter from './reports/router'
+import processRouter from './process/router'
 import utilitiesRoute from './utilities/router'
 import settingsRoute from './settings/router'
 
@@ -12,6 +13,7 @@ router.use('/auth', authorizationRoute)
 router.use('/file', fileRouter)
 router.use('/tasks', tasksRouter)
 router.use('/reports', reportsRouter)
+router.use('/process', processRouter)
 router.use('/utilities', utilitiesRoute)
 router.use('/settings', settingsRoute)
 

@@ -256,3 +256,17 @@ CREATE TABLE period_transactions (
 );
 
 
+CREATE TABLE processed_transactions (
+	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
+	period_id VARCHAR(40) NOT NULL REFERENCES periods(id),
+	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
+	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
+	transaction_amount VARCHAR(40) NOT NULL,
+	transaction_affected_amount VARCHAR(40) NOT NULL,
+	transaction_printed_flag BOOLEAN NOT NULL,
+	transaction_user_id VARCHAR(40) NOT NULL REFERENCES user_accounts(id),
+	transaction_record_number VARCHAR(40) NOT NULL,
+	transaction_date DATE NOT NULL
+);
+

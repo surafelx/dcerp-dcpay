@@ -11,6 +11,10 @@ const deletePeriod = async (userId: string): Promise<any> => await periodDao.del
 
 const updatePeriod = async (menuLevelData: any): Promise<any> => await periodDao.updatePeriod(menuLevelData)
 
+const updatePeriodProcess = async (periodId: any, process: any): Promise<any> => await periodDao.updatePeriodProcess(periodId, process)
+
+const getInfo = async (periodId: any): Promise<any[]> => await periodDao.getInfo(periodId)
+
 const getCurrentPeriod = async (organizationId: any): Promise<any[]> => await periodDao.getCurrentPeriod(organizationId)
 
 const getNextPeriod = async (organizationId: any): Promise<any[]> => await periodDao.getNextPeriod(organizationId)
@@ -25,9 +29,11 @@ export default {
     deletePeriod,
     getAllFromOrganization,
     generateGregorianPeriod,
+    getInfo,
     getCurrentPeriod,
     getNextPeriod,
     generateEthiopianPeriod,
     updatePeriod,
+    updatePeriodProcess
     // setupPeriod
 }
