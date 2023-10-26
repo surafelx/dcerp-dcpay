@@ -33,14 +33,21 @@ export const create = async (newMainParameterDefinition: any): Promise<any> => {
 
 
 export const getAllFromOrganization = async (organizationId: string, parameterId: any): Promise<any> => {
-    const { rows: mainParameterDefinitions } = await pool.query(`
+    let query = `
     SELECT c.id, c.parent_parameter_id as parameter_id, c.parameter_name AS sub_parameter_name, p.parameter_name AS main_parameter_name
     FROM parameter_definition c
     JOIN parameter_definition p ON c.parent_parameter_id = p.id
-    WHERE c.organization_id = $1 AND (c.parent_parameter_id = $2 OR $2 IS NULL);
-    `,
-        [organizationId, parameterId])
-    return mainParameterDefinitions
+    WHERE c.organization_id = $1 `;
+
+    const queryParams = [organizationId];
+
+    if (parameterId) {
+        query += ` AND (c.parent_parameter_id = $2 OR $2 IS NULL);`;
+        queryParams.push(parameterId);
+    }
+
+    const { rows: departments } = await pool.query(query, queryParams);
+    return departments;
 }
 
 

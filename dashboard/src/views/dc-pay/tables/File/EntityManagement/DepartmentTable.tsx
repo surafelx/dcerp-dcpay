@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent, } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -14,17 +14,8 @@ import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import CircularProgress from '@mui/material/CircularProgress'
 
-// ** Icons Imports
-// import EyeOutline from 'mdi-material-ui/EyeOutline'
-// import DotsVertical from 'mdi-material-ui/DotsVertical'
-// import PencilOutline from 'mdi-material-ui/PencilOutline'
-// import DeleteOutline from 'mdi-material-ui/DeleteOutline'
+import CardContent from '@mui/material/CardContent'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -60,10 +51,9 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 
 const UserList = () => {
     // ** State
-    const [role, setRole] = useState<string>('')
+    const [branch, setBranch] = useState<string>('')
     const [value] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-    const [loading, setLoading] = useState<boolean>(true)
     const [formData, setFormData] = useState({
         id: '',
         branchId: '',
@@ -105,13 +95,8 @@ const UserList = () => {
         }, []);
 
         const handleDelete = () => {
-            setLoading(true)
-            setTimeout(() => {
-                dispatch(deleteDepartment(id))
-                handleRowOptionsClose()
-                setLoading(false)
-            }, 3000)
-
+            dispatch(deleteDepartment(id))
+            handleRowOptionsClose()
         }
 
 
@@ -304,78 +289,41 @@ const UserList = () => {
     const store = useSelector((state: RootState) => state.department)
 
     useEffect(() => {
-        setLoading(true)
-        setTimeout(() => {
-            dispatch(
-                fetchData({
-                    q: value
-                })
-            )
-            setLoading(false)
-        }, 3000)
 
-    }, [dispatch, value])
+        dispatch(
+            fetchData({
+                q: value,
+                branch
+            })
+        )
 
-    const handleRoleChange = useCallback((e: SelectChangeEvent) => {
-        setRole(e.target.value)
-    }, [])
+    }, [dispatch, value, branch])
 
 
     return (
         <>
-            {loading ?
-                <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-                    <CircularProgress sx={{ mb: 4 }} />
-                    <Typography>Loading...</Typography>
-                </Box> : (
-                    <Grid container spacing={6}>
-                        <Grid item xs={12} md={12} lg={4}>
-                            <AddDepartment loading={loading} setLoading={setLoading} formData={formData} />
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={8}>
-                            <Card>
-                                <CardContent>
-                                    <Grid container spacing={6}>
-                                        <Grid item sm={4} xs={12}>
-                                            <FormControl fullWidth>
-                                                <InputLabel id='role-select'>Select Branch</InputLabel>
-                                                <Select
-                                                    fullWidth
-                                                    value={role}
-                                                    id='select-branch'
-                                                    label='Select Branch'
-                                                    labelId='branch-select'
-                                                    onChange={handleRoleChange}
-                                                    inputProps={{ placeholder: 'Select Role' }}
-                                                >
-                                                    <MenuItem value=''>Select Role</MenuItem>
-                                                    <MenuItem value='admin'>Admin</MenuItem>
-                                                    <MenuItem value='author'>Author</MenuItem>
-                                                    <MenuItem value='editor'>Editor</MenuItem>
-                                                    <MenuItem value='maintainer'>Maintainer</MenuItem>
-                                                    <MenuItem value='subscriber'>Subscriber</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <DataGrid
-                                            autoHeight
-                                            rows={store.data}
-                                            columns={columns}
-                                            checkboxSelection
-                                            pageSize={pageSize}
-                                            disableSelectionOnClick
-                                            rowsPerPageOptions={[10, 25, 50]}
-                                            onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                                        />
-                                    </Grid>
-                                </CardContent>
-                            </Card >
+            <Grid container spacing={6}>
+                <Grid item xs={12} md={12} lg={4}>
+                    <AddDepartment branch={branch} setBranch={setBranch} formData={formData} />
+                </Grid>
+                <Grid item xs={12} md={12} lg={8}>
+                    <Card>
+                        <CardContent>
+                            <Grid item xs={12}>
+                                <DataGrid
+                                    autoHeight
+                                    rows={store.data}
+                                    columns={columns}
+                                    pageSize={pageSize}
+                                    rowsPerPageOptions={[10, 25, 50]}
+                                    onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
+                                />
+                            </Grid>
+                        </CardContent>
+                    </Card >
 
-                        </Grid>
-                     </Grid >
-                )}
+                </Grid>
+            </Grid >
         </>
     )
 }

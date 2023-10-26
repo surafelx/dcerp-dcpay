@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent, useCallback } from 'react'
+import { useState, useEffect, MouseEvent } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -14,11 +14,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
 import CardContent from '@mui/material/CardContent'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import TextField from '@mui/material/TextField'
-import FormHelperText from '@mui/material/FormHelperText'
 
 
 
@@ -32,12 +28,10 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { useDispatch, useSelector } from 'react-redux'
 
 import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import FormControl from '@mui/material/FormControl'
-import CardHeader from '@mui/material/CardHeader'
 
-import Button from '@mui/material/Button'
+
 
 // ** Actions Imports
 import { fetchData, deleteSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
@@ -47,11 +41,8 @@ import { RootState, AppDispatch } from 'src/store'
 import { SubParameterDefinitionType } from 'src/types/apps/File/ParameterDefinition/subParameterDefinitionTypes'
 
 
-// ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
-import { addSubParameterDefinition, editSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
 
-// import AddSubParameterDefinition from 'src/views/dc-pay/forms/File/ParameterDefinition/AddSubParameterDefinition'
+import AddSubParameterDefinition from 'src/views/dc-pay/forms/File/ParameterDefinition/AddSubParameterDefinition'
 
 
 const schema = yup.object().shape({
@@ -86,9 +77,9 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 
 const UserList = () => {
     // ** State
-    const [value, setValue] = useState<string>('')
+    const [mainParameterDefinition, setMainParameterDefinition] = useState<string>('')
+    const [value, ] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-    const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
     const [parameter, setParameter] = useState<string>('')
 
 
@@ -172,7 +163,6 @@ const UserList = () => {
                         Edit
                     </MenuItem>
                     <MenuItem onClick={handleDelete}>
-                        {/* <DeleteOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Delete
                     </MenuItem>
                 </Menu>
@@ -184,11 +174,35 @@ const UserList = () => {
         {
             flex: 0.2,
             minWidth: 230,
+            field: 'mainParameter',
+            headerName: 'Main',
+            renderCell: ({ row }: CellType) => {
+                const { mainParameterName } = row
+
+                return (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${mainParameterName}`}
+                            </Typography>
+                        </Box>
+                    </Box>
+                )
+            }
+        },
+        {
+            flex: 0.2,
+            minWidth: 230,
             field: 'parameterName',
             headerName: 'Parameter Name',
             renderCell: ({ row }: CellType) => {
                 const { parameterName } = row
-
+                
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -228,10 +242,7 @@ const UserList = () => {
     const store = useSelector((state: RootState) => state.subParameterDefinition)
 
     const {
-        control,
-        handleSubmit,
         reset,
-        formState: { errors }
     } = useForm({
         defaultValues: emptyValues,
         mode: 'onBlur',
@@ -243,148 +254,36 @@ const UserList = () => {
         dispatch(
             fetchData({
                 q: value,
-                parameter
+                parameter: mainParameterDefinition
             })
         )
 
-    }, [dispatch, parameter, value])
-
-    const handleFilter = useCallback((val: string) => {
-        setValue(val)
-    }, [])
-
-
-    const handleParameterChange = useCallback((e: SelectChangeEvent) => {
-        reset({ parameterName: '' })
-        setParameter(e.target.value)
-    }, [reset])
-
-
-
-    const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
-
-    const onSubmit = (data: any) => {
-        data.parameterId = parameter
-        if (data.id) {
-            dispatch(editSubParameterDefinition({ ...data, }))
-        } else {
-            dispatch(addSubParameterDefinition({ ...data, }))
-        }
-        dispatch(
-            fetchData({
-                q: value,
-                parameter
-            })
-        )
-        reset({ parameterName: '' })
-    }
-
-    const mainParameterDefinitions = useSelector((state: RootState) => state.mainParameterDefinition)
-
-    const clearAllFields = () => {
-        // setEmployee('')
-        // setTransaction('')
-        reset(emptyValues)
-    }
+    }, [dispatch, mainParameterDefinition, value])
 
 
 
     return (
         <>
-
             <Grid container spacing={6}>
                 <Grid item xs={12} md={12} lg={4}>
-                    <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                        <Card>
-                            <CardHeader title='Sub Parameter Definition' />
-                            <CardContent>
-                                <Grid container spacing={5}>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id='parameter-select'>Select Main Parameter</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                value={parameter}
-                                                id='select-parameter'
-                                                label='Select Main Parameter'
-                                                labelId='parameter-select'
-                                                onChange={handleParameterChange}
-                                                inputProps={{ placeholder: 'Select Main Parameter' }}
-                                            >
-                                                {
-                                                    mainParameterDefinitions.data.map(({ id, parameterName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{parameterName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth sx={{ mb: 4 }}>
-                                            <Controller
-                                                name='parameterName'
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field: { value, onChange, onBlur } }) => (
-                                                    <TextField
-                                                        autoFocus
-                                                        label='Sub Parameter Name'
-                                                        value={value}
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
-                                                        error={Boolean(errors.parameterName)}
-                                                        placeholder='Enter Sub Parameter Name'
-                                                    />
-                                                )}
-                                            />
-                                            {errors.parameterName && <FormHelperText sx={{ color: 'error.main' }}>{errors.parameterName.message}</FormHelperText>}
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                                <Grid container spacing={5}>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth>
-                                            <Button color='primary' fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                                                Submit
-                                            </Button>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth>
-                                            <Button color='secondary' fullWidth size='large' onClick={() => clearAllFields()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                                                Reset
-                                            </Button>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </form>
-
+                   <AddSubParameterDefinition formData={formData} mainParameterDefinition={mainParameterDefinition} setMainParameterDefinition={setMainParameterDefinition}/>
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
                     <Card>
                         <CardContent>
                             <Grid item xs={12}>
-                                <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
                                 <DataGrid
                                     autoHeight
                                     rows={store.data}
                                     columns={columns}
-                                    checkboxSelection
                                     pageSize={pageSize}
-                                    disableSelectionOnClick
                                     rowsPerPageOptions={[10, 25, 50]}
                                     onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                                 />
                             </Grid>
                         </CardContent>
                     </Card >
-
                 </Grid>
-
             </Grid >
         </>
     )

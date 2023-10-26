@@ -84,55 +84,12 @@ const PayrollAdvice = () => {
 
     const [value] = useState<string>('')
     
-    // const [status,] = useState<string>('')
 
-    // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.payrollAdvice)
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
-
-
-    // const [progress, setProgress] = useState(0); // Initial progress value
-    
-    // const generateExcelFile = () => {
-    //     // Your data processing logic here
-    
-    //     const dataProcessingDelay = 1000;
-    //     const steps = 10;
-    //     let currentProgress = 0;
-    
-    //     const processStep = () => {
-    //       if (currentProgress < 100) {
-    //         currentProgress += 100 / steps;
-            
-    //         setProgress(currentProgress);
-    //         if (currentProgress < 100) {
-    //           setTimeout(processStep, dataProcessingDelay / steps);
-    //         }
-    //       }
-    //     };
-    
-    //     processStep();
-    //   };
-
-  
-    //   useEffect(() => {
-    //     setProgress(0);
-    //   }, []);
-
-    // useEffect(() => {
-    //     dispatch(
-    //         fetchData({
-    //             branch,
-    //             department,
-    //             q: value,
-    //             currentPlan: ''
-    //         })
-    //     )
-    // }, [dispatch, branch, department, status, value])
-
 
     useEffect(() => {
         dispatch(
@@ -195,7 +152,6 @@ const PayrollAdvice = () => {
             setDepartment('All')
         } else {
         }
-
     }
 
 
@@ -320,21 +276,6 @@ const PayrollAdvice = () => {
                                     Download
                                 </Button>
                             </Grid>
-                              {/* <Grid item xs={12}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <LinearProgress   value={progress} variant='determinate' sx={{
-                                        mr: 4,
-                                        height: 6,
-                                        width: '100%',
-                                        borderRadius: 8,
-                                        backgroundColor: 'background.default',
-                                        '& .MuiLinearProgress-bar': {
-                                            borderRadius: 8
-                                        }
-                                    }} />
-                                   <Typography variant='body2'>{`${progress.toFixed(2)}%`}</Typography>
-                                </Box>
-                            </Grid> */}
                         </Grid>
                         
                     </CardContent>

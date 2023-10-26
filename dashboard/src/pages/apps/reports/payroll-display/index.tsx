@@ -1,6 +1,7 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
 
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -19,6 +20,8 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { useDispatch, useSelector } from 'react-redux'
 
 
+import Button from '@mui/material/Button'
+import { utils, writeFile } from 'xlsx';
 
 // ** Actions Imports
 import { fetchData } from 'src/store/apps/Reports/PayrollDisplay'
@@ -72,9 +75,9 @@ const UserList = () => {
             headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <div style={{width: '100%'}}>
-                        <div style={{'textAlign': 'right'}}>
-                        {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                    <div style={{ width: '100%' }}>
+                        <div style={{ 'textAlign': 'right' }}>
+                            {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
                         </div>
                     </div>
                 )
@@ -87,16 +90,40 @@ const UserList = () => {
             headerName: 'Amount',
             renderCell: ({ row }: CellType) => {
                 return (
-                    <div style={{width: '100%'}}>
-                    <div style={{'textAlign': 'right'}}>
-                    {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                    <div style={{ width: '100%' }}>
+                        <div style={{ 'textAlign': 'right' }}>
+                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                        </div>
                     </div>
-                </div>
                 )
             }
         },
     ]
 
+
+    const generateExcelFile = () => {
+
+        // Your data should be structured as an array of arrays
+
+
+        const tableData = [
+            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
+            ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
+                employeeCode,
+                employeeName,
+                parseFloat(totalDeductions).toFixed(2),
+                parseFloat(totalEarnings).toFixed(2),
+                parseFloat(netPay).toFixed(2),
+            ]),
+        ]
+
+        const workbook = utils.book_new();
+        const worksheet = utils.aoa_to_sheet(tableData);
+
+        utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        writeFile(workbook, 'your_file_name.xlsx');
+    };
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -129,51 +156,85 @@ const UserList = () => {
 
 
     const handleEmployeeChange = (e: any, newValue: any) => {
-        if(newValue?.id) {
+        if (newValue?.id) {
             setEmployeeObject(newValue)
             setEmployee(newValue.id)
         }
-      }
+    }
 
     return (
-        <Grid container spacing={6}>
+        <Grid container spacing={3}>
             <Grid item xs={12}>
                 <Card>
                     <CardHeader title='Payroll Display' />
                     <CardContent>
-                        <Grid container spacing={6}>
+                        <Grid container spacing={3}>
                             <Grid item xs={2}>
-                            <FormControl fullWidth>
-                                        <Autocomplete
-                                            autoSelect
-                                            size={'small'}
-                                            value={employeeObject}
-                                            options={employeeStore.data}
-                                            onChange={handleEmployeeChange}
-                                            isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
-                                            id='autocomplete-controlled'
-                                            getOptionLabel={(option: any) => option.employeeCode}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <FormControl fullWidth>
-                                        <Autocomplete
-                                            autoSelect
-                                            size={'small'}
-                                            value={employeeObject}
-                                            options={employeeStore.data}
-                                            onChange={handleEmployeeChange}
-                                            id='autocomplete-controlled'
-                                            isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
-                                            getOptionLabel={(option: any) => option.firstName}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
-                                        />
-                                    </FormControl>
+                                <FormControl fullWidth>
+                                    <Autocomplete
+                                        autoSelect
+                                        size={'small'}
+                                        value={employeeObject}
+                                        options={employeeStore.data}
+                                        onChange={handleEmployeeChange}
+                                        isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
+                                        id='autocomplete-controlled'
+                                        getOptionLabel={(option: any) => option.employeeCode}
+                                        renderInput={params => <TextField {...params} label='Select Employee' />}
+                                    />
+                                </FormControl>
                             </Grid>
-
+                            <Grid item xs={4}>
+                                <FormControl fullWidth>
+                                    <Autocomplete
+                                        autoSelect
+                                        size={'small'}
+                                        value={employeeObject}
+                                        options={employeeStore.data}
+                                        onChange={handleEmployeeChange}
+                                        id='autocomplete-controlled'
+                                        isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
+                                        getOptionLabel={(option: any) => option.firstName}
+                                        renderInput={params => <TextField {...params} label='Select Employee' />}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={6}></Grid>
+                            <Grid item xs={4}>
+                            <Button
+                                size='small'
+                                fullWidth
+                                color='primary'
+                                variant='outlined'
+                                onClick={generateExcelFile}
+                            >
+                                Preview
+                            </Button>
                         </Grid>
+                        <Grid item xs={4}>
+                            <Button
+                                size='small'
+                                fullWidth
+                                color='primary'
+                                variant='outlined'
+                                onClick={generateExcelFile}
+                            >
+                                Print
+                            </Button>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button
+                                size='small'
+                                fullWidth
+                                color='primary'
+                                variant='outlined'
+                                onClick={generateExcelFile}
+                            >
+                                Download
+                            </Button>
+                        </Grid>
+                        </Grid>
+                       
                     </CardContent>
                 </Card>
             </Grid>
@@ -226,7 +287,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
-                                         dir={'rtl'}
+                                        dir={'rtl'}
                                         disabled={true}
                                         label='Total Earning'
                                         value={`${Number(totalEarnings).toFixed(2)}`}
@@ -248,7 +309,7 @@ const UserList = () => {
                             <Grid item sm={3} xs={12}>
                                 <FormControl fullWidth sx={{ mb: 4 }}>
                                     <TextField
-                                         dir={'rtl'}
+                                        dir={'rtl'}
                                         disabled={true}
                                         label='Net Pay'
                                         value={`${Number(totalEarnings - totalDeductions).toFixed(2)}`}

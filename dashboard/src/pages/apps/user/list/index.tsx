@@ -392,9 +392,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
             autoHeight
             rows={store.data}
             columns={columns}
-            checkboxSelection
             pageSize={pageSize}
-            disableSelectionOnClick
             rowsPerPageOptions={[10, 25, 50]}
             onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
           />

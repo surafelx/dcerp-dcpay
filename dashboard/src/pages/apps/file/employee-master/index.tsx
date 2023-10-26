@@ -286,9 +286,11 @@ const UserList = () => {
             renderCell: ({ row }: CellType) => {
 
                 return (
-                    <Typography noWrap variant='body2'>
-                        {row.basicSalary}
-                    </Typography>
+                    <div style={{ width: '100%' }}>
+                    <div style={{ 'textAlign': 'right' }}>
+                        {parseFloat(row.basicSalary).toFixed(2)}
+                    </div>
+                </div>
                 )
             }
         },

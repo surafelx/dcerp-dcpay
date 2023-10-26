@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 
 // ** MUI Imports
@@ -10,17 +10,15 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 
-import InputLabel from '@mui/material/InputLabel'
 
+import Autocomplete from '@mui/material/Autocomplete'
 
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 
 // ** Third Party Imports
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
+import Grid from '@mui/material/Grid'
 
 // ** Store Imports
 import { useDispatch } from 'react-redux'
@@ -54,7 +52,10 @@ const emptyValues = {
 
 
 
-const AddDepartment = ({ formData, setLoading }: any) => {
+const AddDepartment = ({ formData, branch, setBranch }: any) => {
+
+
+    const [branchObject, setBranchObject] = useState<any>(null)
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -70,7 +71,7 @@ const AddDepartment = ({ formData, setLoading }: any) => {
         )
     }, [dispatch])
 
- 
+
 
     const {
         control,
@@ -88,16 +89,22 @@ const AddDepartment = ({ formData, setLoading }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        setLoading(true)
-        setTimeout(() => {
-            if (data.id) {
-                dispatch(editDepartment({ ...data, }))
-            } else {
-                dispatch(addDepartment({ ...data, }))
-            }
-            reset(emptyValues)
-            setLoading(false)
-        }, 3000) 
+        data.branchId = branch
+        if (data.id) {
+            dispatch(editDepartment({ ...data, }))
+        } else {
+            dispatch(addDepartment({ ...data, }))
+        }
+        reset(emptyValues)
+
+    }
+
+
+    const handleBranchChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setBranchObject(newValue)
+            setBranch(newValue.id)
+        }
     }
 
     return (
@@ -105,119 +112,128 @@ const AddDepartment = ({ formData, setLoading }: any) => {
             <CardHeader title='Add Department' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='branchId'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <>
-                                    <InputLabel id='demo-simple-select-outlined-label'>Select Branch</InputLabel>
-                                    <Select
-                                        label='Select Branch'
-                                        value={value}
-                                        id='demo-simple-select-outlined'
-                                        labelId='demo-simple-select-outlined-label'
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                    >
-                                        {
-                                            branchStore.data.map(({ id, branchName }: any, index: any) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{branchName}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </>
-
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='departmentCode'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Department Code'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.departmentCode)}
-                                    placeholder='Enter Department Code'
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={branchObject}
+                                    options={branchStore.data}
+                                    onChange={handleBranchChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.branchName}
+                                    renderInput={params => <TextField {...params} label='Select Branch' />}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='departmentName'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Department Name'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.departmentName)}
-                                    placeholder='Enter Department Name'
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='departmentCode'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Department Code'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.departmentCode)}
+                                            placeholder='Enter Department Code'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='permanentAccount'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Permanent Account'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.permanentAccount)}
-                                    placeholder='Permanent Account'
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='departmentName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Department Name'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.departmentName)}
+                                            placeholder='Enter Department Name'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='contractAccount'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Contract Account'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.contractAccount)}
-                                    placeholder='Contract Account'
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='permanentAccount'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Permanent Account'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.permanentAccount)}
+                                            placeholder='Permanent Account'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Submit
-                        </Button>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                            Reset
-                        </Button>
-                    </FormControl>
-
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='contractAccount'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Contract Account'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.contractAccount)}
+                                            placeholder='Contract Account'
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained'>
+                                    Submit
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <Button
+                                    color='secondary'
+                                    fullWidth size='small'
+                                    onClick={() => {
+                                        reset(emptyValues)
+                                        setBranchObject({ id: '', branchName: '' })
+                                        setBranch()
+                                    }} type='reset' variant='contained'>
+                                    Reset
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </form>
 
             </CardContent>

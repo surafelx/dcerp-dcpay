@@ -1,5 +1,5 @@
 // ** React Imports
-import {useEffect } from 'react'
+import { useEffect } from 'react'
 
 
 // ** MUI Imports
@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
+import Grid from '@mui/material/Grid'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -54,7 +55,7 @@ const AddMenuLevelOne = ({ formData, setLoading }: any) => {
         resolver: yupResolver(schema)
     })
 
-    
+
     useEffect(() => {
         reset(formData);
     }, [formData, reset])
@@ -69,45 +70,53 @@ const AddMenuLevelOne = ({ formData, setLoading }: any) => {
             }
             reset(emptyValues)
             setLoading(false)
-        }, 3000) 
+        }, 3000)
     }
-    
+
 
     return (
         <Card>
             <CardHeader title='Add Main Parameter' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='parameterName'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Parameter Name'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.parameterName)}
-                                    placeholder='Enter Parameter Name'
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth >
+                                <Controller
+                                    name='parameterName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Parameter Name'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.parameterName)}
+                                            placeholder='Enter Parameter Name'
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Submit
-                        </Button>
-                    </FormControl>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained'>
+                                    Submit
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
 
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                            Reset
-                        </Button>
-                    </FormControl>
-
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' color='secondary' onClick={() => reset()} type='reset' variant='contained'>
+                                    Reset
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </form>
 
             </CardContent>

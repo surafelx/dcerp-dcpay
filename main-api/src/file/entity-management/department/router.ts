@@ -9,9 +9,10 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', } = req.query ?? ''
+            const { q = '', branch= null } = req.query ?? ''
+            const branchId = branch
             const queryLowered = q.toString().toLowerCase()
-            const departments = await departmentService.getAllFromOrganization(organizationId)
+            const departments = await departmentService.getAllFromOrganization(organizationId, branchId)
             const renamedDepartments = departments.map(({ id, branch_id, branch_name, department_code, department_name, permanent_account, contract_account }) => ({
                 id,
                 branchId: branch_id,

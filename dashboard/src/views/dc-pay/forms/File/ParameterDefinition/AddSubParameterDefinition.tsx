@@ -1,5 +1,5 @@
 // ** React Imports
-import {   useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 
 // ** MUI Imports
@@ -10,12 +10,12 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 
-import InputLabel from '@mui/material/InputLabel'
+import Grid from '@mui/material/Grid'
 
 
+import Autocomplete from '@mui/material/Autocomplete'
 
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
+
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -56,10 +56,13 @@ const emptyValues = {
 
 
 const AddMenuLevelTwo = ({
-    formData,
-    setLoading
+    mainParameterDefinition,
+    setMainParameterDefinition,
+    formData
 }: any) => {
 
+    const [mainParameterDefinitionObject, setMainParameterDefinitionObject] = useState<any>(null)
+    
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
@@ -71,7 +74,7 @@ const AddMenuLevelTwo = ({
         )
     }, [dispatch])
 
-  const {
+    const {
         control,
         handleSubmit,
         reset,
@@ -88,87 +91,91 @@ const AddMenuLevelTwo = ({
 
     // any type used
     const onSubmit = (data: any) => {
-        setLoading(true)
-        setTimeout(() => {
-            if (data.id) {
-                dispatch(editSubParameterDefinition({ ...data, }))
-            } else {
-                dispatch(addSubParameterDefinition({ ...data, }))
-            }
-            reset(emptyValues)
-            setLoading(false)
-        }, 3000) 
+        data.parameterId = mainParameterDefinition
+        if (data.id) {
+            dispatch(editSubParameterDefinition({ ...data, }))
+        } else {
+            dispatch(addSubParameterDefinition({ ...data, }))
+        }
+        reset(emptyValues)
+
     }
 
 
     const mainParameterDefinitions = useSelector((state: RootState) => state.mainParameterDefinition)
+
+
+    const handleMainParameterDefinitionChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setMainParameterDefinitionObject(newValue)
+            setMainParameterDefinition(newValue.id)
+        }
+    }
+
 
     return (
         <Card>
             <CardHeader title='Add Sub Parameter' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='parameterId'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <>
-                                    <InputLabel id='demo-simple-select-autoWidth-label'>Main Parameter Definition</InputLabel>
-                                    <Select
-                                        label='Main Parameter Definition'
-                                        value={value}
-                                        id='demo-simple-select-autoWidth'
-                                        labelId='demo-simple-select-autoWidth-label'
-                                        onBlur={onBlur}
-                                        onChange={onChange}
-                                    >
-                                        {
-                                            mainParameterDefinitions.data.map(({ id, parameterName }, index) => {
-                                                return (
-                                                    <MenuItem key={index} value={id}>{parameterName}</MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </>
-
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 4 }}>
-                        <Controller
-                            name='parameterName'
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field: { value, onChange, onBlur } }) => (
-                                <TextField
-                                    autoFocus
-                                    label='Sub Parameter Name'
-                                    value={value}
-                                    onBlur={onBlur}
-                                    onChange={onChange}
-                                    error={Boolean(errors.parameterName)}
-                                    placeholder='Sub Parameter Name'
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={mainParameterDefinitionObject}
+                                    options={mainParameterDefinitions.data}
+                                    onChange={handleMainParameterDefinitionChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.parameterName == value.parameterName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.parameterName}
+                                    renderInput={params => <TextField {...params} label='Select Main Parameter' />}
                                 />
-                            )}
-                        />
-                    </FormControl>
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                            Submit
-                        </Button>
-                    </FormControl>
-
-                    <FormControl fullWidth>
-                        <Button fullWidth size='large' onClick={() => reset()} type='reset' variant='contained' sx={{ mb: 7 }}>
-                            Reset
-                        </Button>
-                    </FormControl>
-
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <FormControl fullWidth sx={{ mb: 4 }}>
+                                <Controller
+                                    name='parameterName'
+                                    control={control}
+                                    rules={{ required: true }}
+                                    render={({ field: { value, onChange, onBlur } }) => (
+                                        <TextField
+                                            size={'small'}
+                                            autoFocus
+                                            label='Sub Parameter Name'
+                                            value={value}
+                                            onBlur={onBlur}
+                                            onChange={onChange}
+                                            error={Boolean(errors.parameterName)}
+                                            placeholder='Sub Parameter Name'
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' type='submit' variant='contained' sx={{ mb: 7 }}>
+                                    Submit
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth>
+                                <Button fullWidth size='small' color='secondary' onClick={() =>{ 
+                                    reset()
+                                    setMainParameterDefinitionObject({id: "", parameterName: ''})
+                                    setMainParameterDefinition()
+                                    }} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                    Reset
+                                </Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
                 </form>
- 
+
             </CardContent>
         </Card >
     )
