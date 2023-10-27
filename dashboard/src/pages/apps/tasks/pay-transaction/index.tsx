@@ -205,7 +205,8 @@ const UserList = () => {
         {
             flex: 0.15,
             field: 'transactionQuantity',
-            minWidth: 150,
+            minWidth: 300,
+            headerAlign: 'right',
             headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -221,12 +222,13 @@ const UserList = () => {
             flex: 0.15,
             field: 'transactionAmount',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Amount',
             renderCell: ({ row }: CellType) => {
                 return (
                     <div style={{ width: '100%' }}>
                         <div style={{ 'textAlign': 'right' }}>
-                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount" ||  row.transactionTypeName === "NA") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
                         </div>
                     </div>
                 )
@@ -255,7 +257,7 @@ const UserList = () => {
 
     const employeeStore = useSelector((state: RootState) => state.employee)
     const deductionStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount") && Number(transactionAmount))
-    const earningStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && Number(transactionAmount))
+    const earningStore = store.data.filter(({ transactionTypeName, transactionAmount, transactionName }: any) => ((transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && Number(transactionAmount)) || transactionName === 'Basic Salary')
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
     const handleTransactionValue = (transactionValue: any) => {
@@ -447,7 +449,9 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={earningStore}
-                                columns={columns}
+
+                                // @ts-ignore
+                                columns={columns} 
                                 pageSize={pageSize}
                                 disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}
@@ -465,7 +469,9 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={deductionStore}
-                                columns={columns}
+                                
+                                 // @ts-ignore
+                                columns={columns} 
                                 pageSize={pageSize}
                                 disableSelectionOnClick
                                 rowsPerPageOptions={[10, 25, 50]}

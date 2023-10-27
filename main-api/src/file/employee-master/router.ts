@@ -11,9 +11,11 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '',} = req.query ?? ''
+            const { q = '', branch = null, department = null} = req.query ?? ''
+            const branchId = branch
+            const departmentId = department
             const queryLowered = q.toString().toLowerCase()
-            const employees = await employeeService.getAllFromOrganization(organizationId)
+            const employees = await employeeService.getAllFromOrganization(organizationId, branchId, departmentId)
             const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name}) => ({
                 id,
                 employeeBranch: branch_id,
@@ -45,10 +47,10 @@ router.get('/',
             const filteredData = renamedEmployees.filter(
                 employee =>
                 (
+                    employee.employeeCode.toLowerCase().includes(queryLowered) ||
                     employee.firstName.toLowerCase().includes(queryLowered) ||
                     employee.lastName.toLowerCase().includes(queryLowered) ||
-                    employee.basicSalary.toLowerCase().includes(queryLowered) ||
-                    employee.employmentDate.toLowerCase().includes(queryLowered)
+                    employee.basicSalary.toLowerCase().includes(queryLowered)
                 )
             )
             res.send({

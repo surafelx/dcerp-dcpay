@@ -49,7 +49,7 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
             td.transaction_name,
             td.transaction_code,
             pd.parameter_name as transaction_type_name
-        FROM pay_transaction pt
+        FROM period_transactions pt
         INNER JOIN employee e1 ON pt.employee_id = e1.id
         INNER JOIN transaction_definition td ON pt.transaction_id = td.id
         INNER JOIN parameter_definition pd ON pd.id = td.transaction_type

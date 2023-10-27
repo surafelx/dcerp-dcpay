@@ -9,9 +9,9 @@ import processPayTransactionCSV from './tableUpdator/payTransaction'
 
 const setupProcess = async () => {
     try {
-        const organizationId = 'd0c482fc-49a4-4dc8-9e7f-3bcc797124ad'
-        const userId = 'acb73bde-39f7-487d-8ff3-0ffbfd568ad6'
-        const periodId = 'a2013470-165c-4d3e-975e-450f58c9d9a5'
+        const organizationId = 'e5ed5c8d-a8c3-4c53-a0e7-76fc5783c812'
+        const userId = '41598c55-4035-40e6-8ae2-d594fe4ef8ca'
+        const periodId = '2e11a84e-f2d7-45a8-8087-9323d5feb28d'
         
         const userInfo = {organizationId, userId, periodId}
 

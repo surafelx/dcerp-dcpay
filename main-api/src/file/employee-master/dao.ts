@@ -119,7 +119,16 @@ export const create = async (newMenu: any): Promise<any> => {
     return branch
 }
 
-export const getAllFromOrganization = async (organizationId: string, basicSalaryId: string): Promise<any> => {
+export const getAllFromOrganization = async (organizationId: string, basicSalaryId: string, branchId: any, departmentId: any): Promise<any> => {
+    let fixedBranchId: string | null = branchId
+    let fixedDepartmentId: string | null = departmentId
+
+    if (branchId === 'All')
+        fixedBranchId = null
+
+    if (departmentId === 'All')
+        fixedDepartmentId = null
+
     const { rows: employees } = await pool.query(`
     SELECT *
     FROM (
@@ -156,12 +165,15 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
         INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
         INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
         INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
-        WHERE e.organization_id = $1 AND 
-            pt.organization_id = $1 AND
-            pt.transaction_id = $2
+        WHERE 
+        e.organization_id = $1 AND 
+        pt.organization_id = $1 AND
+        pt.transaction_id = $2 AND 
+        e.branch_id = COALESCE($3, e.branch_id) AND 
+        e.department_id = COALESCE($4, e.department_id)
     ) AS subquery
     ORDER BY CAST(subquery.employee_code AS NUMERIC) ASC`,
-    [organizationId, basicSalaryId])
+        [organizationId, basicSalaryId, fixedBranchId, fixedDepartmentId])
     return employees
 }
 
@@ -174,7 +186,7 @@ export const getInfo = async (employeeId: any): Promise<any> => {
     FROM employee
     WHERE id=$1`,
         [employeeId])
-    
+
     return employees[0]
 }
 

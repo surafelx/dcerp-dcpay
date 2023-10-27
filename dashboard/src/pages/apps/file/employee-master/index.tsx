@@ -21,6 +21,7 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 
+
 // ** Icons Imports
 // import Laptop from 'mdi-material-ui/Laptop'
 // import ChartDonut from 'mdi-material-ui/ChartDonut'
@@ -43,7 +44,7 @@ import { RootState, AppDispatch } from 'src/store'
 import { EmployeesType } from 'src/types/apps/File/employeesTypes'
 
 // ** Custom Components Imports
-// import TableHeader from 'src/views/apps/user/list/TableHeader'
+import TableHeader from 'src/views/dc-pay/apps/File/EmployeeMaster/TableHeader'
 
 import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
@@ -57,7 +58,6 @@ interface CellType {
     row: EmployeesType
 }
 
-
 // ** Styled component for the link inside menu
 const MenuItemLink = styled('a')(({ theme }) => ({
     width: '100%',
@@ -69,13 +69,19 @@ const MenuItemLink = styled('a')(({ theme }) => ({
 }))
 
 const UserList = () => {
-    
+
     // ** State
-    const [role] = useState<string>('')
-    const [value,] = useState<string>('')
-    const [status] = useState<string>('')
+    const [value, setValue] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
+    const [branch, setBranch] = useState<string>('All')
+    const [branchObject, setBranchObject] = useState<any>({ id: 'All', branchName: 'All Branches' })
+    const [department, setDepartment] = useState<string>('All')
+    const [departmentObject, setDepartmentObject] = useState<any>({ id: 'All', departmentName: 'All Departments' })
+
+    const handleFilter = (val: string) => {
+        setValue(val)
+    }
 
     const [formData, setFormData] = useState({
         id: '',
@@ -239,14 +245,14 @@ const UserList = () => {
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                                <Typography
-                                    noWrap
-                                    component='a'
-                                    variant='body2'
-                                    sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                                >
-                                    {`${employeeCode}`}
-                                </Typography>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${employeeCode}`}
+                            </Typography>
                         </Box>
                     </Box>
                 )
@@ -264,14 +270,14 @@ const UserList = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             {/* <Link href={`/apps/user/view/${id}`} passHref> */}
-                                <Typography
-                                    noWrap
-                                    component='a'
-                                    variant='body2'
-                                    sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                                >
-                                    {`${employeeTitleName} ${firstName} ${middleName} ${lastName}`}
-                                </Typography>
+                            <Typography
+                                noWrap
+                                component='a'
+                                variant='body2'
+                                sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
+                            >
+                                {`${employeeTitleName} ${firstName} ${middleName} ${lastName}`}
+                            </Typography>
                             {/* </Link> */}
                         </Box>
                     </Box>
@@ -287,10 +293,10 @@ const UserList = () => {
 
                 return (
                     <div style={{ width: '100%' }}>
-                    <div style={{ 'textAlign': 'right' }}>
-                        {parseFloat(row.basicSalary).toFixed(2)}
+                        <div style={{ 'textAlign': 'right' }}>
+                            {parseFloat(row.basicSalary).toFixed(2)}
+                        </div>
                     </div>
-                </div>
                 )
             }
         },
@@ -353,39 +359,66 @@ const UserList = () => {
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.employee)
 
+    const departmentStore = useSelector((state: RootState) => state.department)
+    const branchStore = useSelector((state: RootState) => state.branches)
 
     useEffect(() => {
         dispatch(
             fetchData({
-                role,
-                status,
+                branch,
+                department,
                 q: value,
-                currentPlan: ''
             })
         )
-    }, [dispatch, role, status, value])
+    }, [dispatch, branch, department, value])
 
 
 
+    const handleBranchChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setBranchObject(newValue)
+            setBranch(newValue.id)
+        }
+    }
 
+
+
+    const handleDepartmentChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setDepartmentObject(newValue)
+            setDepartment(newValue.id)
+        }
+    }
 
 
     const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
-        <Grid container spacing={6}>
+        <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={5}>
                 <DatePickerWrapper>
-                    <AddEmployee formData={formData} />
+                    <AddEmployee formData={formData} employees={store.data} />
                 </DatePickerWrapper>
             </Grid>
             <Grid item xs={12} md={12} lg={7}>
                 <Card>
                     <CardHeader title='Employees' />
+                    <Grid item xs={12} sx={{ pl: 5, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <TableHeader
+                            branches={[...branchStore.data, {id: "All", branchName: 'All Branches'}]}
+                            departments={[...departmentStore.data.filter((department: any) => department.branchId == branch), {id: "All", departmentName: 'All Departments'}]}
+                            handleBranchChange={handleBranchChange}
+                            handleDepartmentChange={handleDepartmentChange}
+                            departmentObject={departmentObject}
+                            branchObject={branchObject}
+                            handleFilter={handleFilter}
+                            value={value} />
+                    </Grid>
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
                                 autoHeight
+                                disableSelectionOnClick
                                 rows={store.data}
                                 columns={columns}
                                 pageSize={pageSize}

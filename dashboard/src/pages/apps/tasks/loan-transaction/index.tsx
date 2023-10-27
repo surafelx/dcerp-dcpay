@@ -266,6 +266,7 @@ const UserList = () => {
             flex: 0.15,
             field: 'totalLoan',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Total Loan',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -281,6 +282,7 @@ const UserList = () => {
             flex: 0.15,
             field: 'transactionAmount',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Transaction Amount',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -296,6 +298,7 @@ const UserList = () => {
             flex: 0.15,
             field: 'remainingBalance',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Remaining Balance',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -586,6 +589,8 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={store.data}
+                                
+                                // @ts-ignore 
                                 columns={columns}
                                 pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
