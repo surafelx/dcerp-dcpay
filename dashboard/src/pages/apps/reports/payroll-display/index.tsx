@@ -72,6 +72,7 @@ const UserList = () => {
             flex: 0.15,
             field: 'transactionQuantity',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -87,6 +88,7 @@ const UserList = () => {
             flex: 0.15,
             field: 'transactionAmount',
             minWidth: 150,
+            headerAlign: 'right',
             headerName: 'Amount',
             renderCell: ({ row }: CellType) => {
                 return (
@@ -244,6 +246,8 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={earningStore}
+                                
+                                // @ts-ignore
                                 columns={columns}
                                 pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
@@ -257,6 +261,8 @@ const UserList = () => {
                             <DataGrid
                                 autoHeight
                                 rows={deductionStore}
+
+                                // @ts-ignore
                                 columns={columns}
                                 pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}

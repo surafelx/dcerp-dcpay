@@ -62,7 +62,7 @@ const PayrollAdvice = () => {
     const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
     const [value] = useState<string>('')
     const [status,] = useState<string>('')
-    const [filterValue, setFilterValue] = useState<any>('Select')
+    const [filterValue, setFilterValue] = useState<any>('All')
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()

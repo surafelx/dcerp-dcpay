@@ -130,6 +130,7 @@ const emptyValues = {
 
 const AddMenuLevelTwo = ({
     formData,
+    employees
 }: any) => {
 
     // @ts-ignore
@@ -139,7 +140,7 @@ const AddMenuLevelTwo = ({
     const [employmentTypeValue, setEmploymentTypeValue] = useState<any>('')
     const [contractStart, setContractStart] = useState<any>(new Date(startDate))
     const [contractEnd, setContractEnd] = useState<any>(new Date(endDate))
-    const [workingDaysPeriod, setWorkingDaysPeriod] = useState<any>(30)
+    const [workingDaysPeriod, setWorkingDaysPeriod] = useState<any>('')
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -199,7 +200,6 @@ const AddMenuLevelTwo = ({
     // any type used
 
     const onSubmit = (data: any) => {
-        data.workingDays = workingDaysPeriod
         if (data.contractDate) {
             data.contractStartDate = data.contractDate[0]
             data.contractEndDate = data.contractDate[1]
@@ -272,7 +272,13 @@ const AddMenuLevelTwo = ({
                                             autoFocus
                                             label='Code'
                                             value={value}
-                                            onBlur={onBlur}
+                                            onBlur={(e) => {
+                                                onBlur()
+                                                const selectedEmployee = employees.filter(({employeeCode}: any) => employeeCode == e.target.value )[0]
+                                                if(selectedEmployee)
+                                                    reset(selectedEmployee)
+                                            }
+                                            }
                                             onChange={(e) => {
                                                 onChange(e)
                                             }
@@ -698,12 +704,12 @@ const AddMenuLevelTwo = ({
                                     name='workingDays'
                                     control={control}
                                     rules={{ required: true }}
-                                    render={({ field: { onChange, onBlur } }) => (
+                                    render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
                                             size={'small'}
                                             autoFocus
                                             label='Days'
-                                            value={workingDaysPeriod}
+                                            value={value}
                                             onBlur={onBlur}
                                             onChange={onChange}
                                             error={Boolean(errors.workingDays)}
