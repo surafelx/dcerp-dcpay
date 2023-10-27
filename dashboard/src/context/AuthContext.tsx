@@ -94,8 +94,10 @@ const AuthProvider = ({ children }: Props) => {
             setUser({ ...response.data.userData })
           })
           .catch(() => {
-            handleLogout()
+            setUser(null)
             window.localStorage.removeItem('userData')
+            window.localStorage.removeItem(authConfig.storageTokenKeyName)
+            router.push('/login')
             window.localStorage.removeItem('refreshToken')
             window.localStorage.removeItem('accessToken')
             setUser(null)
@@ -110,7 +112,7 @@ const AuthProvider = ({ children }: Props) => {
       }
     }
     initAuth()
-  }, [router, handleLogout])
+  }, [router])
 
 
 
