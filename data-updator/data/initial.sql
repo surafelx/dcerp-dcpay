@@ -1,4 +1,7 @@
 -- Drop table 'tax_rate'
+DROP TABLE IF EXISTS processed_transactions;
+
+-- Drop table 'tax_rate'
 DROP TABLE IF EXISTS period_transactions;
 
 -- Drop table 'tax_rate'
