@@ -20,7 +20,9 @@ const getAllFromOrganization = async (organizationId: any, branchId: any, depart
 
 const getInfo = async (employeeId: any): Promise<any> => await employeeDao.getInfo(employeeId)
 
-const deleteEmployee = async (userId: string): Promise<any> => await employeeDao.deleteEmployee(userId)
+const deleteEmployee = async (userId: string): Promise<any> => {
+    await employeeDao.deleteEmployee(userId)
+}
 
 const updateEmployee = async (employeeData: any): Promise<any> => await employeeDao.updateEmployee(employeeData)
 

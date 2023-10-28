@@ -359,8 +359,9 @@ const InvoiceList = () => {
         <Grid item xs={12}>
           <Card>
             <TableHeader value={value} selectedRows={selectedRows} handleFilter={handleFilter} />
-            <DataGrid
-              autoHeight
+                                        <DataGrid
+                                rowHeight={40}
+                                autoHeight
               pagination
               rows={store.data}
               columns={columns}

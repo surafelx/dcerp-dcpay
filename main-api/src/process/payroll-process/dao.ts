@@ -372,6 +372,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               employee.first_name,
               employee.last_name,
               employee.employee_code,
+              employee.employee_account_number,
               pt.id AS processed_transaction_id,
               td.id AS transaction_id,
               td.transaction_code,
@@ -392,6 +393,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
           SELECT
             employee_id AS id,
             employee_code,
+            employee_account_number,
             first_name,
             ARRAY_AGG(
               JSONB_BUILD_OBJECT(
@@ -407,7 +409,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               )
             ) AS transactions
           FROM EmployeeTransactionData
-          GROUP BY employee_id, employee_code, first_name
+          GROUP BY employee_id, employee_code, first_name, employee_account_number
           ORDER BY CAST(employee_code AS NUMERIC) ASC;
           `,
         [userInfo.periodId])

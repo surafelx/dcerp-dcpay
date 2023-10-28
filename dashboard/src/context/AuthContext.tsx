@@ -130,3 +130,4 @@ const AuthProvider = ({ children }: Props) => {
 }
 
 export { AuthContext, AuthProvider }
+

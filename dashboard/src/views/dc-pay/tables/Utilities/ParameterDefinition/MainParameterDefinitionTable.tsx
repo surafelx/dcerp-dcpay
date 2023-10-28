@@ -289,6 +289,7 @@ return (
                         <Grid item xs={12}>
                             <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}

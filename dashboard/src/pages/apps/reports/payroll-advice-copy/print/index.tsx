@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux'
 
 import { AppDispatch, RootState } from 'src/store'
 
-import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
+import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -63,7 +63,7 @@ const InvoicePrint = () => {
   }, [dispatch, branch, department])
 
 
-  const store = useSelector((state: RootState) => state.payrollSheet)
+  const store = useSelector((state: RootState) => state.payrollAdvice)
 
 
   // @ts-ignore
@@ -224,7 +224,7 @@ const InvoicePrint = () => {
                     </TableHead>
                     <TableBody>
                       {
-                        earnings.filter(({transaction_amount}: any) => parseFloat(transaction_amount) != 0).map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
+                        earnings.map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
 
                           if (transaction_type_name === "Earning Quantity")
                             return (
@@ -257,7 +257,7 @@ const InvoicePrint = () => {
                     </TableHead>
                     <TableBody>
                       {
-                        deductions.filter(({transaction_amount}: any) => parseFloat(transaction_amount) != 0).map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
+                        deductions.map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
 
                           if (transaction_type_name === "Deduction Quantity")
                             return (

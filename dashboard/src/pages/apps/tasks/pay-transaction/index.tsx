@@ -205,7 +205,7 @@ const UserList = () => {
         {
             flex: 0.15,
             field: 'transactionQuantity',
-            minWidth: 300,
+            minWidth: 150,
             headerAlign: 'right',
             headerName: 'Quantity',
             renderCell: ({ row }: CellType) => {
@@ -447,6 +447,7 @@ const UserList = () => {
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={earningStore}
 
@@ -467,6 +468,7 @@ const UserList = () => {
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={deductionStore}
                                 

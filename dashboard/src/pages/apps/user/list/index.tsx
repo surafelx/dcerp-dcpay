@@ -389,6 +389,7 @@ const UserList = ({ apiData }: InferGetStaticPropsType<typeof getStaticProps>) =
           <Divider />
           <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
           <DataGrid
+           rowHeight={40}
             autoHeight
             rows={store.data}
             columns={columns}

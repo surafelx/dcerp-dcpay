@@ -53,6 +53,10 @@ import payrollDisplay from 'src/store/apps/Reports/PayrollDisplay'
 import payrollAdvice from 'src/store/apps/Reports/PayrollAdvice'
 
 
+// ** Reports - Payroll Sheet
+import payrollSheet from 'src/store/apps/Reports/PayrollSheet'
+
+
 // ** Settings - General Setup 
 import holiday from 'src/store/apps/Settings/GeneralSetup/HolidaySetup'
 import menuLevelOne from 'src/store/apps/Settings/GeneralSetup/MenuSetup/MenuLevelOne'
@@ -122,6 +126,9 @@ export const store = configureStore({
 
       // ** Reports - Payroll Advice
       payrollAdvice,
+
+      // ** Reports - Payroll Sheet
+      payrollSheet,
 
      // ** Settings -General Setup
      holiday, 
