@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux'
 
 import { AppDispatch, RootState } from 'src/store'
 
-import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
+import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
 
 // ** Layout Import
 import BlankLayout from 'src/@core/layouts/BlankLayout'
@@ -65,9 +65,9 @@ const InvoicePrint = () => {
   }, [dispatch, branch, department])
 
 
-  const store = useSelector((state: RootState) => state.payrollAdvice)
+  const store = useSelector((state: RootState) => state.payrollSheet)
 
-  
+
   // @ts-ignore
   const userData = JSON.parse(window.localStorage.getItem('userData'))
   const { organizationName } = userData
@@ -152,7 +152,7 @@ const InvoicePrint = () => {
                 variant='h6'
                 sx={{ ml: 2.5, fontWeight: 600, lineHeight: 'normal', textTransform: 'uppercase' }}
               >
-                
+
               </Typography>
             </Box>
             <div>
@@ -166,7 +166,7 @@ const InvoicePrint = () => {
             </div>
           </Box>
         </Grid>
-        
+
       </Grid>
 
       <Divider sx={{ my: theme => `${theme.spacing(6)} !important` }} />
@@ -199,16 +199,16 @@ const InvoicePrint = () => {
               <Typography variant='h6'>{`${branch}`}</Typography>
             </Grid>
             <Grid item xs={6}>
-            <Typography variant='body1'>Department</Typography>
+              <Typography variant='body1'>Department</Typography>
               <Typography variant='h6'>{`${department}`}</Typography>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
- 
+
       <Divider sx={{ mt: theme => `${theme.spacing(6)} !important`, mb: '0 !important' }} />
 
-      <Table sx={{ mb: 6 }}>
+      <Table sx={{ mb: 6, minWidth: 650 }} size='small'>
         <TableHead>
           <TableRow>
             <TableCell>Code</TableCell>
@@ -220,20 +220,26 @@ const InvoicePrint = () => {
         </TableHead>
         <TableBody>
           {
-            store.data.map(({ employeeCode, employeeName, netPay }, index) => {
+            store.data.map(({ employeeCode, employeeName, employeeAccountNumber, bankName, transactions, }: any, index) => {
+              const netPay = transactions?.filter(({ transaction_code }: any) => transaction_code == '99')[0]?.transaction_amount
+            
               return (
-                <TableRow key={index}>
+                <TableRow key={index} >
                   <TableCell>{`${employeeCode}`}</TableCell>
-                  <TableCell></TableCell>
                   <TableCell>{`${employeeName}`}</TableCell>
-                  <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>{`${bankName}`}</TableCell>
+                  <TableCell>{`${employeeAccountNumber}`}</TableCell>
+                  <TableCell>
+                    <div style={{ width: '100%' }}>
+                      <div style={{ 'textAlign': 'right' }}>
+                        {`${Number(netPay).toFixed(2)}`}
+                      </div>
+                    </div>
+                  </TableCell>
                 </TableRow>
               )
             })
           }
-
-
         </TableBody>
       </Table>
 
@@ -252,7 +258,7 @@ const InvoicePrint = () => {
         </Grid>
       </Grid>
 
-      
+
     </Box>
   )
 

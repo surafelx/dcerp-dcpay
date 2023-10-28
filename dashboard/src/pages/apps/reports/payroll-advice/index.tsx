@@ -21,23 +21,25 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import { styled } from '@mui/material/styles'
 import { BoxProps } from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
+
+
+// import LinearProgress from '@mui/material/LinearProgress'
 
 // ** Store  Imports
 import { useDispatch, useSelector } from 'react-redux'
 import Button from '@mui/material/Button'
-import Autocomplete from '@mui/material/Autocomplete'
 
 // ** Actions Imports
-import { fetchData } from 'src/store/apps/Reports/PayrollAdvice'
+import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
+
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 
 const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -49,55 +51,40 @@ const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     }
 }))
 
+const emptyValues = {
+    branch: 'All',
+    department: 'All'
+}
+
+
+const schema = yup.object().shape({
+    branch: yup.string(),
+    department: yup.string()
+})
 
 
 import { utils, writeFile } from 'xlsx';
 
+import Autocomplete from '@mui/material/Autocomplete'
+import TextField from '@mui/material/TextField'
 
 const PayrollAdvice = () => {
+
+
     // ** State
     const [branch, setBranch] = useState<string>('')
     const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
     const [department, setDepartment] = useState<string>('')
     const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
-    const [value] = useState<string>('')
-    const [status,] = useState<string>('')
-    const [filterValue, setFilterValue] = useState<any>('All')
 
-    // ** Hooks
+    const [value] = useState<string>('')
+
+
     const dispatch = useDispatch<AppDispatch>()
-    const store = useSelector((state: RootState) => state.payrollAdvice)
+    const store = useSelector((state: RootState) => state.payrollSheet)
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
-
-
-    const handleFilterChange = (e: any) => {
-        const selectedFilter = e.target.value
-        setFilterValue(selectedFilter)
-        setBranchObject({ id: '', branchName: '' })
-        setDepartmentObject({ id: '', departmentName: '' })
-        if (selectedFilter == 'All') {
-            setBranch('All')
-            setDepartment('All')
-        } else {
-        }
-
-    }
-
-
-
-    useEffect(() => {
-        dispatch(
-            fetchData({
-                branch,
-                department,
-                q: value,
-                currentPlan: ''
-            })
-        )
-    }, [dispatch, branch, department, status, value])
-
 
     useEffect(() => {
         dispatch(
@@ -113,14 +100,9 @@ const PayrollAdvice = () => {
     }, [dispatch])
 
 
-
     const generateExcelFile = () => {
-
-        // Your data should be structured as an array of arrays
-
-
         const tableData = [
-            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
+            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'],
             ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
                 employeeCode,
                 employeeName,
@@ -129,21 +111,22 @@ const PayrollAdvice = () => {
                 parseFloat(netPay).toFixed(2),
             ]),
         ]
-
         const workbook = utils.book_new();
         const worksheet = utils.aoa_to_sheet(tableData);
-
         utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
         writeFile(workbook, 'your_file_name.xlsx');
     };
+
+
+
+
     const handleBranchChange = (e: any, newValue: any) => {
         if (newValue?.id) {
             setBranchObject(newValue)
             setBranch(newValue.id)
+            setDepartmentObject({ departmentName: '', id: '' })
         }
     }
-
 
 
     const handleDepartmentChange = (e: any, newValue: any) => {
@@ -153,72 +136,76 @@ const PayrollAdvice = () => {
         }
     }
 
+    const {
+        handleSubmit,
+    } = useForm({
+        defaultValues: emptyValues,
+        mode: 'onBlur',
+        resolver: yupResolver(schema)
+    })
+
+    const onSubmit = (data: any) => {
+        data.branch = branch
+        data.department = department
+        dispatch(
+            fetchData({
+                branch,
+                department,
+                q: value,
+                currentPlan: ''
+            })
+        )
+    }
+
     return (
-        <Grid container spacing={6}>
-            <Grid container spacing={6}>
-                <Grid item xs={12}>
+        <Grid container spacing={3}>
+            <Grid item xl={12} md={12} xs={12}>
+                <form noValidate autoComplete='on' onSubmit={handleSubmit(onSubmit)}>
                     <Card>
                         <CardHeader title='Payroll Advice' />
                         <CardContent>
                             <Grid container spacing={3}>
-                                <Grid item sm={2} xs={12}>
+                                <Grid item xs={6}>
                                     <FormControl fullWidth>
-                                        <RadioGroup row aria-label='controlled' name='controlled' value={filterValue} onChange={handleFilterChange}>
-                                            <FormControlLabel key={0} value={'All'} control={<Radio size={'small'} />} label={'All'} />
-                                            <FormControlLabel key={1} value={'Select'} control={<Radio size={'small'} />} label={'Select'} />
-                                        </RadioGroup>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={branchObject}
+                                            options={[...branchStore.data, { id: "All", branchName: 'All Branches' }]}
+                                            onChange={handleBranchChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.branchName}
+                                            renderInput={params => <TextField {...params} label='Select Branch' />}
+                                        />
                                     </FormControl>
                                 </Grid>
-                                {filterValue !== 'All' ? (
-                                    <>
-                                        <Grid item sm={5} xs={12}>
-                                            <FormControl fullWidth>
-                                                <Autocomplete
-                                                    autoSelect
-                                                    size={'small'}
-                                                    value={branchObject}
-                                                    options={[...branchStore.data,]}
-                                                    onChange={handleBranchChange}
-                                                    isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
-                                                    id='autocomplete-controlled'
-                                                    getOptionLabel={(option: any) => option.branchName}
-                                                    renderInput={params => <TextField {...params} label='Select Branch' />}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item sm={5} xs={12}>
-                                            <FormControl fullWidth>
-                                                <Autocomplete
-                                                    autoSelect
-                                                    size={'small'}
-                                                    value={departmentObject}
-                                                    options={[...departmentStore.data.filter((dep: any) => dep.branchId == branch || branchObject.branchName == 'All' || dep.departmentName == 'All'), { id: 'all', departmentName: 'All' }]}
-                                                    onChange={handleDepartmentChange}
-                                                    isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
-                                                    id='autocomplete-controlled'
-                                                    getOptionLabel={(option: any) => option.departmentName}
-                                                    renderInput={params => <TextField {...params} label='Select Department' />}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Grid item sm={12} xs={12}></Grid>
-                                    </>
-                                )}
-                                <Grid item sm={4} xs={12}>
+                                <Grid item xs={6}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={departmentObject}
+                                            options={[...departmentStore.data.filter((dep: any) => dep.branchId == branch || branchObject.branchName == 'All' || dep.departmentName == 'All'), { id: 'All', departmentName: 'All Departments' }]}
+                                            onChange={handleDepartmentChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.departmentName}
+                                            renderInput={params => <TextField {...params} label='Select Department' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item sm={3} xs={12}>
                                     <Button
-                                        size='small'
-                                        fullWidth
                                         color='primary'
-                                        variant='outlined'
-                                        onClick={generateExcelFile}
+                                        fullWidth size='small'
+                                        type='submit'
+                                        variant='contained'
                                     >
                                         Preview
                                     </Button>
                                 </Grid>
-                                <Grid item sm={4} xs={12}>
+                                <Grid item sm={3} xs={12}>
                                     <Button
                                         fullWidth
                                         size={'small'}
@@ -226,12 +213,12 @@ const PayrollAdvice = () => {
                                         component={Link}
                                         color='primary'
                                         variant='outlined'
-                                        href={`/apps/process/payroll-process/print?branch=${branch}&department=${department}`}
+                                        href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
                                     >
                                         Print
                                     </Button>
                                 </Grid>
-                                <Grid item sm={4} xs={12}>
+                                <Grid item sm={3} xs={12}>
                                     <Button
                                         size='small'
                                         fullWidth
@@ -243,60 +230,99 @@ const PayrollAdvice = () => {
                                     </Button>
                                 </Grid>
                             </Grid>
+
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={6}>
-                        <Grid item xs={12}>
-                            <Card>
-                                <TableContainer>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Code</TableCell>
-                                                <TableCell>Name</TableCell>
-                                                <TableCell>Deductions</TableCell>
-                                                <TableCell>Earnings</TableCell>
-                                                <TableCell>Net</TableCell>
+                </form>
+            </Grid>
+            <Grid item xs={12}>
+                <Card>
+                    <TableContainer>
+                        <Table sx={{ minWidth: 650 }} size='small' >
+                        <TableHead>
+                                <TableRow>
+                                    <TableCell>Code</TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>
+                                        <div style={{ width: '100%' }}>
+                                            <div style={{ 'textAlign': 'right' }}>
+                                                Deductions
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ width: '100%' }}>
+                                            <div style={{ 'textAlign': 'right' }}>
+                                                Earnings
+                                            </div>
+                                        </div>
+
+                                    </TableCell>
+                                    <TableCell>
+                                        <div style={{ width: '100%' }}>
+                                            <div style={{ 'textAlign': 'right' }}>
+                                                Net Pay
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    store.data.map(({ employeeCode, employeeName, transactions, }: any, index) => {
+                                        const grossSalary = transactions?.filter(({ transaction_code }: any) => transaction_code == '52')[0]?.transaction_amount
+                                        const netPay = transactions?.filter(({ transaction_code }: any) => transaction_code == '99')[0]?.transaction_amount
+                                        const totalDeductions = grossSalary - netPay
+
+                                        return (
+                                            <TableRow key={index} >
+                                                <TableCell>{`${employeeCode}`}</TableCell>
+                                                <TableCell>{`${employeeName}`}</TableCell>
+                                                <TableCell>
+                                                    <div style={{ width: '100%' }}>
+                                                        <div style={{ 'textAlign': 'right' }}>
+                                                            {`${Number(totalDeductions).toFixed(2)}`}
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    <div style={{ width: '100%' }}>
+                                                        <div style={{ 'textAlign': 'right' }}>
+                                                            {`${Number(grossSalary).toFixed(2)}`}
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div style={{ width: '100%' }}>
+                                                        <div style={{ 'textAlign': 'right' }}>
+                                                            {`${Number(netPay).toFixed(2)}`}
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {
-                                                store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }, index) => {
-                                                    return (
-                                                        <TableRow key={index}>
-                                                            <TableCell>{`${employeeCode}`}</TableCell>
-                                                            <TableCell>{`${employeeName}`}</TableCell>
-                                                            <TableCell>{`${Number(totalDeductions).toFixed(2)}`}</TableCell>
-                                                            <TableCell>{`${Number(totalEarnings).toFixed(2)}`}</TableCell>
-                                                            <TableCell>{`${Number(netPay).toFixed(2)}`}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })
-                                            }
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                                <CardContent>
-                                    <Grid container>
-                                        <Grid item xs={12} sm={4} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
-                                        </Grid>
-                                        <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-                                            <Divider />
-                                            <CalcWrapper>
-                                                <Typography variant='body2'>Total:</Typography>
-                                                <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                                                    {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
-                                                </Typography>
-                                            </CalcWrapper>
-                                        </Grid>
-                                    </Grid>
-                                </CardContent>
-                            </Card>
+                                        )
+                                    })
+                                }
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <CardContent>
+                        <Grid container>
+                            <Grid item xs={12} sm={4} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
+                            </Grid>
+                            <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
+                                <Divider />
+                                <CalcWrapper>
+                                    <Typography variant='body2'>Total:</Typography>
+                                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
+                                        {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
+                                    </Typography>
+                                </CalcWrapper>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Grid>
+                    </CardContent>
+                </Card>
             </Grid>
         </Grid>
 

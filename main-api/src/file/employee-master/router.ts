@@ -68,6 +68,7 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log(req.body)
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)

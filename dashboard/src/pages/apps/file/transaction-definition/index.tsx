@@ -58,7 +58,7 @@ interface CellType {
 const UserList = () => {
     // ** State
     const [role] = useState<string>('')
-    const [value, ] = useState<string>('')
+    const [value,] = useState<string>('')
     const [status] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
 
@@ -433,8 +433,8 @@ const UserList = () => {
             headerName: 'Affect Back Payroll',
             renderCell: ({ row }: CellType) => {
                 const { affectBackPayroll } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Typography
@@ -481,7 +481,7 @@ return (
             headerName: 'Transaction Group',
             renderCell: ({ row }: CellType) => {
                 const { transactionGroupName } = row
-                
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -553,7 +553,7 @@ return (
             headerName: 'Contra. GL Account',
             renderCell: ({ row }: CellType) => {
                 const { contractGLAccount } = row
-                
+
                 return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
@@ -617,19 +617,20 @@ return (
         )
     }, [dispatch, role, status, value])
 
-   
+
 
     return (
         <Grid container spacing={6}>
-            <Grid item  xs={12} md={12} lg={5}>
+            <Grid item xs={12} md={12} lg={5}>
                 <AddTransactionDefinition formData={formData} />
             </Grid>
-            <Grid item  xs={12} md={12} lg={7}>
+            <Grid item xs={12} md={12} lg={7}>
                 <Card>
                     <CardHeader title='Transaction Definition' />
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
+                                rowHeight={40}
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}

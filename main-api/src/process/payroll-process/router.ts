@@ -21,12 +21,14 @@ router.get('/',
             const renamedProcessedTransactions = processedTransactions.map(({
                 id,
                employee_code,
+               employee_account_number,
                first_name,
                transactions
             }: any) => ({
                 id,
               employeeCode: employee_code,
               employeeName: first_name,
+              employeeAccountNumber: employee_account_number,
               transactions
             }));
             const filteredData = renamedProcessedTransactions.filter(

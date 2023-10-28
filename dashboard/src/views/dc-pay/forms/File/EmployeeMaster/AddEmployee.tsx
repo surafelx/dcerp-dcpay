@@ -42,7 +42,7 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 import Grid from '@mui/material/Grid'
 import format from 'date-fns/format'
 
-
+import Autocomplete from '@mui/material/Autocomplete'
 
 interface CustomInputProps {
     value: DateType
@@ -87,7 +87,7 @@ const schema = yup.object().shape({
     employeeType: yup.string(),
     monthlyWorkingHours: yup.string(),
     basicSalary: yup.string(),
-pensionNumber: yup.string().nullable(),
+    pensionNumber: yup.string().nullable(),
     pensionStatus: yup.string(),
     tinNumber: yup.string(),
     workingDays: yup.string(),
@@ -141,6 +141,10 @@ const AddMenuLevelTwo = ({
     const [contractStart, setContractStart] = useState<any>(new Date(startDate))
     const [contractEnd, setContractEnd] = useState<any>(new Date(endDate))
     const [workingDaysPeriod, setWorkingDaysPeriod] = useState<any>('')
+    const [branch, setBranch] = useState<string>('')
+    const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
+    const [department, setDepartment] = useState<string>('')
+    const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -200,6 +204,8 @@ const AddMenuLevelTwo = ({
     // any type used
 
     const onSubmit = (data: any) => {
+        data.employeeBranch = branch
+        data.employeeDepartment = department
         if (data.contractDate) {
             data.contractStartDate = data.contractDate[0]
             data.contractEndDate = data.contractDate[1]
@@ -254,6 +260,21 @@ const AddMenuLevelTwo = ({
 
 
 
+    const handleBranchChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setBranchObject(newValue)
+            setBranch(newValue.id)
+        }
+    }
+
+
+
+    const handleDepartmentChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setDepartmentObject(newValue)
+            setDepartment(newValue.id)
+        }
+    }
 
     return (
         <Card><CardHeader title='Add Employee' titleTypographyProps={{ variant: 'h6' }} />
@@ -274,8 +295,8 @@ const AddMenuLevelTwo = ({
                                             value={value}
                                             onBlur={(e) => {
                                                 onBlur()
-                                                const selectedEmployee = employees.filter(({employeeCode}: any) => employeeCode == e.target.value )[0]
-                                                if(selectedEmployee)
+                                                const selectedEmployee = employees.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
+                                                if (selectedEmployee)
                                                     reset(selectedEmployee)
                                             }
                                             }
@@ -422,34 +443,33 @@ const AddMenuLevelTwo = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth >
-                                <Controller
-                                    name='employeeBranch'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <>
-                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Branch</InputLabel>
-                                            <Select
-                                                size={'small'}
-                                                label='Branch'
-                                                value={value}
-                                                id='demo-simple-select-autoWidth'
-                                                labelId='demo-simple-select-autoWidth-label'
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                            >
-                                                {
-                                                    branchOptions.data.map(({ id, branchName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{branchName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </>
-                                    )}
+                        <Grid item xs={6} >
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={branchObject}
+                                    options={branchOptions.data}
+                                    onChange={handleBranchChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.branchName}
+                                    renderInput={params => <TextField {...params} label='Select Branch' />}
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={departmentObject}
+                                    options={departmentOptions.data.filter((department: any) => department.branchId == branch)}
+                                    onChange={handleDepartmentChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.departmentName}
+                                    renderInput={params => <TextField {...params} label='Select Department' />}
                                 />
                             </FormControl>
                         </Grid>
@@ -485,37 +505,7 @@ const AddMenuLevelTwo = ({
                                 />
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth >
-                                <Controller
-                                    name='employeeDepartment'
-                                    control={control}
-                                    rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
-                                        <>
-                                            <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Department</InputLabel>
-                                            <Select
-                                                size={'small'}
-                                                label='Department'
-                                                value={value}
-                                                id='demo-simple-select-autoWidth'
-                                                labelId='demo-simple-select-autoWidth-label'
-                                                onBlur={onBlur}
-                                                onChange={onChange}
-                                            >
-                                                {
-                                                    departmentOptions.data.map(({ id, departmentName }, index) => {
-                                                        return (
-                                                            <MenuItem key={index} value={id}>{departmentName}</MenuItem>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </>
-                                    )}
-                                />
-                            </FormControl>
-                        </Grid>
+
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth >
                                 <Controller
@@ -625,7 +615,7 @@ const AddMenuLevelTwo = ({
                                         )}
                                         {errors.employmentDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.employmentDate.message}</FormHelperText>}
                                     </>
-                                ) : ((formData.id && formData.employeeTypeName === 'Contract') || employmentTypeValue === 'Contract')  ? (
+                                ) : ((formData.id && formData.employeeTypeName === 'Contract') || employmentTypeValue === 'Contract') ? (
                                     <>
                                         <Controller
                                             name='contractDate'
@@ -666,7 +656,7 @@ const AddMenuLevelTwo = ({
                                         )}
                                         {errors.contractStartDate && <FormHelperText sx={{ color: 'error.main' }}>{errors.contractStartDate.message}</FormHelperText>}
                                     </>
-                                ): (
+                                ) : (
                                     <>
                                     </>
                                 )}
@@ -862,7 +852,13 @@ const AddMenuLevelTwo = ({
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>
-                                <Button color='secondary' fullWidth size='large' onClick={() => reset(emptyValues)} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                <Button color='secondary' fullWidth size='large' onClick={() => { 
+                                    reset(emptyValues) 
+                                    setBranchObject({ id: '', branchName: '' })
+                                    setDepartmentObject({ id: '', departmentName: '' })
+                                    setBranch('') 
+                                    setDepartment('') 
+                                    }} type='reset' variant='contained' sx={{ mb: 7 }}>
                                     Reset
                                 </Button>
                             </FormControl>

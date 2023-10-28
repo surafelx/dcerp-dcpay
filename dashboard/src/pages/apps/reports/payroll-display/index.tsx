@@ -244,6 +244,7 @@ const UserList = () => {
                         <Card>
                             <CardHeader title='Earnings' />
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={earningStore}
                                 
@@ -259,6 +260,7 @@ const UserList = () => {
                         <Card>
                             <CardHeader title='Deductions' />
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={deductionStore}
 

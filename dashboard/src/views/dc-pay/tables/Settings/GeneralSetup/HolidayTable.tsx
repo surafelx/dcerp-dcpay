@@ -246,6 +246,7 @@ return (
                     <CardContent>
                         <Grid item xs={12}>
                             <DataGrid
+                             rowHeight={40}
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
