@@ -2,32 +2,6 @@ import pool from '../../config/pool'
 import { v4 as uuid } from 'uuid'
 
 
-// employeePosition: 'c699c41e-81b6-4e91-8d72-3ab8f9358bf4',
-// employeeDepartment: 'f51e2c05-d6b6-4a44-ada5-1a23ee8ee044',
-// employeeBranch: '2f95afb7-152a-4c0b-818b-55649be3da44',
-// employeeBank: '3b3397d3-2741-42c3-ac24-440d94714d33',
-// employeeBankAccount: '121',
-// workingDays: 2,
-// tinNumber: '121',
-// pensionStatus: '',
-// pensionNumber: '1212',
-// basicSalary: '20000',
-// monthlyWorkingHours: '121',
-// employeeType: '58752f6c-f232-4683-a19a-fa56d654ed18',
-// employeeStatus: '05a75f7a-594e-40d1-bc48-e60498ddd7c2',
-// employmentDate: 'Tue Sep 05 2023 00:00:00 GMT+0300 (East Africa Time)',
-// contractEndDate: '',
-// contractStartDate: '',
-// sex: 'be40291d-5b94-4ca6-896a-545af4e95d70',
-// lastName: '1212',
-// middleName: '1212',
-// firstName: '121',
-// employeeTitle: '00a74e38-f627-4658-9470-7185d949ed83',
-// employeeCode: '21212',
-// id: '',
-// employeeTypeName: '',
-// contractDate: ''
-
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
     const {
@@ -219,6 +193,8 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         tinNumber,
         workingDays,
         employeePosition,
+        employeeBank, 
+        employeeBankAccount
     } = updatedEmployee
     const query = `
     UPDATE employee
@@ -240,8 +216,10 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
     tin_number = $16,
     working_days = $17,
     employee_position = $18,
-    pension_status = $19
-    WHERE id = $20
+    pension_status = $19,
+    employee_bank = $20, 
+    employee_account_number = $21
+    WHERE id = $22
     RETURNING *;
     `
     const res = await pool.query(query, [
@@ -264,6 +242,8 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         workingDays,
         employeePosition,
         pensionStatus,
+        employeeBank, 
+        employeeBankAccount,
         id])
     const branchId = res.rows[0]
     return branchId

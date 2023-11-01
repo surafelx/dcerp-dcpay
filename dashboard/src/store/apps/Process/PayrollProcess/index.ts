@@ -20,16 +20,26 @@ export const appPayrollProcessSlice = createSlice({
     data: [],
     total: 1,
     params: {},
-    allData: []
+    allData: [],
+    isLoading: false
   },
   reducers: {},
   extraReducers: builder => {
+    builder.addCase(fetchData.pending, (state) => {
+      state.isLoading = true; // Loading state when the request starts
+    });
+
     builder.addCase(fetchData.fulfilled, (state, action) => {
       state.data = action.payload.payrollProcess
       state.total = action.payload.total
       state.params = action.payload.params
       state.allData = action.payload.allData
+      state.isLoading = false
     })
+
+    builder.addCase(fetchData.rejected, (state) => {
+      state.isLoading = false; // Loading state when the request encounters an error
+    });
   }
 })
 

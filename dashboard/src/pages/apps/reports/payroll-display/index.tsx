@@ -3,11 +3,9 @@ import { useState, useEffect } from 'react'
 
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import { DataGrid } from '@mui/x-data-grid'
-import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
@@ -55,16 +53,10 @@ const UserList = () => {
                 const { transactionName } = row
 
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                            noWrap
-                            component='a'
-                            variant='body2'
-                            sx={{ fontWeight: 600, color: 'text.primary', textDecoration: 'none' }}
-                        >
-                            {transactionName}
-                        </Typography>
-                    </Box>
+
+                    <div>
+                        {transactionName}
+                    </div>
                 )
             }
         },
@@ -201,40 +193,40 @@ const UserList = () => {
                             </Grid>
                             <Grid item xs={6}></Grid>
                             <Grid item xs={4}>
-                            <Button
-                                size='small'
-                                fullWidth
-                                color='primary'
-                                variant='outlined'
-                                onClick={generateExcelFile}
-                            >
-                                Preview
-                            </Button>
+                                <Button
+                                    size='small'
+                                    fullWidth
+                                    color='primary'
+                                    variant='outlined'
+                                    onClick={generateExcelFile}
+                                >
+                                    Preview
+                                </Button>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    size='small'
+                                    fullWidth
+                                    color='primary'
+                                    variant='outlined'
+                                    onClick={generateExcelFile}
+                                >
+                                    Print
+                                </Button>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    size='small'
+                                    fullWidth
+                                    color='primary'
+                                    variant='outlined'
+                                    onClick={generateExcelFile}
+                                >
+                                    Download
+                                </Button>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4}>
-                            <Button
-                                size='small'
-                                fullWidth
-                                color='primary'
-                                variant='outlined'
-                                onClick={generateExcelFile}
-                            >
-                                Print
-                            </Button>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Button
-                                size='small'
-                                fullWidth
-                                color='primary'
-                                variant='outlined'
-                                onClick={generateExcelFile}
-                            >
-                                Download
-                            </Button>
-                        </Grid>
-                        </Grid>
-                       
+
                     </CardContent>
                 </Card>
             </Grid>
@@ -244,10 +236,10 @@ const UserList = () => {
                         <Card>
                             <CardHeader title='Earnings' />
                             <DataGrid
-                             rowHeight={40}
+                                rowHeight={30}
                                 autoHeight
                                 rows={earningStore}
-                                
+
                                 // @ts-ignore
                                 columns={columns}
                                 pageSize={pageSize}
@@ -260,7 +252,7 @@ const UserList = () => {
                         <Card>
                             <CardHeader title='Deductions' />
                             <DataGrid
-                             rowHeight={40}
+                                rowHeight={30}
                                 autoHeight
                                 rows={deductionStore}
 

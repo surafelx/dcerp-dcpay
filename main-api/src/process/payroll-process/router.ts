@@ -42,7 +42,8 @@ router.get('/',
                 allData: processedTransactions,
                 payrollProcess: filteredData,
                 query: req.query,
-                total: filteredData.length
+                total: filteredData.length,
+                isLoading: false
             })
       
         } catch (e) {

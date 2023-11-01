@@ -212,9 +212,10 @@ const InvoicePrint = () => {
         <TableHead>
           <TableRow>
             <TableCell>Code</TableCell>
-            <TableCell>A/C No.</TableCell>
             <TableCell>Name</TableCell>
-            <TableCell>Net</TableCell>
+            <TableCell>Bank</TableCell>
+            <TableCell>Account</TableCell>
+            <TableCell align={'right'}>Net</TableCell>
             <TableCell>Signature</TableCell>
           </TableRow>
         </TableHead>
@@ -222,7 +223,7 @@ const InvoicePrint = () => {
           {
             store.data.map(({ employeeCode, employeeName, employeeAccountNumber, bankName, transactions, }: any, index) => {
               const netPay = transactions?.filter(({ transaction_code }: any) => transaction_code == '99')[0]?.transaction_amount
-            
+
               return (
                 <TableRow key={index} >
                   <TableCell>{`${employeeCode}`}</TableCell>
@@ -236,6 +237,7 @@ const InvoicePrint = () => {
                       </div>
                     </div>
                   </TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               )
             })

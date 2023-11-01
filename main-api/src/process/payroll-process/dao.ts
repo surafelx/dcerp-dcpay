@@ -166,7 +166,6 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
 `,
         [organizationId, employeeId])
 
-
     for (const td of transactionDefinitions) {
         if (td.update_type_name == 'Input' || td.transaction_name == 'None') {
             if (td.transaction_code !== 'Not Editable') {
@@ -176,7 +175,11 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
         if (td.transaction_group_name == 'Loan') {
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: td.transaction_amount, userId, periodId, organizationId })
         }
-        if (td.update_type_name === 'Calculation' && td.transaction_group_name != 'Membership') {
+        if (td.transaction_group_name == 'Membership' && td.transaction_amount != 0) {
+            console.log(td)
+            await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: td.transaction_amount, userId, periodId, organizationId })
+        }
+        if (td.update_type_name === 'Calculation') {
             const transactionCalculationFormat = await getTransactionCalculationFormat(employeeId, td.id, periodId)
             if (transactionCalculationFormat.length > 0) {
                 const calculatedTransaction = calculateTransactionCalculations(transactionCalculationFormat[0])
@@ -185,7 +188,6 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
                     await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
                 if (td.transaction_code != '23')
                     await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
-
                 if (calculatedTransaction.transaction_type_name == 'Deduction Amount') {
                     totalDeductions += parseFloat(calculatedTransaction.transaction_amount) || 0
                 }
@@ -222,17 +224,14 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
         }
 
         if (td.transaction_code == '50') {
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: totalOvertime, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '51') {
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossTaxableSalary, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '52') {
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: grossSalary, userId, periodId, organizationId })
         }
 
@@ -240,21 +239,18 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
         if (td.transaction_code == '97') {
             if (totalDeductions > grossSalary)
                 overPay = totalDeductions - grossSalary
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: lastOverpay, userId, periodId, organizationId })
         }
 
         if (td.transaction_code == '98') {
             if (overPay > 0)
                 overPay = totalDeductions - grossSalary
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: overPay, userId, periodId, organizationId })
         }
 
 
         if (td.transaction_code == '99') {
             netPay = grossSalary - totalDeductions
-
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: netPay, userId, periodId, organizationId })
         }
 
@@ -301,6 +297,44 @@ const getTransactionCalculationFormat = async (employeeId: any, transactionId: a
         [employeeId, transactionId, periodId])
     return tranCal
 }
+
+
+const getTranCal = async (transactionId: any, employeeId: any,) => {
+    const { rows: tranCal } = await pool.query(`
+            SELECT 
+            DISTINCT
+            td1.id as id,
+            td1.transaction_name as first_transaction_name,
+            td2.transaction_name as second_transaction_name,
+            td1.taxable,
+            pd1.parameter_name as calculation_unit_name,
+            pd2.parameter_name as first_option_value,
+            pd3.parameter_name as second_option_value,
+            pt1.transaction_amount as second_transaction_value,
+            pd4.parameter_name as transaction_type_name,
+            pd5.parameter_name as update_type_name,
+            pd6.parameter_name as transaction_group_name,
+            e1.id as employee_id,
+            e1.monthly_working_hours,
+            e1.working_days,
+            tc.rate
+            FROM transaction_calculation tc
+            INNER JOIN parameter_definition pd1 ON pd1.id = tc.calculation_unit
+            INNER JOIN parameter_definition pd2 ON pd2.id = tc.first_option
+            INNER JOIN parameter_definition pd3 ON pd3.id = tc.second_option
+            INNER JOIN transaction_definition td1 ON td1.id = tc.first_transaction_id
+            INNER JOIN parameter_definition pd4 ON pd4.id = td1.transaction_type
+            INNER JOIN parameter_definition pd5 ON pd5.id = td1.update_type
+            INNER JOIN parameter_definition pd6 ON pd6.id = td1.transaction_group
+            INNER JOIN transaction_definition td2 ON td2.id = tc.second_transaction_id
+            LEFT JOIN period_transactions pt1 ON pt1.transaction_id = tc.second_transaction_id
+            INNER JOIN employee e1 ON e1.id = pt1.employee_id
+            WHERE tc.first_transaction_id=$1 AND pt1.employee_id = $2
+            `,
+        [transactionId, employeeId])
+    return tranCal
+}
+
 
 const getPeriodTransactions = async (employeeId: any, periodId: any) => {
     const { rows: periodTransactions } = await pool.query(`
@@ -442,7 +476,7 @@ const calculateTransactionCalculations = (transaction: any) => {
         transaction_amount = parseFloat(transaction.second_transaction_value) / parseFloat(transaction.working_days)
     if (transaction.first_option_value === '*')
         transaction_amount *= parseFloat(transaction.third_transaction_value)
-    if (transaction.second_option_value === '*')
+    if (transaction.second_option_value === '*' )
         transaction_amount *= parseFloat(transaction.rate)
     if (transaction.first_option_value === '=' && transaction.second_option_value === '=')
         transaction_amount = parseFloat(transaction.rate)
@@ -486,6 +520,9 @@ const getProcessedTransactionsByEmployee = async (periodId: any, employeeId: any
 export default {
     getAllFromOrganization,
     processPayLoanMembershipTransactions,
+    getTransactionCalculationFormat,
     getProcessedTransactionsByEmployee,
+    getTranCal,
+    calculateTransactionCalculations,
     getPeriodTransactions
 }

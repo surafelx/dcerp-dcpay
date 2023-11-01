@@ -1,20 +1,11 @@
 // ** React Imports
-import { useState, useEffect, MouseEvent } from 'react'
-
-// ** Next Import
-import Link from 'next/link'
+import { useState, useEffect } from 'react'
 
 import Autocomplete from '@mui/material/Autocomplete'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
-import Menu from '@mui/material/Menu'
 import Grid from '@mui/material/Grid'
-import { DataGrid } from '@mui/x-data-grid'
-import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
@@ -29,7 +20,6 @@ import { fetchData as fetchTransactionDefinition } from 'src/store/apps/File/Tra
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-import { PayTransactionType } from 'src/types/apps/Tasks/payTransactionTypes'
 
 import * as yup from 'yup'
 
@@ -40,11 +30,8 @@ import { addPayTransaction, editPayTransaction } from 'src/store/apps/Tasks/PayT
 
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import PayTransactionTable from 'src/views/dc-pay/tables/Tasks/PayTransaction/PayTransactionTable'
 
-
-interface CellType {
-    row: PayTransactionType
-}
 
 
 const emptyValues = {
@@ -62,15 +49,7 @@ const schema = yup.object().shape({
 
 })
 
-// ** Styled component for the link inside menu
-const MenuItemLink = styled('a')(({ theme }) => ({
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    textDecoration: 'none',
-    padding: theme.spacing(1.5, 4),
-    color: theme.palette.text.primary
-}))
+
 
 const UserList = () => {
     // ** State
@@ -79,7 +58,6 @@ const UserList = () => {
     const [transaction, setTransaction] = useState<string>('')
     const [transactionObject, setTransactionObject] = useState<any>(null)
     const [value] = useState<string>('')
-    const [pageSize, setPageSize] = useState<number>(10)
 
     const [formData, setFormData] = useState({
         id: '',
@@ -100,156 +78,6 @@ const UserList = () => {
         mode: 'onBlur',
         resolver: yupResolver(schema)
     })
-
-    const RowOptions = ({
-        id,
-        transactionId,
-        transactionAmount
-    }: any) => {
-        // ** Hooks
-        const dispatch = useDispatch<AppDispatch>()
-
-        // ** State
-        const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-
-        const rowOptionsOpen = Boolean(anchorEl)
-
-        const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-            setAnchorEl(event.currentTarget)
-        }
-        const handleRowOptionsClose = () => {
-            setAnchorEl(null)
-        }
-
-        const handleEdit = () => {
-            setEmployee(employee)
-            setTransaction(transactionId)
-            reset(
-                {
-                    id,
-                    employeeId: employee,
-                    transactionId,
-                    transactionAmount,
-                }
-            )
-        }
-
-
-        useEffect(() => {
-            if (formData) {
-                setFormData(formData);
-            }
-        }, []);
-
-        const handleDelete = () => {
-            dispatch(deletePayTransaction(id))
-            handleRowOptionsClose()
-        }
-
-        return (
-            <>
-                <IconButton size='small' onClick={handleRowOptionsClick}>
-                    {/* <DotsVertical /> */}
-                    Options
-                </IconButton>
-                <Menu
-                    keepMounted
-                    anchorEl={anchorEl}
-                    open={rowOptionsOpen}
-                    onClose={handleRowOptionsClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right'
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right'
-                    }}
-                    PaperProps={{ style: { minWidth: '8rem' } }}
-                >
-                    <MenuItem sx={{ p: 0 }}>
-                        <Link href={`/apps/settings/user-management/view/${id}`} passHref>
-                            <MenuItemLink>
-                                {/* <EyeOutline fontSize='small' sx={{ mr: 2 }} /> */}
-                                View
-                            </MenuItemLink>
-                        </Link>
-                    </MenuItem>
-                    <MenuItem onClick={handleEdit}>
-                        {/* <PencilOutline fontSize='small' sx={{ mr: 2 }} /> */}
-                        Edit
-                    </MenuItem>
-                    <MenuItem onClick={handleDelete}>
-                        {/* <DeleteOutline fontSize='small' sx={{ mr: 2 }} /> */}
-                        Delete
-                    </MenuItem>
-                </Menu>
-            </>
-        )
-    }
-
-    const columns = [
-        {
-            flex: 0.2,
-            minWidth: 250,
-            field: 'transactionName',
-            headerName: ' Name',
-            renderCell: ({ row }: CellType) => {
-                return (
-                    <Typography noWrap variant='body2'>
-                        {row.transactionName}
-                    </Typography>
-                )
-            }
-        },
-        {
-            flex: 0.15,
-            field: 'transactionQuantity',
-            minWidth: 150,
-            headerAlign: 'right',
-            headerName: 'Quantity',
-            renderCell: ({ row }: CellType) => {
-                return (
-                    <div style={{ width: '100%' }}>
-                        <div style={{ 'textAlign': 'right' }}>
-                            {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
-                        </div>
-                    </div>
-                )
-            }
-        },
-        {
-            flex: 0.15,
-            field: 'transactionAmount',
-            minWidth: 150,
-            headerAlign: 'right',
-            headerName: 'Amount',
-            renderCell: ({ row }: CellType) => {
-                return (
-                    <div style={{ width: '100%' }}>
-                        <div style={{ 'textAlign': 'right' }}>
-                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount" ||  row.transactionTypeName === "NA") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
-                        </div>
-                    </div>
-                )
-            }
-        },
-        {
-            flex: 0.1,
-            minWidth: 90,
-            sortable: false,
-            field: 'actions',
-            headerName: 'Actions',
-            renderCell: ({ row }: CellType) => (
-                <RowOptions
-                    id={row.id}
-                    employeeId={row.employeeId}
-                    transactionId={row.transactionId}
-                    transactionAmount={row.transactionAmount}
-                />)
-        }
-    ]
-
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -336,8 +164,7 @@ const UserList = () => {
         } else {
             dispatch(addPayTransaction({ ...data }))
         }
-        setTransaction('')
-        reset({ transactionAmount: '' })
+        clearAllFields()
     }
 
     return (
@@ -439,26 +266,25 @@ const UserList = () => {
                         </CardContent>
                     </Card>
                 </form>
-
             </Grid>
             <Grid item xs={12} md={12} lg={6}>
                 <Card>
                     <CardHeader title='Earnings' titleTypographyProps={{ variant: 'body2' }} />
                     <CardContent>
-                        <Grid item xs={12}>
-                            <DataGrid
-                             rowHeight={40}
-                                autoHeight
-                                rows={earningStore}
-
-                                // @ts-ignore
-                                columns={columns} 
-                                pageSize={pageSize}
-                                disableSelectionOnClick
-                                rowsPerPageOptions={[10, 25, 50]}
-                                onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                            />
-                        </Grid>
+                        <PayTransactionTable
+                            rows={earningStore}
+                            formData={formData}
+                            setFormData={setFormData}
+                            deletePayTransaction={deletePayTransaction}
+                            setEmployeeObject={setEmployeeObject}
+                            setEmployee={setEmployee}
+                            setTransaction={setTransaction}
+                            setTransactionObject={setTransactionObject}
+                            reset={reset}
+                            transaction={transaction}
+                            transactionDefinitionStore={transactionDefinitionStore}
+                            employeeStore={employeeStore}
+                        />
                     </CardContent>
                 </Card>
             </Grid>
@@ -466,20 +292,20 @@ const UserList = () => {
                 <Card>
                     <CardHeader title='Deductions' titleTypographyProps={{ variant: 'body2' }} />
                     <CardContent>
-                        <Grid item xs={12}>
-                            <DataGrid
-                             rowHeight={40}
-                                autoHeight
-                                rows={deductionStore}
-                                
-                                 // @ts-ignore
-                                columns={columns} 
-                                pageSize={pageSize}
-                                disableSelectionOnClick
-                                rowsPerPageOptions={[10, 25, 50]}
-                                onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
-                            />
-                        </Grid>
+                        <PayTransactionTable
+                            rows={deductionStore}
+                            formData={formData}
+                            setFormData={setFormData}
+                            deletePayTransaction={deletePayTransaction}
+                            setEmployeeObject={setEmployeeObject}
+                            setEmployee={setEmployee}
+                            setTransaction={setTransaction}
+                            setTransactionObject={setTransactionObject}
+                            reset={reset}
+                            transaction={transaction}
+                            transactionDefinitionStore={transactionDefinitionStore}
+                            employeeStore={employeeStore}
+                        />
                     </CardContent>
                 </Card>
             </Grid>
