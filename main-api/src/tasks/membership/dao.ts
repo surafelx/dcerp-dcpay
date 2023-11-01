@@ -47,6 +47,20 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
 }
 
 
+export const getInfo = async (membershipId: string): Promise<any> => {
+    const { rows: memberships } = await pool.query(`
+    SELECT 
+    ms.id,
+    ms.employee_id,
+    ms.transaction_id,
+    pt.transaction_amount
+    FROM membership ms
+    INNER JOIN period_transactions pt ON pt.transaction_id = ms.transaction_id
+    WHERE ms.id = $1 AND pt.employee_id = ms.employee_id`,
+        [membershipId])
+    return memberships[0]
+}
+
 
 export const deleteMembership = async (branchId: string): Promise<any> => {
     await pool.query('DELETE FROM membership WHERE id=$1', [branchId])
@@ -80,5 +94,6 @@ export default {
     create,
     deleteMembership,
     getAllFromOrganization,
+    getInfo,
     updateMembership
 }

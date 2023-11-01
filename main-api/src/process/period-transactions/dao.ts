@@ -70,6 +70,7 @@ export const deletePeriodTransactionByPayTransaction = async (deletedPayTransact
         transactionId,
         transactionAmount
     } = deletedPayTransaction
+    console.log(deletedPayTransaction, "Hello")
     await pool.query(`
     DELETE 
     FROM 

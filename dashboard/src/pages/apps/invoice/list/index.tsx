@@ -360,7 +360,7 @@ const InvoiceList = () => {
           <Card>
             <TableHeader value={value} selectedRows={selectedRows} handleFilter={handleFilter} />
                                         <DataGrid
-                                rowHeight={40}
+                                rowHeight={30}
                                 autoHeight
               pagination
               rows={store.data}

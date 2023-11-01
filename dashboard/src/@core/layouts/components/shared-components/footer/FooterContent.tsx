@@ -21,7 +21,7 @@ const FooterContent = () => {
       <Link target='_blank' href='https://mui.com/store/license/'>
       {`${moment().format("LL")} `}
           </Link>
-      {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
+     
       </Typography>
       
 
@@ -33,7 +33,7 @@ const FooterContent = () => {
 
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          <Link
+          {/* <Link
             target='_blank'
             href='https://demos.themeselection.com/marketplace/materio-mui-react-nextjs-admin-template/documentation'
           >
@@ -41,7 +41,8 @@ const FooterContent = () => {
           </Link>
           <Link target='_blank' href='https://themeselection.com/support/'>
             Support
-          </Link>
+          </Link> */}
+           {`${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`}
         </Box>
       )}
     </Box>

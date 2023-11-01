@@ -130,7 +130,12 @@ const emptyValues = {
 
 const AddMenuLevelTwo = ({
     formData,
-    employees
+    employees,
+    branchObject,
+    setBranchObject,
+    departmentObject,
+    setDepartmentObject
+
 }: any) => {
 
     // @ts-ignore
@@ -142,9 +147,7 @@ const AddMenuLevelTwo = ({
     const [contractEnd, setContractEnd] = useState<any>(new Date(endDate))
     const [workingDaysPeriod, setWorkingDaysPeriod] = useState<any>('')
     const [branch, setBranch] = useState<string>('')
-    const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
-    const [department, setDepartment] = useState<string>('')
-    const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
+    const [, setDepartment] = useState<string>('')
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -204,18 +207,19 @@ const AddMenuLevelTwo = ({
     // any type used
 
     const onSubmit = (data: any) => {
-        data.employeeBranch = branch
-        data.employeeDepartment = department
+        data.employeeBranch = branchObject.id
+        data.employeeDepartment = departmentObject.id
         if (data.contractDate) {
             data.contractStartDate = data.contractDate[0]
             data.contractEndDate = data.contractDate[1]
         }
-
         if (data.id) {
             dispatch(editEmployee({ ...data }))
         } else {
             dispatch(addEmployee({ ...data }))
         }
+        setBranchObject(null)
+        setDepartmentObject(null)
         reset(emptyValues)
     }
 
@@ -295,7 +299,7 @@ const AddMenuLevelTwo = ({
                                             value={value}
                                             onBlur={(e) => {
                                                 onBlur()
-                                                const selectedEmployee = employees.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
+                                                const selectedEmployee = employees?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
                                                 if (selectedEmployee)
                                                     reset(selectedEmployee)
                                             }
@@ -584,7 +588,6 @@ const AddMenuLevelTwo = ({
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange } }) => (
                                                 <DatePicker
-
                                                     selected={value ? new Date(value) : null}
                                                     minDate={new Date(startDate)}
                                                     maxDate={new Date(endDate)}
@@ -598,7 +601,7 @@ const AddMenuLevelTwo = ({
                                                     placeholderText='MM/DD/YYYY'
                                                     customInput={
                                                         <CustomInput
-                                                            value={value ? new Date(value) : null}
+                                                            value={value ? new Date(workingDaysPeriod) : null}
                                                             onChange={onChange}
                                                             label='Employment Date'
                                                             error={Boolean(errors.employmentDate)}
@@ -852,13 +855,13 @@ const AddMenuLevelTwo = ({
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <FormControl fullWidth>
-                                <Button color='secondary' fullWidth size='large' onClick={() => { 
-                                    reset(emptyValues) 
+                                <Button color='secondary' fullWidth size='large' onClick={() => {
+                                    reset(emptyValues)
                                     setBranchObject({ id: '', branchName: '' })
                                     setDepartmentObject({ id: '', departmentName: '' })
-                                    setBranch('') 
-                                    setDepartment('') 
-                                    }} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                    setBranch('')
+                                    setDepartment('')
+                                }} type='reset' variant='contained' sx={{ mb: 7 }}>
                                     Reset
                                 </Button>
                             </FormControl>

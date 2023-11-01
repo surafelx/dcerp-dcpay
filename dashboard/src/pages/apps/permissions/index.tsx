@@ -164,7 +164,7 @@ const PermissionsTable = () => {
           <Card>
             <TableHeader value={value} handleFilter={handleFilter} />
                                         <DataGrid
-                                rowHeight={40}
+                                rowHeight={30}
                                 autoHeight
               rows={store.data}
               columns={columns}

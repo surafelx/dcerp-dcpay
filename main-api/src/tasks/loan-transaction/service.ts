@@ -25,7 +25,7 @@ const getById = async (loanTransactionId: any): Promise<any> => await loanTransa
 const deleteLoanTransaction = async (loanTransactionId: string, userInfo: any): Promise<any> => {
     const loanTransaction = await getById(loanTransactionId)
     const {userId, organizationId, periodId} = userInfo
-    await loanTransactionDao.deleteLoanTransaction(userId)
+    await loanTransactionDao.deleteLoanTransaction(loanTransactionId)
     const deletedLoanTransaction = { 
         employeeId: loanTransaction.employee_id,
         transactionId: loanTransaction.transaction_id,

@@ -4,22 +4,11 @@ import { useState, useEffect } from 'react'
 
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
-import TableContainer from '@mui/material/TableContainer'
-import Link from 'next/link'
-import Table from '@mui/material/Table'
-import Divider from '@mui/material/Divider'
-import TableRow from '@mui/material/TableRow'
-import TableHead from '@mui/material/TableHead'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import { styled } from '@mui/material/styles'
 
 // import LinearProgress from '@mui/material/LinearProgress'
 
@@ -40,14 +29,6 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 
-const CalcWrapper = styled(Box)<any>(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    '&:not(:last-of-type)': {
-        marginBottom: theme.spacing(2)
-    }
-}))
 
 const emptyValues = {
     branch: 'All',
@@ -61,7 +42,6 @@ const schema = yup.object().shape({
 })
 
 
-import { utils, writeFile } from 'xlsx';
 
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
@@ -79,7 +59,7 @@ const PayrollAdvice = () => {
 
 
     const dispatch = useDispatch<AppDispatch>()
-    const store = useSelector((state: RootState) => state.payrollProcess)
+    const storeProcess = useSelector((state: RootState) => state.payrollProcess.isLoading)
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
@@ -96,26 +76,6 @@ const PayrollAdvice = () => {
             })
         )
     }, [dispatch])
-
-
-    const generateExcelFile = () => {
-        const tableData = [
-            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'],
-            ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
-                employeeCode,
-                employeeName,
-                parseFloat(totalDeductions).toFixed(2),
-                parseFloat(totalEarnings).toFixed(2),
-                parseFloat(netPay).toFixed(2),
-            ]),
-        ]
-        const workbook = utils.book_new();
-        const worksheet = utils.aoa_to_sheet(tableData);
-        utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        writeFile(workbook, 'your_file_name.xlsx');
-    };
-
-
 
 
     const handleBranchChange = (e: any, newValue: any) => {
@@ -199,12 +159,15 @@ const PayrollAdvice = () => {
                                         color='primary'
                                         fullWidth size='small'
                                         type='submit'
+                                        disabled={storeProcess}
                                         variant='contained'
                                     >
-                                        Process
+                                          {storeProcess ? ("Loading") : ("Process")}
+                                        
                                     </Button>
                                 </Grid>
-                                <Grid item sm={3} xs={12}>
+                              
+                                {/* <Grid item sm={3} xs={12}>
                                     <Button
                                         size='small'
                                         fullWidth
@@ -238,14 +201,14 @@ const PayrollAdvice = () => {
                                     >
                                         Download
                                     </Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
 
                         </CardContent>
                     </Card>
                 </form>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <Card>
                     <TableContainer>
                         <Table  sx={{ minWidth: 650 }} size='small' >
@@ -333,7 +296,7 @@ const PayrollAdvice = () => {
                         </Grid>
                     </CardContent>
                 </Card>
-            </Grid>
+            </Grid> */}
         </Grid>
 
     )

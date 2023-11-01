@@ -17,7 +17,7 @@ const setupApp = async(organizationId: string, branchId: string) => await transa
 
 const getTransactionDefinitionByNameByOrganization = async (organizationId: any, transactionName: any): Promise<any[]> => await transactionDefinitionDao.getTransactionDefinitionByNameByOrganization(organizationId, transactionName)
 
-
+const getInfo = async (transactionId: any) => await transactionDefinitionDao.getInfo(transactionId)
 export default {
     create,
     deleteTransactionDefinition,
@@ -26,5 +26,6 @@ export default {
     getByNameAndOrganization,
     updateTransactionDefinition,
     getTransactionDefinitionByNameByOrganization,
+    getInfo,
     setupApp
 }

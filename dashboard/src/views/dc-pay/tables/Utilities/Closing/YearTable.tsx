@@ -360,7 +360,7 @@ const UserList = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <DataGrid
-                                         rowHeight={40}
+                                         rowHeight={30}
                                             autoHeight
                                             rows={store.data}
                                             columns={columns}

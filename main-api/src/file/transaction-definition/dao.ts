@@ -114,6 +114,42 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
 }
 
 
+export const getInfo = async (transactionId: string): Promise<any> => {
+    const { rows: employees } = await pool.query(`
+    SELECT 
+    transaction_definition.id,
+    transaction_definition.organization_id,
+    transaction_definition.branch_id,
+    transaction_definition.transaction_code,
+    transaction_definition.transaction_name,
+    transaction_definition.short_name,
+    transaction_definition.transaction_type,
+    transaction_definition.update_type,
+    transaction_definition.permanent,
+    transaction_definition.taxable,
+    transaction_definition.un_taxable_limit,
+    transaction_definition.affect_by_leave,
+    transaction_definition.leave_days,
+    transaction_definition.affect_back_payroll,
+    transaction_definition.affect_beneficiary,
+    transaction_definition.transaction_group,
+    transaction_definition.gl_entry_by,
+    transaction_definition.direct_account,
+    transaction_definition.contract_gl_account,
+    pd1.parameter_name as transaction_type_name,
+    pd2.parameter_name as transaction_group_name,
+    pd3.parameter_name as update_type_name
+    FROM transaction_definition
+    INNER JOIN parameter_definition pd1 ON transaction_definition.transaction_type = pd1.id
+    INNER JOIN parameter_definition pd2 ON transaction_definition.transaction_group = pd2.id
+    INNER JOIN parameter_definition pd3 ON transaction_definition.update_type = pd3.id
+    WHERE transaction_definition.id=$1
+    ORDER BY CAST(transaction_definition.transaction_code AS NUMERIC) ASC`,
+        [transactionId])
+    return employees
+}
+
+
 export const getByNameAndOrganization = async (organizationId: string, transactionName: string) => {
     const { rows: employees } = await pool.query(`
     SELECT 
@@ -1367,6 +1403,7 @@ export default {
     create,
     deleteTransactionDefinition,
     getAllFromOrganization,
+    getInfo,
     getByNameAndOrganization,
     getAllFromTransactionGroup,
     updateTransactionDefinition,
