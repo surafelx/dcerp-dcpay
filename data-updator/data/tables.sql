@@ -157,12 +157,13 @@ CREATE TABLE employee (
 		monthly_working_hours VARCHAR(40) NOT NULL,
 		pension_status BOOLEAN NOT NULL,
 		pension_number VARCHAR(40),
-		employee_bank VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
+	employee_bank VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
   		employee_account_number VARCHAR(50),
 		tin_number VARCHAR(40),
 		working_days VARCHAR(40),
 		employee_position VARCHAR(40) NOT NULL REFERENCES parameter_definition(id)
 );
+
 
 
 
@@ -191,6 +192,7 @@ CREATE TABLE transaction_definition (
 
 CREATE TABLE loan_transaction (
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 	total_loan VARCHAR(40) NOT NULL,
@@ -200,6 +202,7 @@ CREATE TABLE loan_transaction (
 
 CREATE TABLE pay_transaction (
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	period_id VARCHAR(40) NOT NULL REFERENCES periods(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
@@ -208,6 +211,7 @@ CREATE TABLE pay_transaction (
 
 CREATE TABLE membership(
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id)
 );
@@ -216,6 +220,7 @@ CREATE TABLE membership(
 CREATE TABLE discontinuation(
 	id VARCHAR(40) NOT NULL UNIQUE,
 	reference_number VARCHAR(40) NOT NULL,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	action_type VARCHAR(40) NOT NULL REFERENCES parameter_definition(id),
 	discontinuation_date DATE NOT NULL
@@ -223,6 +228,7 @@ CREATE TABLE discontinuation(
 
 CREATE TABLE transaction_calculation (
 		id VARCHAR(40) NOT NULL UNIQUE,
+		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		first_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 		second_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 		third_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
@@ -254,7 +260,6 @@ CREATE TABLE period_transactions (
 	transaction_record_number VARCHAR(40) NOT NULL,
 	transaction_date DATE NOT NULL
 );
-
 
 CREATE TABLE processed_transactions (
 	id VARCHAR(40) NOT NULL UNIQUE,

@@ -1,30 +1,40 @@
-import processBranchCSV from './tableUpdator/branch';
-import processDepartmentCSV from './tableUpdator/department'
-import processEmployeeCSV from './tableUpdator/employee'
-import processLoanTransactionCSV from './tableUpdator/loanTransaction'
-import processPayTransactionCSV from './tableUpdator/payTransaction'
-
+// import processBranchCSV from './ebsTableUpdator/branch';
+// import processDepartmentCSV from './ebsTableUpdator/department'
+// import processEmployeeCSV from './ebsTableUpdator/employee'
+// import processLoanTransactionCSV from './ebsTableUpdator/loanTransaction'
+// import processPayTransactionCSV from './ebsTableUpdator/payTransaction'
+// import processTransactionDefinitions from './ebsTableUpdator/transactionDefinition'
+import processTransactionCalculations from './ebsTableUpdator/transactionCalculations'
+ 
 
 
 
 const setupProcess = async () => {
     try {
-        const organizationId = '9cee0689-7a24-4b45-a1dc-749b1ca27fde'
-        const userId = '0bdfbe9f-30c4-4ddc-aca2-5039a27ecd1c'
-        const periodId = '5820dcac-43a7-404a-b068-210b12899555'
-        
-        const userInfo = {organizationId, userId, periodId}
+        const organizationId = '9e685870-c358-41db-89b0-c4bb4da26f69'
+        // const userId = 'e071e2fa-02b3-4b4f-ae62-64ae946b03f0'
+        // const periodId = '59033e86-76b0-4b64-abff-3a03b62de930'
+        // const branchId = '4233d1c7-2c58-4672-a701-53b67562586a'
 
-        const branches = await processBranchCSV(organizationId, './data/branch.csv')
-        console.log(branches.length, "Branches Added")
-        const departments = await processDepartmentCSV(organizationId,'./data/department.csv')
-        console.log(departments.length, "Departments Added")
-        const employees = await processEmployeeCSV(organizationId, './data/employee.csv', userInfo)
-        console.log(employees.length, "Employees Added")
-        const loanTransactions = await processLoanTransactionCSV(organizationId, './data/loantransactions2.csv', userInfo)
-        console.log(loanTransactions.length, "Loan Transactions Added")
-        const payTransactions = await processPayTransactionCSV(organizationId, './data/processedtransactions.csv', userInfo)
-        console.log(payTransactions.length, "Pay Transactions Added")
+        // const userInfo = {organizationId, userId, periodId}
+
+        // const branches = await processBranchCSV(organizationId, './data/ebs/branch.csv')
+        // console.log(branches.length, "Branches Added")
+        // const departments = await processDepartmentCSV(organizationId,'./data/ebs/department.csv')
+        // console.log(departments.length, "Departments Added")
+       
+        // await processTransactionDefinitions(organizationId, branchId)
+        
+        await processTransactionCalculations(organizationId)
+
+        // const employees = await processEmployeeCSV(organizationId, './data/ebs/employees.csv', userInfo)
+        // console.log(employees.length, "Employees Added")
+
+        // const loanTransactions = await processLoanTransactionCSV(organizationId, './data/ebs/loan.csv', userInfo)
+        // console.log(loanTransactions.length, "Loan Transactions Added")
+       
+        // const payTransactions = await processPayTransactionCSV(organizationId, './data/ebs/processed.csv', userInfo)
+        // console.log(payTransactions.length, "Pay Transactions Added")
 
         //  const advances = await processPayTransactionCSV(organizationId, './data/advance.csv', userInfo)
         // console.log(advances.length, "Absence and Advance Transactions Added")

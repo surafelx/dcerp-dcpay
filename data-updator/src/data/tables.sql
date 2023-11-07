@@ -192,6 +192,7 @@ CREATE TABLE transaction_definition (
 
 CREATE TABLE loan_transaction (
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 	total_loan VARCHAR(40) NOT NULL,
@@ -201,6 +202,7 @@ CREATE TABLE loan_transaction (
 
 CREATE TABLE pay_transaction (
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	period_id VARCHAR(40) NOT NULL REFERENCES periods(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
@@ -209,6 +211,7 @@ CREATE TABLE pay_transaction (
 
 CREATE TABLE membership(
 	id VARCHAR(40) NOT NULL UNIQUE,
+	organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 	employee_id VARCHAR(40) NOT NULL REFERENCES employee(id),
 	transaction_id VARCHAR(40) NOT NULL REFERENCES transaction_definition(id)
 );
@@ -224,6 +227,7 @@ CREATE TABLE discontinuation(
 
 CREATE TABLE transaction_calculation (
 		id VARCHAR(40) NOT NULL UNIQUE,
+		organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
 		first_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 		second_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),
 		third_transaction_id  VARCHAR(40) NOT NULL REFERENCES transaction_definition(id),

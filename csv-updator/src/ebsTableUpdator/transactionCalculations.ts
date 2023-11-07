@@ -1,128 +1,5 @@
-import pool from '../../config/pool'
+import pool from '../config/pool'
 import { v4 as uuid } from 'uuid'
-import transactionDefinitionService from '../../file/transaction-definition/service'
-import parameterDefinitionService from '../../file/parameter-definition/service'
-
-export const create = async (newMenu: any): Promise<any> => {
-    const id = uuid()
-    const {
-        organizationId,
-        firstTransaction,
-        secondTransaction,
-        thirdTransaction,
-        calculationUnit,
-        firstOption,
-        secondOption,
-        rate
-    } = newMenu
-    const query = `
-	INSERT INTO 
-        transaction_calculation 
-        (
-            id,
-            organization_id,
-            first_transaction_id,
-            second_transaction_id,
-            third_transaction_id,
-            calculation_unit,
-            first_option,
-            second_option,
-            rate
-            ) 
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    RETURNING *;
-    `
-    const res = await pool.query(query, [
-        id,
-        organizationId,
-        firstTransaction,
-        secondTransaction,
-        thirdTransaction,
-        calculationUnit,
-        firstOption,
-        secondOption,
-        rate
-    ])
-    return res.rows[0]
-}
-
-
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
-    const { rows: transactionParameterCalculations } = await pool.query(`
-    SELECT 
-    tc.id,
-    tc.first_transaction_id,
-    tc.second_transaction_id,
-    tc.third_transaction_id,
-    tc.calculation_unit,
-    tc.first_option,
-    tc.second_option,
-    tc.rate,
-    td1.transaction_name as first_transaction_name,
-    td1.transaction_code as first_transaction_code,
-    td2.transaction_name as second_transaction_name,
-    td2.transaction_code as second_transaction_code,
-    td3.transaction_name as third_transaction_name,
-    td3.transaction_code as third_transaction_code,
-    pd1.parameter_name as calculation_unit_name,
-    pd2.parameter_name as first_option_name,
-    pd3.parameter_name as second_option_name
-    FROM transaction_calculation tc
-    INNER JOIN transaction_definition td1 ON tc.first_transaction_id = td1.id
-    INNER JOIN transaction_definition td2 ON tc.first_transaction_id = td2.id
-    INNER JOIN transaction_definition td3 ON tc.first_transaction_id = td3.id
-    INNER JOIN parameter_definition pd1 ON tc.calculation_unit = pd1.id
-    INNER JOIN parameter_definition pd2 ON tc.first_option = pd2.id
-    INNER JOIN parameter_definition pd3 ON tc.second_option = pd3.id
-    WHERE td1.organization_id=$1`,
-        [organizationId])
-    return transactionParameterCalculations
-}
-
-
-
-export const deleteTransactionParameterCalculation = async (branchId: string): Promise<any> => {
-    await pool.query('DELETE FROM transaction_calculation WHERE id=$1', [branchId])
-}
-
-
-export const updateTransactionParameterCalculation = async (updatedTransactionParameterCalculation: any): Promise<string> => {
-    const {
-        id,
-        firstTransaction,
-        secondTransaction,
-        thirdTransaction,
-        calculationUnit,
-        firstOption,
-        secondOption,
-        rate
-    } = updatedTransactionParameterCalculation
-    const query = `
-    UPDATE 
-    transaction_calculation
-    SET 
-    first_transaction_id = $1,
-    second_transaction_id = $2,
-    third_transaction_id = $3,
-    calculation_unit = $4,
-    first_option = $5,
-    second_option = $6,
-    rate = $7
-    WHERE id = $8
-    RETURNING *;
-    `
-    const res = await pool.query(query, [
-        firstTransaction,
-        secondTransaction,
-        thirdTransaction,
-        calculationUnit,
-        firstOption,
-        secondOption,
-        rate,
-        id])
-    const branchId = res.rows[0]
-    return branchId
-}
 
 const defaultTransactionCalculations = [
     {
@@ -273,7 +150,46 @@ const defaultTransactionCalculations = [
 
 ]
 
-const setupApp = async(organizationId: any) => {
+export const getSubParameterIdByNameByOrganization = async (organizationId: string, parentParameterName: string, parameterName: string): Promise<any> => {
+    const { rows: parameterQueryResponse } = await pool.query(`
+    SELECT pd.id
+    FROM parameter_definition pd
+    INNER JOIN parameter_definition parent_pd ON pd.parent_parameter_id = parent_pd.id
+    WHERE parent_pd.parameter_name = $1
+    AND pd.parameter_name = $2
+    AND pd.organization_id = $3;
+
+    `, [parentParameterName, parameterName, organizationId])
+    return parameterQueryResponse[0].id
+}
+
+
+export const getTransactionDefinitionByNameByOrganization = async (organizationId: string, transactionName: any) => {
+    try {
+  const tranQuery = `
+     SELECT 
+     transaction_definition.id,
+     transaction_definition.organization_id,
+     transaction_definition.transaction_code,
+     transaction_definition.transaction_name
+     FROM transaction_definition
+     WHERE 
+     transaction_definition.organization_id=$1 AND 
+     transaction_definition.transaction_name=$2
+    `
+     const { rows: transactions } = await pool.query(tranQuery,
+         [organizationId, transactionName])
+     return transactions[0].id
+    } catch(error) {
+     console.log(transactionName)
+     console.log(error)
+    }
+    
+ }
+ 
+
+ 
+const setupTransactionCalculations = async(organizationId: any) => {
 
     for (const transaction of defaultTransactionCalculations) {
         const {
@@ -287,12 +203,12 @@ const setupApp = async(organizationId: any) => {
         } = transaction;
 
 
-       const firstTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, firstTransaction)
-       const secondTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, secondTransaction)
-       const thirdTransactionId = await transactionDefinitionService.getTransactionDefinitionByNameByOrganization(organizationId, thirdTransaction)
-       const calculationUnitId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Calculation Unit', calculationUnit)
-       const firstOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', firstOption)
-       const secondOptionId = await parameterDefinitionService.getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', secondOption)
+       const firstTransactionId = await getTransactionDefinitionByNameByOrganization(organizationId, firstTransaction)
+       const secondTransactionId = await getTransactionDefinitionByNameByOrganization(organizationId, secondTransaction)
+       const thirdTransactionId = await getTransactionDefinitionByNameByOrganization(organizationId, thirdTransaction)
+       const calculationUnitId = await getSubParameterIdByNameByOrganization(organizationId, 'Calculation Unit', calculationUnit)
+       const firstOptionId = await getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', firstOption)
+       const secondOptionId = await getSubParameterIdByNameByOrganization(organizationId, 'Transaction Calculation', secondOption)
 
         const query = `INSERT INTO transaction_calculation (id, organization_id, first_transaction_id, second_transaction_id, third_transaction_id, calculation_unit, first_option, second_option, rate)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`;
@@ -301,12 +217,4 @@ const setupApp = async(organizationId: any) => {
 
 }
 
-
-
-export default {
-    create,
-    deleteTransactionParameterCalculation,
-    getAllFromOrganization,
-    updateTransactionParameterCalculation,
-    setupApp
-}
+export default setupTransactionCalculations
