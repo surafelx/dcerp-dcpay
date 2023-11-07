@@ -4,6 +4,7 @@ import periodTransactionsService from '../../process/period-transactions/service
 
 const create = async (newPayTransaction: any, userInfo: any): Promise<string> => {
     const { userId, periodId, organizationId} = userInfo
+    newPayTransaction.organizationId = organizationId
     const createdPayTransaction = await payTransactionDao.create({ ...newPayTransaction }, periodId)
     const newPeriodTransaction = { 
         employeeId: createdPayTransaction.employee_id,

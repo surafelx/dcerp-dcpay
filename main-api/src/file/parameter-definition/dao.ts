@@ -6,7 +6,7 @@ const defaultParameters = [
     { parentParameter: 'Employee Status', parameters: ['Active', 'Suspended', 'Terminated'] },
     { parentParameter: 'Employee Type', parameters: ['Permanent', 'Contract'] },
     { parentParameter: 'Employee Title', parameters: ['Dr.', 'Mr.', 'Ms.'] },
-    { parentParameter: 'Bank', parameters: ['CBE', 'NA'] },
+    { parentParameter: 'Bank', parameters: ['CBE', 'NA', 'NIB', 'Zemen'] },
     { parentParameter: 'Employee Department', parameters: ['Human Resources'] },
     { parentParameter: 'Employee Position', parameters: ['Executive', 'Employee', 'Manager'] },
     { parentParameter: 'Transaction Type', parameters: ['Earning Amount', 'Earning Quantity', 'Deduction Amount', 'Deduction Quantity', 'NA'] },

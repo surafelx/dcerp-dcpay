@@ -5,6 +5,7 @@ export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
     const {
         employeeId,
+        organizationId,
         transactionId,
         totalLoan,
         transactionAmount
@@ -15,17 +16,19 @@ export const create = async (newMenu: any): Promise<any> => {
         (
             id,
             employee_id,
+            organization_id,
             transaction_id,
             total_loan,
             transaction_amount,
             remaining_balance
             ) 
-    VALUES ($1, $2, $3, $4, $5, $6)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *;
     `
     const res = await pool.query(query, [
         id,
         employeeId,
+        organizationId,
         transactionId,
         totalLoan,
         transactionAmount,
