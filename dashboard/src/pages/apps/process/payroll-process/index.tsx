@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 
 
 
@@ -46,6 +46,16 @@ const schema = yup.object().shape({
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 
+
+// ** MUI Imports
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
+
+
+
 const PayrollAdvice = () => {
 
 
@@ -54,6 +64,9 @@ const PayrollAdvice = () => {
     const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
     const [department, setDepartment] = useState<string>('')
     const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
+    const [open, setOpen] = useState<boolean>(false)
+    const handleClickOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
 
     const [value] = useState<string>('')
 
@@ -76,6 +89,33 @@ const PayrollAdvice = () => {
             })
         )
     }, [dispatch])
+
+
+    const DialogAlert = () => {
+        // ** State
+
+
+        return (
+            <Fragment>
+                <Dialog
+                    open={storeProcess ? false : open}
+                    onClose={handleClose}
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'
+                >
+                    <DialogTitle id='alert-dialog-title'>Processing Complete</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id='alert-dialog-description'>
+                            Payroll processing is completed. You may go to the Reports page to check the data.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions className='dialog-actions-dense'>
+                        <Button onClick={handleClose}>Ok</Button>
+                    </DialogActions>
+                </Dialog>
+            </Fragment>
+        )
+    }
 
 
     const handleBranchChange = (e: any, newValue: any) => {
@@ -114,6 +154,10 @@ const PayrollAdvice = () => {
                 currentPlan: ''
             })
         )
+        if (!storeProcess) {
+            handleClickOpen()
+        }
+
     }
 
     return (
@@ -162,11 +206,11 @@ const PayrollAdvice = () => {
                                         disabled={storeProcess}
                                         variant='contained'
                                     >
-                                          {storeProcess ? ("Loading") : ("Process")}
-                                        
+                                        {storeProcess ? ("Loading") : ("Process")}
+
                                     </Button>
                                 </Grid>
-                              
+
                                 {/* <Grid item sm={3} xs={12}>
                                     <Button
                                         size='small'
@@ -205,6 +249,7 @@ const PayrollAdvice = () => {
                             </Grid>
 
                         </CardContent>
+                        <DialogAlert />
                     </Card>
                 </form>
             </Grid>

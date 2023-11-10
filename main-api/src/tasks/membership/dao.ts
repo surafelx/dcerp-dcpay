@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 export const create = async (newMenu: any): Promise<any> => {
     const id = uuid()
     const {
+        organizationId,
         employeeId,
         transactionId
     } = newMenu
@@ -12,14 +13,16 @@ export const create = async (newMenu: any): Promise<any> => {
         membership 
         (
             id,
+            organization_id,
             employee_id,
             transaction_id
             ) 
-    VALUES ($1, $2, $3)
+    VALUES ($1, $2, $3, $4)
     RETURNING *;
     `
     const res = await pool.query(query, [
         id,
+        organizationId,
         employeeId,
         transactionId
     ])

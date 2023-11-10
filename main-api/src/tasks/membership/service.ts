@@ -5,6 +5,7 @@ import payrollProcessDao from '../../process/payroll-process/dao'
 
 const create = async (newMembership: any, userInfo: any): Promise<string> => {
     const { userId, periodId, organizationId} = userInfo
+    newMembership.organizationId = organizationId
     const createdMembership =  await membershipDao.create({ ...newMembership })
     const tranDef = await payrollProcessDao.getTranCal(createdMembership.transaction_id, createdMembership.employee_id)
     const calculatedTranDef = payrollProcessDao.calculateTransactionCalculations(tranDef[0])
