@@ -55,8 +55,9 @@ const setupApp =  async (companyData: any): Promise<any> => {
             roleId: ''
         }
 
+        await parameterService.setupApp(organizationId)
+
         if(parameters.default) {
-            await parameterService.setupApp(organizationId)
             await transactionDefinitionService.setupApp(organizationId, branchId)
             await transactionParameterCalculationService.setupApp(organizationId)
         }

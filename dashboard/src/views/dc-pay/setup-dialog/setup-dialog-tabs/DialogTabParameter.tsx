@@ -43,7 +43,7 @@ const TabFramework = ({ createAppObject }: any) => {
               <Typography variant='caption'>Create your own parameters, transaction definitions from a clear slate.</Typography>
             </div>
           </Box>
-          <Radio value='custom-parameters' onChange={() =>createAppObject.parameters.default = true} checked={value === 'custom-parameters'} />
+          <Radio value='custom-parameters' onChange={() =>createAppObject.parameters.default = false} checked={value === 'custom-parameters'} />
         </Box>
 
       </Box>
