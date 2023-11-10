@@ -27,6 +27,7 @@ import { RootState } from 'src/store'
 
 // ** Actions Imports
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
+import { fetchData as fetchEmployee } from 'src/store/apps/File/EmployeeMaster'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchMainParameterDefinitions } from 'src/store/apps/File/ParameterDefinition/MainParameterDefinition'
 import { fetchData as fetchSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
@@ -130,7 +131,6 @@ const emptyValues = {
 
 const AddMenuLevelTwo = ({
     formData,
-    employees,
     branchObject,
     setBranchObject,
     departmentObject,
@@ -184,6 +184,14 @@ const AddMenuLevelTwo = ({
             })
         )
     }, [dispatch])
+    useEffect(() => {
+        dispatch(
+            fetchEmployee({
+                q: ''
+            })
+        )
+    }, [dispatch])
+
 
 
 
@@ -230,6 +238,8 @@ const AddMenuLevelTwo = ({
     const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
     const branchOptions = useSelector((state: RootState) => state.branches)
     const departmentOptions = useSelector((state: RootState) => state.department)
+    const employees = useSelector((state: RootState) => state.employee)
+
 
 
 
@@ -254,10 +264,9 @@ const AddMenuLevelTwo = ({
 
     const handleOnChangeRange = (dates: any) => {
         const [start, end] = dates
-        const timeDiff = new Date(endDate).getTime() - new Date(start).getTime()
+        const timeDiff = new Date(end).getTime() - new Date(start).getTime()
         const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
         setWorkingDaysPeriod(daysDiff)
-        formData.workingDays = workingDaysPeriod
         setContractEnd(end)
         setContractStart(start)
     }
@@ -299,7 +308,7 @@ const AddMenuLevelTwo = ({
                                             value={value}
                                             onBlur={(e) => {
                                                 onBlur()
-                                                const selectedEmployee = employees?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
+                                                const selectedEmployee = employees?.data?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
                                                 if (selectedEmployee)
                                                     reset(selectedEmployee)
                                             }
@@ -560,6 +569,9 @@ const AddMenuLevelTwo = ({
                                                 onBlur={onBlur}
                                                 onChange={(e) => {
                                                     onChange(e)
+                                                    const timeDiff = new Date(endDate).getTime() - new Date(startDate).getTime()
+                                                    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+                                                    setWorkingDaysPeriod(daysDiff)
                                                     const selectedType: any = employmentTypeOptions.find((obj: any) => obj.id === e.target.value);
                                                     setEmploymentTypeValue(selectedType.parameterName)
                                                 }
@@ -596,7 +608,6 @@ const AddMenuLevelTwo = ({
                                                         const timeDiff = new Date(endDate).getTime() - new Date(e).getTime()
                                                         const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
                                                         setWorkingDaysPeriod(daysDiff)
-                                                        formData.workingDays = workingDaysPeriod
                                                     }}
                                                     placeholderText='MM/DD/YYYY'
                                                     customInput={
@@ -697,12 +708,12 @@ const AddMenuLevelTwo = ({
                                     name='workingDays'
                                     control={control}
                                     rules={{ required: true }}
-                                    render={({ field: { value, onChange, onBlur } }) => (
+                                    render={({ field: {  onChange, onBlur } }) => (
                                         <TextField
                                             size={'small'}
                                             autoFocus
                                             label='Days'
-                                            value={value}
+                                            value={workingDaysPeriod}
                                             onBlur={onBlur}
                                             onChange={onChange}
                                             error={Boolean(errors.workingDays)}

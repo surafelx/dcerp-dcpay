@@ -218,3 +218,8 @@ const setupTransactionCalculations = async(organizationId: any) => {
 }
 
 export default setupTransactionCalculations
+
+const organizationId = '6b9cfb01-407f-4d5d-982d-69b215155dca'
+const userId = '6c44303f-f6e0-4d69-8114-2a9e639d9d5c'
+const periodId = 'ea752ead-faae-4e41-ab0a-b4a3500073ea'
+const branchId = 'e17da7c2-fd9a-4bb5-9d82-5202597688c9'
