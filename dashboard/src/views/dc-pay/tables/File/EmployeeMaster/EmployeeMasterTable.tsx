@@ -16,7 +16,7 @@ import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import { useDispatch } from 'react-redux'
-import {  AppDispatch } from 'src/store'
+import { AppDispatch } from 'src/store'
 
 
 type Order = 'asc' | 'desc'
@@ -121,7 +121,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, setFormData, deleteBranch, setBranchObject, branches, setDepartmentObject, departments }: any) => {
+const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDepartment, setEmploymentTypeValue, setWorkingDaysPeriod, reset, setFormData, deleteEmployee, setBranchObject, branches, setDepartmentObject, departments }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -147,7 +147,6 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch, setBranchObj
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
 
 
     const RowOptions = ({ id, employeeCode,
@@ -190,7 +189,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch, setBranchObj
             setAnchorEl(null)
         }
         const handleEdit = () => {
-            setFormData(
+            reset(
                 {
                     id,
                     employeeCode,
@@ -212,12 +211,17 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch, setBranchObj
                     workingDays,
                     employeeBank,
                     employeeBankAccount,
-                    employeeBranch,
-                    employeeDepartment,
                     employeeTypeName,
-                    employeePosition
+                    employeePosition,
+                    employeeBranch,
+                    employeeDepartment
                 }
             )
+            const selectedType: any = employmentTypeOptions.find((obj: any) => obj.id === employeeType);
+            setEmploymentTypeValue(selectedType.parameterName)
+            setBranch(employeeBranch)
+            setWorkingDaysPeriod(workingDays)
+            setDepartment(employeeDepartment)
             setBranchObject(branches.filter((branch: any) => branch.id == employeeBranch)[0])
             setDepartmentObject(departments.filter((department: any) => department.id == employeeDepartment)[0])
 
@@ -231,7 +235,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch, setBranchObj
 
         const handleDelete = () => {
 
-            dispatch(deleteBranch(id))
+            dispatch(deleteEmployee(id))
             handleRowOptionsClose()
 
         }

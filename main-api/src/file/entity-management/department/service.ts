@@ -8,6 +8,15 @@ const create = async (req: Request, organizationId: string): Promise<string> => 
     return newMenuId
 }
 
+const codeExists = async (newDepartment: any, userAuthInfo: any): Promise<any> => {
+    const { organization_id: organizationId } = userAuthInfo
+    return await departmentDao.codeExists(newDepartment, organizationId)
+}
+
+const nameExists = async (newDepartment: any, userAuthInfo: any): Promise<any> => {
+    const { organization_id: organizationId } = userAuthInfo
+    return await departmentDao.nameExists(newDepartment, organizationId)
+}
 
 const getAllFromOrganization = async (organizationId: any, branchId: any): Promise<any[]> => await departmentDao.getAllFromOrganization(organizationId, branchId)
 
@@ -18,6 +27,8 @@ const updateDepartment = async (menuLevelData: any): Promise<any> => await depar
 
 export default {
     create,
+    codeExists,
+    nameExists,
     deleteDepartment,
     getAllFromOrganization,
     updateDepartment

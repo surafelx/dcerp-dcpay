@@ -9,8 +9,7 @@ const create = async (req: Request, organizationId: string, userInfo: any): Prom
     const newEmployeeId = await employeeDao.create({ ...newEmployee })
     const basicSalaryId = await transctionDefinitionService.getByNameAndOrganization(organizationId, 'Basic Salary')
     const daysWorkedId = await transctionDefinitionService.getByNameAndOrganization(organizationId, 'Days Worked')
-    const calculatedSalary = (newEmployee.basicSalary*newEmployee.workingDays)/30
-    await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: basicSalaryId?.id, transactionAmount: calculatedSalary}, userInfo)
+    await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: basicSalaryId?.id, transactionAmount: newEmployee.basicSalary}, userInfo)
     await payTransactionService.create({employeeId: newEmployeeId.id, transactionId: daysWorkedId?.id, transactionAmount: newEmployee.workingDays}, userInfo)
     return newEmployeeId
 }
@@ -22,8 +21,8 @@ const getAllFromOrganization = async (organizationId: any, branchId: any, depart
 
 const getInfo = async (employeeId: any): Promise<any> => await employeeDao.getInfo(employeeId)
 
-const deleteEmployee = async (userId: string): Promise<any> => {
-    await employeeDao.deleteEmployee(userId)
+const deleteEmployee = async (employeeId: string, userInfo: any): Promise<any> => {
+    await employeeDao.deleteEmployee(employeeId)
 }
 
 const updateEmployee = async (employeeData: any): Promise<any> => await employeeDao.updateEmployee(employeeData)

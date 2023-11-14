@@ -70,9 +70,18 @@ export const updateBranch = async (updatedBranch: any): Promise<string> => {
 }
 
 
+export const codeExists = async (branchCode: any, organizationId: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from branch where branch_code=$1 and organization_id=$2)',
+        [branchCode, organizationId])
+    return res[0].exists
+}
+
+
 
 export default {
     create,
+    codeExists,
     deleteBranch,
     getAllFromOrganization,
     updateBranch

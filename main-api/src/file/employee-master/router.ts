@@ -68,7 +68,6 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log(req.body)
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
@@ -86,8 +85,12 @@ router.delete('/:id',
     // usersValidations.newUser,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
             const { id } = req.params
-            await employeeService.deleteEmployee(String(id))
+            await employeeService.deleteEmployee(String(id), userInfo)
             res.send(200)
         } catch (err) {
             console.log(err)
@@ -99,6 +102,7 @@ router.delete('/:id',
 router.put('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            console.log(req.body)
             const updatedEmployee = await employeeService.updateEmployee(req.body.data)
             res.send(updatedEmployee)
         } catch (err) {

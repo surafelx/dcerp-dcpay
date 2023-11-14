@@ -112,8 +112,8 @@ function EnhancedTableHead(props: any) {
         </TableHead>
     )
 }
- 
-const EnhancedTable = ({ rows, formData, setFormData, deleteBranch }: any) => {
+
+const EnhancedTable = ({ rows, reset, formData, handleClickOpen, setAlertText, setFormData, storeProcess, deleteBranch }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -159,7 +159,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch }: any) => {
         }
 
         const handleEdit = () => {
-            setFormData(
+            reset(
                 {
                     id,
                     branchCode,
@@ -175,16 +175,18 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch }: any) => {
         }, []);
 
         const handleDelete = () => {
-
             dispatch(deleteBranch(id))
+            setAlertText(`${branchCode} ${branchName} has been successfully deleted.`)
+            if (!storeProcess) {
+                handleClickOpen()
+            }
             handleRowOptionsClose()
-
         }
 
 
         return (
             <>
-                <div style={{fontSize: 10}} onClick={handleRowOptionsClick}>
+                <div style={{ fontSize: 10 }} onClick={handleRowOptionsClick}>
                     {/* <DotsVertical /> */}
                     Options
                 </div>

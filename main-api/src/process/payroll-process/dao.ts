@@ -468,12 +468,13 @@ const getEmployeeByBranchByDepartment = async (organizationId: any, branchId: an
 
 const calculateTransactionCalculations = (transaction: any) => {
     let transaction_amount: any = 0
+    console.log(transaction)
     if (transaction.calculation_unit_name === 'Monthly')
         transaction_amount = parseFloat(transaction.second_transaction_value)
     if (transaction.calculation_unit_name === 'Hourly')
-        transaction_amount = parseFloat(transaction.second_transaction_value) / parseFloat(transaction.monthly_working_hours)
+        transaction_amount = parseFloat(transaction.second_transaction_value) / 192
     if (transaction.calculation_unit_name === 'Daily')
-        transaction_amount = parseFloat(transaction.second_transaction_value) / parseFloat(transaction.working_days)
+        transaction_amount = parseFloat(transaction.second_transaction_value) / 30
     if (transaction.first_option_value === '*')
         transaction_amount *= parseFloat(transaction.third_transaction_value)
     if (transaction.second_option_value === '*' )
