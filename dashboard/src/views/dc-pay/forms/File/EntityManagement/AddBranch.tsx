@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 
 // ** MUI Imports
+import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -29,9 +30,6 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 
-
-
-
 // ** Store Imports
 import { useDispatch } from 'react-redux'
 
@@ -46,12 +44,12 @@ import { AppDispatch } from 'src/store'
 
 
 const schema = yup.object().shape({
-    branchCode: yup.string(),
-    branchName: yup.string()
+    branchCode: yup.number().typeError('Branch Code is required').required("Branch Code is required"),
+    branchName: yup.string().typeError('Branch Name is required').required("Branch Name is required"),
 })
 
 const emptyValues = {
-    branchCode: '',
+    branchCode: 0,
     branchName: ''
 }
 
@@ -88,6 +86,9 @@ const AddBranch = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
+        if (errors.branchCode) {
+            console.log("Hello")
+        }
 
         if (data.id) {
             dispatch(editBranch({ ...data, }))
@@ -100,10 +101,9 @@ const AddBranch = ({ formData }: any) => {
 
     return (
         <Card>
-
             <CardHeader title='Add Branch' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
-                <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+                <form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={12}>
                             <FormControl fullWidth >
@@ -115,6 +115,7 @@ const AddBranch = ({ formData }: any) => {
                                         <TextField
                                             size={'small'}
                                             autoFocus
+                                            type={'number'}
                                             label='Branch Code'
                                             value={value}
                                             onBlur={onBlur}
@@ -124,6 +125,7 @@ const AddBranch = ({ formData }: any) => {
                                         />
                                     )}
                                 />
+                                {errors.branchCode && <Alert sx={{ my: 4 }} severity='error'>{String(errors.branchCode.message)}</Alert>}
                             </FormControl>
                         </Grid>
                         <Grid item sm={12}>
@@ -145,7 +147,7 @@ const AddBranch = ({ formData }: any) => {
                                         />
                                     )}
                                 />
-                                {/* {errors.branchName && <FormHelperText sx={{ color: 'error.main' }}>{errors.branchName.message}</FormHelperText>} */}
+                                {errors.branchName && <Alert sx={{ my: 4 }} severity='error'>{String(errors.branchName.message)}</Alert>}
                             </FormControl>
                         </Grid>
                         <Grid item sm={6}>
@@ -157,7 +159,7 @@ const AddBranch = ({ formData }: any) => {
                         </Grid>
 
                         <Grid item sm={6}>                    <FormControl fullWidth>
-                            <Button fullWidth size='small' color='secondary' onClick={() => reset({emptyValues})} type='reset' variant='contained'>
+                            <Button fullWidth size='small' color='secondary' onClick={() => reset({ emptyValues })} type='reset' variant='contained'>
                                 Reset
                             </Button>
                         </FormControl>

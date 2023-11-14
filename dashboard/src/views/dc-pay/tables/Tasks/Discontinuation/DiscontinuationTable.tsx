@@ -5,6 +5,7 @@ import { useEffect, useState, MouseEvent } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import Paper from '@mui/material/Paper'
+
 import { visuallyHidden } from '@mui/utils'
 import TableRow from '@mui/material/TableRow'
 import TableBody from '@mui/material/TableBody'
@@ -16,7 +17,9 @@ import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from 'src/store'
+import {  AppDispatch } from 'src/store'
+
+// ** Icon Imports
 
 type Order = 'asc' | 'desc'
 
@@ -55,24 +58,23 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
 }
 
 const headCells: readonly any[] = [
-
     {
-        id: 'branch',
+        id: 'referrenceNumber',
         numeric: false,
         disablePadding: true,
-        label: 'Branch'
+        label: 'Referrence Number'
     },
     {
-        id: 'code',
-        numeric: false,
+        id: 'actionTypeName',
+        numeric: true,
         disablePadding: true,
-        label: 'Code'
+        label: 'Action Type'
     },
     {
-        id: 'name',
-        numeric: false,
+        id: 'actionDate',
+        numeric: true,
         disablePadding: true,
-        label: 'Name'
+        label: 'Action Date'
     },
     {
         id: 'actions',
@@ -119,9 +121,9 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, reset, setBranchObject, deleteDepartment }: any) => {
+const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setTransactionObject, transactionDefinitionStore, setEmployee, setTransaction, reset, employee, }: any) => {
     // ** States
-   
+    const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
     const [rowsPerPage, setRowsPerPage] = useState<number>(10)
     const [orderBy, setOrderBy] = useState<any>('count')
@@ -147,7 +149,12 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
 
-    const RowOptions = ({ id, branchId, departmentCode, departmentName, permanentAccount, contractAccount }: any) => {
+
+    const RowOptions = ({
+        id,
+        transactionId,
+        transactionAmount
+    }: any) => {
         // ** Hooks
         const dispatch = useDispatch<AppDispatch>()
 
@@ -164,18 +171,19 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
         }
 
         const handleEdit = () => {
-           
-            setBranchObject(branches.filter((branch: any) => branch.id == branchId)[0])
-            reset({
-                id, branchId, departmentCode, departmentName, permanentAccount, contractAccount
-            })
-            setFormData(
+            setEmployee(employee)
+            setTransaction(transactionId)
+            setTransactionObject(transactionDefinitionStore.data.filter((tran: any) => tran.id == transactionId)[0])
+            reset(
                 {
-                    id, branchId, departmentCode, departmentName, permanentAccount, contractAccount
+                    id,
+                    employeeId: employee,
+                    transactionId,
+                    transactionAmount,
                 }
             )
-
         }
+
 
         useEffect(() => {
             if (formData) {
@@ -184,21 +192,16 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
         }, []);
 
         const handleDelete = () => {
-            setBranchObject({id: '', branchName: ''})
-            reset({id: '', branchId: '', departmentCode: '', departmentName: ''})
-            dispatch(deleteDepartment(id))
+            dispatch(deletePayTransaction(id))
             handleRowOptionsClose()
         }
 
-
-
         return (
             <>
-                <div style={{ fontSize: 10 }} onClick={handleRowOptionsClick}>
+                <div style={{fontSize: 10}} onClick={handleRowOptionsClick}>
                     {/* <DotsVertical /> */}
                     Options
-                </div>
-                <Menu
+                </div>    <Menu
                     keepMounted
                     anchorEl={anchorEl}
                     open={rowOptionsOpen}
@@ -213,7 +216,7 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
                     }}
                     PaperProps={{ style: { minWidth: '8rem' } }}
                 >
-
+                   
                     <MenuItem onClick={handleEdit}>
                         {/* <PencilOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Edit
@@ -226,7 +229,7 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
             </>
         )
     }
-
+    
     return (
         <>
             {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
@@ -253,16 +256,17 @@ const EnhancedTable = ({ rows, page, setPage, branches, formData, setFormData, r
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.branchName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.departmentCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.departmentName}</TableCell>
+                                        <TableCell sx={{ fontSize: 11 }}>{row.referrenceNumber}</TableCell>
+                                        <TableCell sx={{ fontSize: 11 }}>{row.actionTypeName}</TableCell>
+                                        <TableCell sx={{ fontSize: 11 }}>{row.actionDate}</TableCell>
                                         <TableCell sx={{ fontSize: 11 }}>
                                             <RowOptions
                                                 id={row.id}
-                                                branchId={row.branchId}
-                                                departmentCode={row.departmentCode}
-                                                departmentName={row.departmentName}
-                                            /></TableCell>
+                                                employeeId={row.employeeId}
+                                                transactionId={row.transactionId}
+                                                transactionAmount={row.transactionAmount}
+                                            />
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })}

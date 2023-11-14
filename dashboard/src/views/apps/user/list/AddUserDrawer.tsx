@@ -70,7 +70,7 @@ const schema = yup.object().shape({
   email: yup.string().email().required(),
   contact: yup
     .number()
-    .typeError('Contact Number field is required')
+    .typeError('Branch Code field is required')
     .min(10, obj => showErrors('Contact Number', obj.value.length, obj.min))
     .required(),
   fullName: yup

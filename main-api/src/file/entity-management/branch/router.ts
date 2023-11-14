@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import branchService from './service'
 import userService from '../../../settings/user-management/users/service'
+import branchValidator from './validator'
+import { validationResult } from 'express-validator'
 
 const router = Router()
 
@@ -28,7 +30,8 @@ router.get('/',
                 allData: renamedBranches,
                 branch: filteredData,
                 query: req.query,
-                total: filteredData.length
+                total: filteredData.length,
+                isLoading: false
             })
         } catch (e) {
             console.log(e)
@@ -37,8 +40,13 @@ router.get('/',
     })
 
 router.post('/',
+    branchValidator.newBranch,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(422).json({ errors: errors.array() });
+            }
             const userId = req.headers['x-user-id'];
             const userAuthInfo = await userService.getUserAuthorizationInfo(userId)
             const createdBranch = await branchService.create(req, userAuthInfo)

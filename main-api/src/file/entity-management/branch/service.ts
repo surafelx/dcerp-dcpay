@@ -17,6 +17,11 @@ const getAllFromOrganization = async (userAuthInfo: any): Promise<any[]> => {
     return await branchDao.getAllFromOrganization(organizationId)
 }
 
+const codeExists = async (newBranch: any, userAuthInfo: any): Promise<any> => {
+    const { organization_id: organizationId } = userAuthInfo
+    return await branchDao.codeExists(newBranch.branchCode, organizationId)
+}
+
 const getAllFromOrganizations = async (organizationId: any): Promise<any[]> => await branchDao.getAllFromOrganization(organizationId)
 
 
@@ -31,6 +36,7 @@ const updateBranch = async (menuLevelData: any): Promise<any> => await branchDao
 
 export default {
     create,
+    codeExists,
     deleteBranch,
     getAllFromOrganization,
     getAllFromOrganizations,

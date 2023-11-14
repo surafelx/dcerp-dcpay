@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import departmentService from './service'
 import userService from '../../../settings/user-management/users/service'
+import departmentValidator from './validator'
+import { validationResult } from 'express-validator'
 
 const router = Router()
 
@@ -9,7 +11,7 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', branch= null } = req.query ?? ''
+            const { q = '', branch = null } = req.query ?? ''
             const branchId = branch
             const queryLowered = q.toString().toLowerCase()
             const departments = await departmentService.getAllFromOrganization(organizationId, branchId)
@@ -46,8 +48,13 @@ router.get('/',
     })
 
 router.post('/',
+    departmentValidator.newDepartment,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(422).json({ errors: errors.array() });
+            }
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const createdDepartment = await departmentService.create(req, String(organizationId))

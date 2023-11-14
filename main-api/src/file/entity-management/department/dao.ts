@@ -39,6 +39,22 @@ export const create = async (newDepartment: any): Promise<any> => {
     return department
 }
 
+export const codeExists = async (department: any, organizationId: any): Promise<boolean> => {
+    const { branchId, departmentCode } = department
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from department where department_code = $1 AND branch_id = $2 AND organization_id = $3)',
+        [departmentCode, branchId, organizationId])
+    return res[0].exists
+}
+
+export const nameExists = async (department: any, organizationId: any): Promise<boolean> => {
+    const { branchId, departmentName } = department
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from department where department_name= $1 AND branch_id = $2 AND organization_id= $3)',
+        [departmentName, branchId, organizationId])
+    return res[0].exists
+}
+
 
 export const getAllFromOrganization = async (organizationId: string, branchId: any): Promise<any> => {
     let query = `
@@ -103,6 +119,8 @@ export const updateDepartment = async (updatedDepartment: any): Promise<string> 
 
 export default {
     create,
+    codeExists,
+    nameExists,
     deleteDepartment,
     getAllFromOrganization,
     updateDepartment

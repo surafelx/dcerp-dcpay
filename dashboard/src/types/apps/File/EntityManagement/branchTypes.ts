@@ -1,6 +1,6 @@
 export type BranchType = {
     id: number;
-    branchCode: string;
+    branchCode: number;
     branchName: string;
   }
   

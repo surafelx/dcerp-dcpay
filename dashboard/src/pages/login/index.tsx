@@ -5,6 +5,7 @@ import { useState, ReactNode } from 'react'
 import Link from 'next/link'
 
 // ** MUI Components
+import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
@@ -15,7 +16,6 @@ import FormControl from '@mui/material/FormControl'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
-import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography from '@mui/material/Typography'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
@@ -226,7 +226,7 @@ const LoginPage = () => {
 
             </Box>
 
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <FormControl fullWidth sx={{ mb: 4 }}>
                 <Controller
                   name='email'
@@ -244,7 +244,7 @@ const LoginPage = () => {
                     />
                   )}
                 />
-                {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
+                {errors.email && <Alert sx={{ my: 4 }} severity='error'>{errors.email.message}</Alert>}
               </FormControl>
               <FormControl fullWidth>
                 <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
@@ -277,11 +277,8 @@ const LoginPage = () => {
                     />
                   )}
                 />
-                {errors.password && (
-                  <FormHelperText sx={{ color: 'error.main' }} id=''>
-                    {errors.password.message}
-                  </FormHelperText>
-                )}
+
+                {errors.password && <Alert sx={{ my: 4 }} severity='error'>{errors.password.message}</Alert>}
               </FormControl>
               <Box
                 sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}

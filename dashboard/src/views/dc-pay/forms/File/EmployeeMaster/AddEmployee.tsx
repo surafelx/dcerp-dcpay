@@ -13,6 +13,8 @@ import FormHelperText from '@mui/material/FormHelperText'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 
+import moment from 'moment'
+
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 
@@ -217,6 +219,7 @@ const AddMenuLevelTwo = ({
     const onSubmit = (data: any) => {
         data.employeeBranch = branchObject.id
         data.employeeDepartment = departmentObject.id
+        data.workingDays = workingDaysPeriod
         if (data.contractDate) {
             data.contractStartDate = data.contractDate[0]
             data.contractEndDate = data.contractDate[1]
@@ -264,8 +267,9 @@ const AddMenuLevelTwo = ({
 
     const handleOnChangeRange = (dates: any) => {
         const [start, end] = dates
-        const timeDiff = new Date(end).getTime() - new Date(start).getTime()
-        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+        const formattedEndDate = moment(end)
+        const formattedStartDate = moment(start)
+        const daysDiff = formattedEndDate.diff(formattedStartDate, 'days') + 1;
         setWorkingDaysPeriod(daysDiff)
         setContractEnd(end)
         setContractStart(start)
@@ -569,9 +573,7 @@ const AddMenuLevelTwo = ({
                                                 onBlur={onBlur}
                                                 onChange={(e) => {
                                                     onChange(e)
-                                                    const timeDiff = new Date(endDate).getTime() - new Date(startDate).getTime()
-                                                    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
-                                                    setWorkingDaysPeriod(daysDiff)
+                                                    setWorkingDaysPeriod("")
                                                     const selectedType: any = employmentTypeOptions.find((obj: any) => obj.id === e.target.value);
                                                     setEmploymentTypeValue(selectedType.parameterName)
                                                 }
@@ -605,9 +607,11 @@ const AddMenuLevelTwo = ({
                                                     maxDate={new Date(endDate)}
                                                     onChange={(e: any) => {
                                                         onChange(e)
-                                                        const timeDiff = new Date(endDate).getTime() - new Date(e).getTime()
-                                                        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+                                                        const formattedEndDate = moment(endDate)
+                                                        const formattedSelectedDate = moment(e)
+                                                        const daysDiff = formattedEndDate.diff(formattedSelectedDate, 'days') + 1;
                                                         setWorkingDaysPeriod(daysDiff)
+                                                        formData.workingDays = workingDaysPeriod
                                                     }}
                                                     placeholderText='MM/DD/YYYY'
                                                     customInput={
@@ -708,9 +712,10 @@ const AddMenuLevelTwo = ({
                                     name='workingDays'
                                     control={control}
                                     rules={{ required: true }}
-                                    render={({ field: {  onChange, onBlur } }) => (
+                                    render={({ field: { onChange, onBlur } }) => (
                                         <TextField
                                             size={'small'}
+                                            disabled={true}
                                             autoFocus
                                             label='Days'
                                             value={workingDaysPeriod}
@@ -868,6 +873,7 @@ const AddMenuLevelTwo = ({
                             <FormControl fullWidth>
                                 <Button color='secondary' fullWidth size='large' onClick={() => {
                                     reset(emptyValues)
+                                    setWorkingDaysPeriod("")
                                     setBranchObject({ id: '', branchName: '' })
                                     setDepartmentObject({ id: '', departmentName: '' })
                                     setBranch('')
