@@ -33,7 +33,12 @@ export const create = async (newMenu: any): Promise<any> => {
     return branch
 }
 
-
+export const branchCodeExists = async (branchCode: any, organizationId: any) => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from branch where branch_code=$1 and organization_id=$2)',
+        [branchCode, organizationId])
+    return res[0].exists
+}
 
 const processCSV = async (organizationId: any, csvFile: any) => {
     try {
@@ -64,7 +69,9 @@ const processCSV = async (organizationId: any, csvFile: any) => {
                     for (const branch of resultArray) {
                         branch.organizationId = organizationId;
                         try {
-                            await create(branch);
+                            const doesExist = await branchCodeExists(branch.branchCode, organizationId)
+                            if (!doesExist)
+                                await create(branch);
                         } catch (err) {
                             console.log('Error processing row:', err);
                             console.log('Row data:', branch);

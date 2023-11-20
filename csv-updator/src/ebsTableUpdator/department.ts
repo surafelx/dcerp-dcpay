@@ -15,6 +15,13 @@ const PROJECT_CHURCH_RELATION_BRANCH = '9'
 const PENSION_BRANCH = '10'
 const GOOD_SAMARITIAN_PROJECT_NORWAY_BRANCH = '11'
 
+export const codeExists = async (department: any, organizationId: any): Promise<boolean> => {
+    const { branchId, departmentCode } = department
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from department where department_code = $1 AND branch_id = $2 AND organization_id = $3)',
+        [departmentCode, branchId, organizationId])
+    return res[0].exists
+}
 
 export const create = async (newDepartment: any): Promise<any> => {
     const id = uuid()
@@ -65,8 +72,8 @@ export const getBranchByOrganizationByName = async (organizationId: any, branchN
     branch_name= $2
     `
     const res = await pool.query(query, [
-      organizationId, 
-      branchName
+        organizationId,
+        branchName
     ])
     const branch = res.rows[0]
     return branch
@@ -148,9 +155,11 @@ const processCSV = async (organizationId: any, csvFile: any) => {
                                 department.branchId = branch.id;
                             }
 
-                            
+
                             department.organizationId = organizationId;
-                            await create(department);
+                            const doesExist = await codeExists(department, organizationId)
+                            if (!doesExist)
+                                await create(department);
                         } catch (err) {
                             console.log('Error processing row:', err);
                             console.log('Row data:', department);
