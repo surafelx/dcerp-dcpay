@@ -53,6 +53,11 @@ const deleteUser = async (userId: string): Promise<any> => {
 }
 
 
+const emailExists = async (email: string): Promise<any> => {
+    return await userDao.emailExists(email)
+}
+
+
 const updateUser = async (userData: any): Promise<any> => {
     const updatedUser = await userDao.updateUser(userData)
     return updatedUser
@@ -63,6 +68,7 @@ export default {
     create,
     setupApp,
     deleteUser,
+    emailExists,
     getInfo,
     getAll,
     getAllFromOrganization,

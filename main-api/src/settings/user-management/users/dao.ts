@@ -285,11 +285,19 @@ const getUserAuthorizationInfo = async (userId: string) => {
     return userAuthInfo
 }
 
+export const emailExists = async (email: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from user_accounts where email=$1)',
+        [email])
+    return res[0].exists
+}
+
 export default {
     create,
     comparePassword,
     deleteUser,
     deleteUserRoleByUserId,
+    emailExists,
     userIdExists,
     userExists,
     getDateRange,

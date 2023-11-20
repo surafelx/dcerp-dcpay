@@ -37,7 +37,9 @@ router.get('/',
                 allData: renamedDepartments,
                 department: filteredData,
                 query: req.query,
-                total: filteredData.length
+                total: filteredData.length,
+                isLoading: false,
+                error: null
             })
         } catch (e) {
             console.log(e)

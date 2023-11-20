@@ -77,8 +77,8 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required()
+  email: yup.string().email('Email must be a valid email.').required('Email is a required field.'),
+  password: yup.string().required('Password is required.')
 })
 
 const defaultValues = {
@@ -94,6 +94,7 @@ interface FormData {
 const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [generalError, setGeneralError] = useState<any>('')
 
   // ** Hooks
   const auth = useAuth()
@@ -117,11 +118,24 @@ const LoginPage = () => {
 
   const onSubmit = (data: FormData) => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      })
+    auth.login({ email, password, rememberMe }, (error: any) => {
+      if (error?.response?.data?.errors[0].param == 'password' && error?.response?.data?.errors[0].msg !== 'Invalid Email or Password.') {
+        setError('password', {
+          type: 'manual',
+          message: `${error?.response?.data?.errors[0].msg || 'Email or Password is Invalid.'}`
+        })
+      }
+      if (error?.response?.data?.errors[0].param == 'email'  && error?.response?.data?.errors[0].msg !== 'Invalid Email or Password.') {
+        setError('email', {
+          type: 'manual',
+          message: `${error?.response?.data?.errors[0].msg || 'Email or Password is Invalid.'}`
+        })
+      }
+      
+      if (error?.response?.data?.errors[0].msg == 'Invalid Email or Password.') {
+        setGeneralError('Invalid Email or Password.')
+      }
+
     })
   }
 
@@ -223,10 +237,8 @@ const LoginPage = () => {
             </Box>
             <Box sx={{ mb: 10 }}>
               <DialogSetupApp />
-
             </Box>
-
-            <form autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <FormControl fullWidth sx={{ mb: 4 }}>
                 <Controller
                   name='email'
@@ -289,6 +301,7 @@ const LoginPage = () => {
                 />
                 <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
               </Box>
+              {generalError && <Alert sx={{ my: 4 }} severity='error'>{generalError}</Alert>}
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
                 Login
               </Button>
