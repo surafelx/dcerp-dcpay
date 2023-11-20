@@ -136,10 +136,10 @@ const UserList = () => {
         data.branchId = branch
         if (data.id) {
             dispatch(editDepartment({ ...data, }))
-            setAlertText('')
+            setAlertText(`${data.departmentCode} ${data.departmentName} has been successfully edited.`)
         } else {
             dispatch(addDepartment({ ...data, }))
-            setAlertText('')
+            setAlertText(`${data.departmentCode} ${data.departmentName} has been successfully added.`)
         }
         setBranchObject({ id: '', branchName: '' })
         reset(emptyValues)
@@ -323,6 +323,7 @@ const UserList = () => {
                                 formData={formData}
                                 setFormData={setFormData}
                                 deleteDepartment={deleteDepartment}
+                                setAlertText={setAlertText}
                                 reset={reset}
                                 branches={branchStore.data}
                                 setBranchObject={setBranchObject}
@@ -334,6 +335,7 @@ const UserList = () => {
                     <DialogAlert />
                 </Grid>
             </Grid >
+            <DialogAlert />
         </>
     )
 }

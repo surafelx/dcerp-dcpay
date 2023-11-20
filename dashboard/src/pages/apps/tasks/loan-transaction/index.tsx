@@ -1,8 +1,9 @@
 // ** React Imports
-import { useState, useEffect, } from 'react'
+import { Fragment, useState, useEffect, } from 'react'
 
 
 // ** MUI Imports
+import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import CardHeader from '@mui/material/CardHeader'
@@ -34,22 +35,32 @@ import Button from '@mui/material/Button'
 
 import LoanTransactionTable from 'src/views/dc-pay/tables/Tasks/LoanTransaction/LoanTransactionTable'
 
+
+// ** MUI Imports
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
+
+
+
 const emptyValues = {
     id: '',
     employeeId: '',
     transactionId: '',
-    transactionAmount: '',
-    totalLoan: '',
+    transactionAmount: 0,
+    totalLoan: 0,
     remainingBalance: ''
 }
 
 
 const schema = yup.object().shape({
-    employeeId: yup.string(),
-    transactionId: yup.string(),
-    transactionAmount: yup.string(),
+    employeeId: yup.string().required('Required'),
+    transactionId: yup.string().required('Required'),
+    transactionAmount: yup.number().typeError('Amount has to be a valid amount.').required("Amount is required").test('not-zero', 'Amount cannot be 0', (value) => value !== 0),
     remainingBalance: yup.string(),
-    totalLoan: yup.string()
+    totalLoan: yup.number().typeError('Total Loan has to be a valid number.').required("Total Loan is required").test('not-zero', 'Loan cannot be 0', (value) => value !== 0),
 
 })
 
@@ -59,15 +70,19 @@ const UserList = () => {
     const [employee, setEmployee] = useState<string>('')
     const [employeeObject, setEmployeeObject] = useState<any>(null)
     const [transaction, setTransaction] = useState<string>('')
+    const [alertText, setAlertText] = useState<any>('')
     const [transactionObject, setTransactionObject] = useState<any>(null)
     const [value,] = useState<string>('')
+    const [open, setOpen] = useState<boolean>(false)
+    const handleClickOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
 
     const [formData, setFormData] = useState({
         id: '',
         employeeId: '',
         transactionId: '',
-        totalLoan: '',
-        transactionAmount: '',
+        totalLoan: 0,
+        transactionAmount: 0,
         remainingBalance: ''
     });
 
@@ -80,23 +95,54 @@ const UserList = () => {
         reset(emptyValues)
     }
 
+    const DialogAlert = () => {
+        // ** State
+        return (
+            <Fragment>
+                <Dialog
+                    open={storeProcess ? false : open}
+                    onClose={handleClose}
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'
+                >
+                    <DialogTitle id='alert-dialog-title'>Loan Transaction</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id='alert-dialog-description'>
+                            {alertText}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions className='dialog-actions-dense'>
+                        <Button onClick={handleClose}>Ok</Button>
+                    </DialogActions>
+                </Dialog>
+            </Fragment>
+        )
+    }
+
+
 
 
 
     const onSubmit = (data: any) => {
         data.employeeId = employee
         data.transactionId = transaction
-        if (data.id) {
-            dispatch(editLoanTransaction({ ...data }))
-        } else {
-            dispatch(addLoanTransaction({ ...data }))
+
+        if (!storeProcess) {
+            setAlertText(`${employeeObject.employeeCode} ${employeeObject.firstName} has a total loan of ${data.totalLoan}, a transcation amount of ${data.transactionAmount} and a remaining balance of ${data.remainingBalance}.`)
+            if (data.id) {
+                dispatch(editLoanTransaction({ ...data }))
+            } else {
+                dispatch(addLoanTransaction({ ...data }))
+            }
+            clearAllFields()
+            handleClickOpen()
         }
-        clearAllFields()
     }
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.loanTransaction)
+    const storeProcess = useSelector((state: RootState) => state.department.isLoading)
 
     useEffect(() => {
         dispatch(
@@ -135,32 +181,21 @@ const UserList = () => {
                     id: existingObject.id,
                     employeeId: employee,
                     transactionId: selectedTransactionId,
-                    transactionAmount: existingObject.transactionAmount
+                    transactionAmount: existingObject.transactionAmount,
+                    totalLoan: existingObject.totalLoan
                 }
             )
         } else {
             reset({
-                transactionAmount: ''
+                id: '',
+                employeeId: employee,
+                transactionId: selectedTransactionId,
+                transactionAmount: 0,
+                totalLoan: 0
             })
         }
 
         setTransaction(selectedTransactionId)
-    }
-
-    const handleEmployeeChange = (e: any, newValue: any) => {
-        if (newValue?.id) {
-            setEmployeeObject(newValue)
-            setEmployee(newValue.id)
-            setTransactionObject({ id: '', transactionName: '' })
-            reset({ transactionAmount: '' })
-        }
-    }
-
-    const handleTransactionChange = (e: any, newValue: any) => {
-        if (newValue?.id && employee) {
-            setTransactionObject(newValue)
-            handleTransactionValue(newValue.id)
-        }
     }
 
 
@@ -169,12 +204,36 @@ const UserList = () => {
         control,
         handleSubmit,
         reset,
+        setValue,
+        trigger,
         formState: { errors }
     } = useForm({
         defaultValues: emptyValues,
-        mode: 'onBlur',
+        mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
+
+
+    const handleEmployeeChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setEmployeeObject(newValue)
+            setEmployee(newValue.id)
+            setValue('employeeId', newValue.id)
+            trigger('employeeId')
+            setTransactionObject({ id: '', transactionName: '' })
+            reset({ employeeId: newValue?.id, transactionId: '', totalLoan: 0, remainingBalance: '', transactionAmount: 0 })
+        }
+    }
+
+    const handleTransactionChange = (e: any, newValue: any) => {
+        if (newValue?.id && employee) {
+            setTransactionObject(newValue)
+            handleTransactionValue(newValue.id)
+            setValue('transactionId', newValue.id)
+            trigger('transactionId')
+        }
+    }
+
 
     return (
         <Grid container spacing={3}>
@@ -196,9 +255,10 @@ const UserList = () => {
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
                                             getOptionLabel={(option: any) => option.employeeCode}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                            renderInput={params => <TextField name={'branchId'} required type={'number'} error={Boolean(errors.employeeId)}  {...params} label='Select Employee' />}
                                         />
                                     </FormControl>
+                                    {errors.employeeId && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeId.message}</Alert>}
                                 </Grid>
                                 <Grid item xs={3}>
                                     <FormControl fullWidth>
@@ -211,8 +271,9 @@ const UserList = () => {
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
                                             getOptionLabel={(option: any) => option.firstName}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                            renderInput={params => <TextField required error={Boolean(errors.employeeId)}  {...params} label='Select Employee' />}
                                         />
+                                        {errors.employeeId && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeId.message}</Alert>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -226,9 +287,10 @@ const UserList = () => {
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
                                             getOptionLabel={option => option.transactionName}
-                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                            renderInput={params => <TextField required error={Boolean(errors.transactionId)}  {...params} label='Select Transaction' />}
                                         />
                                     </FormControl>
+                                    {errors.transactionId && <Alert sx={{ my: 4 }} severity='error'>{errors.transactionId.message}</Alert>}
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth sx={{ mb: 3 }}>
@@ -238,9 +300,10 @@ const UserList = () => {
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
+                                                    required
                                                     size={'small'}
                                                     autoFocus
-                                                   
+                                                    type={'number'}
                                                     dir={'rtl'}
                                                     label='Transaction Amount'
                                                     value={value}
@@ -251,7 +314,7 @@ const UserList = () => {
                                                 />
                                             )}
                                         />
-                                        {errors.transactionAmount && <FormHelperText sx={{ color: 'error.main' }}>{errors.transactionAmount.message}</FormHelperText>}
+                                        {errors.transactionAmount && <Alert sx={{ my: 4 }} severity='error'>{errors.transactionAmount.message}</Alert>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
@@ -262,6 +325,7 @@ const UserList = () => {
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
+                                                    required
                                                     size={'small'}
                                                     autoFocus
                                                     dir={'rtl'}
@@ -274,7 +338,7 @@ const UserList = () => {
                                                 />
                                             )}
                                         />
-                                        {errors.totalLoan && <FormHelperText sx={{ color: 'error.main' }}>{errors.totalLoan.message}</FormHelperText>}
+                                        {errors.totalLoan && <Alert sx={{ my: 4 }} severity='error'>{errors.totalLoan.message}</Alert>}
                                     </FormControl>
                                 </Grid>
 
@@ -288,7 +352,7 @@ const UserList = () => {
                                                 <TextField
                                                     size={'small'}
                                                     autoFocus
-
+                                                    type={'number'}
                                                     label='Remaining Balance'
                                                     dir={'rtl'}
                                                     value={value}
@@ -332,6 +396,7 @@ const UserList = () => {
                 <Card>
                     <CardContent>
                         <LoanTransactionTable
+                            setTransaction={setTransaction}
                             rows={store.data}
                             formData={formData}
                             setFormData={setFormData}
@@ -342,10 +407,14 @@ const UserList = () => {
                             transaction={transaction}
                             transactionDefinitionStore={transactionDefinitionStore}
                             employeeStore={employeeStore}
+                            handleClickOpen={handleClickOpen}
+                            setAlertText={setAlertText}
+                            storeProcess={storeProcess}
                         />
                     </CardContent>
                 </Card>
             </Grid>
+            <DialogAlert />
         </Grid>
     )
 }

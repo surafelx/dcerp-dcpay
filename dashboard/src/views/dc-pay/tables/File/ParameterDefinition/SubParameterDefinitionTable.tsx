@@ -1,35 +1,37 @@
 // ** React Imports
 import { useState, useEffect } from 'react'
-
-
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import CardHeader from '@mui/material/CardHeader'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import CardContent from '@mui/material/CardContent'
+import FormControl from '@mui/material/FormControl'
+import Autocomplete from '@mui/material/Autocomplete'
+
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
+// ** Third Party Imports
 import * as yup from 'yup'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 
 
 // ** Actions Imports
 import { fetchData, deleteSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
+import { addSubParameterDefinition, editSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
-
-
-
-import AddSubParameterDefinition from 'src/views/dc-pay/forms/File/ParameterDefinition/AddSubParameterDefinition'
 import SubParameterDefinitionTable from 'src/views/dc-pay/tables/File/ParameterDefinition/SubParameterDefinition/SubParameterDefinitionTable/SubParameterDefinitionTable'
 
 
 const schema = yup.object().shape({
-    parameterId: yup.string(),
-    parameterName: yup.string()
+    parameterId: yup.string().required('Main Parameter is Required.'),
+    parameterName: yup.string().required('Sub Parameter Name is Required.')
 
 })
 
@@ -43,6 +45,7 @@ const emptyValues = {
 const UserList = () => {
     // ** State
     const [mainParameterDefinition, setMainParameterDefinition] = useState<string>('')
+    const [mainParameterDefinitionObject, setMainParameterDefinitionObject] = useState<any>(null)
     const [parameter, setParameter] = useState<string>('')
 
 
@@ -59,10 +62,13 @@ const UserList = () => {
     const store = useSelector((state: RootState) => state.subParameterDefinition)
 
     const {
+        control,
+        handleSubmit,
         reset,
+        formState: { errors }
     } = useForm({
         defaultValues: emptyValues,
-        mode: 'onBlur',
+        mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
 
@@ -77,12 +83,101 @@ const UserList = () => {
     }, [dispatch, mainParameterDefinition])
 
 
+    const onSubmit = (data: any) => {
+        data.parameterId = mainParameterDefinition
+        if (data.id) {
+            dispatch(editSubParameterDefinition({ ...data, }))
+        } else {
+            dispatch(addSubParameterDefinition({ ...data, }))
+        }
+        reset(emptyValues)
+
+    }
+
+
+    const mainParameterDefinitions = useSelector((state: RootState) => state.mainParameterDefinition)
+
+
+    const handleMainParameterDefinitionChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setMainParameterDefinitionObject(newValue)
+            setMainParameterDefinition(newValue.id)
+        }
+    }
+
+
 
     return (
         <>
             <Grid container spacing={6}>
                 <Grid item xs={12} md={12} lg={4}>
-                   <AddSubParameterDefinition formData={formData} mainParameterDefinition={mainParameterDefinition} setMainParameterDefinition={setMainParameterDefinition}/>
+                    {/* <AddSubParameterDefinition formData={formData} mainParameterDefinition={mainParameterDefinition} setMainParameterDefinition={setMainParameterDefinition}/> */}
+                    <Card>
+                        <CardHeader title='Add Sub Parameter' titleTypographyProps={{ variant: 'h6' }} />
+                        <CardContent>
+                            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={12} sm={12}>
+                                        <FormControl fullWidth>
+                                            <Autocomplete
+                                                autoSelect
+                                                size={'small'}
+                                                value={mainParameterDefinitionObject}
+                                                options={mainParameterDefinitions.data}
+                                                onChange={handleMainParameterDefinitionChange}
+                                                isOptionEqualToValue={(option: any, value: any) => option.parameterName == value.parameterName}
+                                                id='autocomplete-controlled'
+                                                getOptionLabel={(option: any) => option.parameterName}
+                                                renderInput={params => <TextField error={Boolean(errors.parameterId)} {...params} label='Select Main Parameter' />}
+                                            />
+                                        </FormControl>
+                                        {errors.parameterId && <Alert sx={{ my: 4 }} severity='error'>{errors.parameterId.message}</Alert>}
+                                    </Grid>
+                                    <Grid item xs={12} sm={12}>
+                                        <FormControl fullWidth sx={{ mb: 4 }}>
+                                            <Controller
+                                                name='parameterName'
+                                                control={control}
+                                                rules={{ required: true }}
+                                                render={({ field: { value, onChange, onBlur } }) => (
+                                                    <TextField
+                                                        size={'small'}
+                                                        autoFocus
+                                                        label='Sub Parameter Name'
+                                                        value={value}
+                                                        onBlur={onBlur}
+                                                        onChange={onChange}
+                                                        error={Boolean(errors.parameterName)}
+                                                        placeholder='Sub Parameter Name'
+                                                    />
+                                                )}
+                                            />
+                                        </FormControl>
+                                        {errors.parameterName && <Alert sx={{ my: 4 }} severity='error'>{errors.parameterName.message}</Alert>}
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth>
+                                            <Button fullWidth size='small' type='submit' variant='contained' sx={{ mb: 7 }}>
+                                                Submit
+                                            </Button>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth>
+                                            <Button fullWidth size='small' color='secondary' onClick={() => {
+                                                reset()
+                                                setMainParameterDefinitionObject({ id: "", parameterName: '' })
+                                                setMainParameterDefinition('')
+                                            }} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                                Reset
+                                            </Button>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                            </form>
+
+                        </CardContent>
+                    </Card >
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
                     <Card>

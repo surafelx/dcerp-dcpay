@@ -64,7 +64,7 @@ interface CustomInputProps {
 }
 
 const CustomInput = forwardRef(({ ...props }: CustomInputProps, ref) => {
-    return <TextField size={'small'} inputRef={ref} {...props} sx={{ width: '100%' }} />
+    return <TextField required size={'small'} inputRef={ref} {...props} sx={{ width: '100%' }} />
 })
 
 
@@ -76,8 +76,8 @@ interface PickerProps {
 }
 
 const RangeCustomInput = forwardRef((props: PickerProps, ref) => {
-    const startDate = format(props.start, 'MM/dd/yyyy')
-    const endDate = props.end !== null ? ` - ${format(props.end, 'MM/dd/yyyy')}` : null
+    const startDate = props.start !== null ? ` - ${format(props.start, 'MM/dd/yyyy')}` : ''
+    const endDate = props.end !== null ? ` - ${format(props.end, 'MM/dd/yyyy')}` : ''
 
     const value = `${startDate}${endDate !== null ? endDate : ''}`
 
@@ -94,9 +94,9 @@ const schema = yup.object().shape({
     lastName: yup.string().required('Required'),
     sex: yup.string().required('Required'),
     contractStartDate: yup.string(),
-    contractDate: yup.string(),
+    contractDate: yup.array().of(yup.date().required()),
     contractEndDate: yup.string(),
-    employmentDate: yup.string(),
+    employmentDate: yup.string().required('Required'),
     employeeStatus: yup.string().required('Required'),
     employeeType: yup.string().required('Required'),
     monthlyWorkingHours: yup.string().required('Required'),
@@ -146,8 +146,8 @@ const UserList = () => {
     const userData = JSON.parse(window.localStorage.getItem('userData'))
     const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
     const [employmentTypeValue, setEmploymentTypeValue] = useState<any>('')
-    const [contractStart, setContractStart] = useState<any>(new Date(startDate))
-    const [contractEnd, setContractEnd] = useState<any>(new Date(endDate))
+    const [contractStart, setContractStart] = useState<any>(null)
+    const [contractEnd, setContractEnd] = useState<any>(null)
 
     // ** State
     const [filterValue, setFilterValue] = useState<string>('')
@@ -254,6 +254,15 @@ const UserList = () => {
         mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
+
+    useEffect(() => {
+        const formattedEndDate = moment(endDate)
+        const formattedStartDate = moment(startDate)
+        const daysDiff = formattedEndDate.diff(formattedStartDate, 'days') + 1;
+        setWorkingDaysPeriod(daysDiff)
+        setValue('workingDays', daysDiff)
+        trigger('workingDays')
+    }, [endDate, setValue, startDate, trigger])
 
     const handleBranchChange = (e: any, newValue: any) => {
         if (newValue?.id) {
@@ -375,15 +384,23 @@ const UserList = () => {
                                                     <TextField
                                                         size={'small'}
                                                         autoFocus
+                                                        required
                                                         label='Code'
                                                         type={'number'}
                                                         value={value}
                                                         error={Boolean(errors.employeeCode)}
                                                         onBlur={(e) => {
                                                             onBlur()
-                                                            const selectedEmployee = store?.data?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
-                                                            if (selectedEmployee)
+                                                            const selectedEmployee: any = store?.data?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
+                                                            if (selectedEmployee) {
+                                                                setWorkingDaysPeriod(selectedEmployee?.workingDays)
+                                                                setFormBranchObject(branchStore?.data.filter((branch: any) => branch.id == selectedEmployee?.employeeBranch)[0])
+                                                                setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
                                                                 reset(selectedEmployee)
+                                                            } else {
+                                                                reset(emptyValues)
+                                                                setValue('employeeCode', Number(e.target.value))
+                                                            }
                                                         }
                                                         }
                                                         onChange={(e) => {
@@ -406,6 +423,7 @@ const UserList = () => {
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <TextField
                                                         size={'small'}
+                                                        required
                                                         autoFocus
                                                         label='First'
                                                         value={value}
@@ -429,6 +447,7 @@ const UserList = () => {
                                                     <TextField
                                                         size={'small'}
                                                         autoFocus
+                                                        required
                                                         label='Middle'
                                                         value={value}
                                                         onBlur={onBlur}
@@ -455,6 +474,7 @@ const UserList = () => {
                                                         size={'small'}
                                                         autoFocus
                                                         label='Last'
+                                                        required
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
@@ -474,10 +494,10 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Title</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Title *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Title'
+                                                            label='Title *'
                                                             value={value}
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
@@ -509,10 +529,10 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Sex</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Sex *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Sex'
+                                                            label='Sex *'
                                                             value={value}
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
@@ -546,7 +566,7 @@ const UserList = () => {
                                                 isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
                                                 id='autocomplete-controlled'
                                                 getOptionLabel={(option: any) => option.branchName}
-                                                renderInput={params => <TextField error={Boolean(errors.employeeBranch)} {...params} label='Select Branch' />}
+                                                renderInput={params => <TextField required error={Boolean(errors.employeeBranch)} {...params} label='Select Branch' />}
                                             />
                                             {errors.employeeBranch && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeBranch.message}</Alert>}
                                         </FormControl>
@@ -562,7 +582,7 @@ const UserList = () => {
                                                 isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
                                                 id='autocomplete-controlled'
                                                 getOptionLabel={(option: any) => option.departmentName}
-                                                renderInput={params => <TextField error={Boolean(errors.employeeDepartment)} {...params} label='Select Department' />}
+                                                renderInput={params => <TextField required error={Boolean(errors.employeeDepartment)} {...params} label='Select Department' />}
                                             />
                                             {errors.employeeDepartment && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeDepartment.message}</Alert>}
                                         </FormControl>
@@ -575,10 +595,10 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Status</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Status *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Status'
+                                                            label='Status *'
                                                             value={value}
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
@@ -610,15 +630,16 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Position</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Position *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Position'
+                                                            label='Position *'
                                                             value={value}
                                                             placeholder='Position'
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
                                                             onBlur={onBlur}
+                                                            required
                                                             onChange={onChange}
                                                             error={Boolean(errors.employeePosition)}
 
@@ -645,15 +666,16 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Employee Type</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Employee Type *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Employee Type'
+                                                            label='Employee Type *'
                                                             value={value}
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
                                                             onBlur={onBlur}
                                                             error={Boolean(errors.employeeType)}
+                                                            required
                                                             onChange={(e) => {
                                                                 onChange(e)
                                                                 setWorkingDaysPeriod("")
@@ -704,7 +726,7 @@ const UserList = () => {
                                                                     <CustomInput
                                                                         value={value ? new Date(workingDaysPeriod) : null}
                                                                         onChange={onChange}
-                                                                        label='Employment Date'
+                                                                        label='Employment Date *'
                                                                         error={Boolean(errors.employmentDate)}
                                                                         aria-describedby='validation-basic-dob'
                                                                     />
@@ -737,10 +759,9 @@ const UserList = () => {
                                                                 }
                                                                 }
                                                                 value={value}
-
                                                                 customInput={
                                                                     <RangeCustomInput
-                                                                        label='Contract Dates'
+                                                                        label='Contract Dates *'
                                                                         end={contractEnd as Date | number}
                                                                         start={contractStart as Date | number}
                                                                         error={Boolean(errors.contractDate)}
@@ -769,6 +790,7 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <TextField
+                                                        required
                                                         size={'small'}
                                                         autoFocus
                                                         label='Basic Salary'
@@ -793,6 +815,7 @@ const UserList = () => {
                                                 render={({ field: { onChange, onBlur } }) => (
                                                     <TextField
                                                         size={'small'}
+                                                        required
                                                         disabled={true}
                                                         autoFocus
                                                         label='Days'
@@ -818,6 +841,7 @@ const UserList = () => {
                                                         size={'small'}
                                                         autoFocus
                                                         label='Hours'
+                                                        required
                                                         value={value}
                                                         type={'number'}
                                                         onBlur={onBlur}
@@ -841,7 +865,7 @@ const UserList = () => {
                                                         size={'small'}
                                                         autoFocus
                                                         label='TIN'
-
+                                                        required
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
@@ -861,15 +885,16 @@ const UserList = () => {
                                                 rules={{ required: true }}
                                                 render={({ field: { value, onChange, onBlur } }) => (
                                                     <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Select Bank Account</InputLabel>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Select Bank Account *</InputLabel>
                                                         <Select
                                                             size={'small'}
-                                                            label='Select Bank Account'
+                                                            label='Select Bank Account *'
                                                             value={value}
                                                             id='demo-simple-select-autoWidth'
                                                             labelId='demo-simple-select-autoWidth-label'
                                                             onBlur={onBlur}
                                                             onChange={onChange}
+                                                            required
                                                             error={Boolean(errors.employeeBank)}
                                                         >
                                                             {
@@ -900,6 +925,7 @@ const UserList = () => {
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
+                                                        required
                                                         error={Boolean(errors.employeeBankAccount)}
                                                         placeholder='Bank Account'
                                                     />
@@ -917,7 +943,7 @@ const UserList = () => {
                                                 render={({ field: { value, onChange } }) => (
                                                     <FormControlLabel
                                                         label='Pension'
-                                                        control={<Checkbox color={Boolean(errors.pensionStatus) ? 'error' : 'primary'} checked={Boolean(value)} onChange={onChange} name='controlled' />}
+                                                        control={<Checkbox required color={Boolean(errors.pensionStatus) ? 'error' : 'primary'} checked={Boolean(value)} onChange={onChange} name='controlled' />}
                                                     />
                                                 )}
                                             />
@@ -938,6 +964,7 @@ const UserList = () => {
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
+                                                        required
                                                         error={Boolean(errors.pensionNumber)}
                                                         placeholder='Pension Number'
                                                     />
@@ -958,6 +985,8 @@ const UserList = () => {
                                             <Button color='secondary' fullWidth size='large' onClick={() => {
                                                 reset(emptyValues)
                                                 setWorkingDaysPeriod("")
+                                                setContractStart(null)
+                                                setContractEnd(null)
                                                 setFormBranchObject({ id: '', branchName: '' })
                                                 setFormDepartmentObject({ id: '', departmentName: '' })
                                                 setBranch('')

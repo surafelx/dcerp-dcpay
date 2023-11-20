@@ -35,3 +35,4 @@ export default {
     getInfo,
     updateEmployee
 }
+

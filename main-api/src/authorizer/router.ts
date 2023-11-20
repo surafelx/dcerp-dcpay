@@ -4,7 +4,7 @@ import authorizerDao from './dao'
 import userService from '../settings/user-management/users/service'
 import periodService from '../file/period/service'
 import organizationService from '../settings/general-setup/company/service'
-
+import authorizerValidator from './validator'
 
 
 const createError = require('http-errors')
@@ -26,7 +26,9 @@ router.post('/company-setup', async (req: Request, res: Response, next: NextFunc
     }
 })
 
-router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/login', 
+authorizerValidator.login,
+async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { isMatch, user } = await authorizerDao.comparePassword(
             req.body?.email,
@@ -39,9 +41,6 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
         const nextPeriod = await periodService.getNextPeriod(user.organization_id)
         const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
-        console.log(`const organizationId = '${user.organization_id}'`)
-    console.log(`const userId = '${user.id}'`)
-    console.log(`const periodId = '${currentPeriod[0].id}'`)
 
         res.send({
             accessToken,
@@ -54,6 +53,7 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
             }
         })
     } catch (err) {
+        console.log(err)
         res.status(400).send(err)
         next(err)
     }

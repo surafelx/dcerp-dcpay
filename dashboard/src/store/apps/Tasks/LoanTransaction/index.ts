@@ -59,17 +59,40 @@ export const appLoanTransactionsSlice = createSlice({
     data: [],
     total: 1,
     params: {},
-    allData: []
+    allData: [],
+    isLoading: false,
+    error: null
   },
   reducers: {},
-  extraReducers: builder => {
-    builder.addCase(fetchData.fulfilled, (state, action) => {
-      state.data = action.payload.loanTransaction
-      state.total = action.payload.total
-      state.params = action.payload.params
-      state.allData = action.payload.allData
-    })
-  }
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.isLoading = true; // Loading state when the request starts
+      })
+    builder
+      .addCase(addLoanTransaction.pending, (state,) => {
+        state.isLoading = true;
+      })
+    builder
+      .addCase(addLoanTransaction.rejected, (state, action) => {
+        state.isLoading = false;
+        
+        //@ts-ignore
+        state.error = action.error; 
+      })
+    builder
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.data = action.payload.loanTransaction;
+        state.total = action.payload.total;
+        state.params = action.payload.params;
+        state.allData = action.payload.allData;
+        state.isLoading = false;
+        state.error = null;
+      })
+    builder.addCase(fetchData.rejected, (state) => {
+      state.isLoading = false; 
+    });
+  },
 })
 
 export default appLoanTransactionsSlice.reducer

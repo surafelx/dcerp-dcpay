@@ -16,7 +16,7 @@ import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import { useDispatch } from 'react-redux'
-import {  AppDispatch } from 'src/store'
+import { AppDispatch } from 'src/store'
 
 type Order = 'asc' | 'desc'
 
@@ -138,7 +138,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, setFormData, deleteLoanTransaction, setEmployeeObject, setTransactionObject, reset, transaction, transactionDefinitionStore, employeeStore }: any) => {
+const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormData, storeProcess, deleteLoanTransaction, employeeObject, setEmployeeObject, setTransactionObject, reset, transactionDefinitionStore, employeeStore }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -197,17 +197,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteLoanTransaction, set
                 {
                     id,
                     employeeId,
-                    transactionId: transaction,
-                    totalLoan,
-                    transactionAmount,
-                    remainingBalance
-                }
-            )
-            setFormData(
-                {
-                    id,
-                    employeeId,
-                    transactionId: transaction,
+                    transactionId,
                     totalLoan,
                     transactionAmount,
                     remainingBalance
@@ -225,12 +215,16 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteLoanTransaction, set
 
         const handleDelete = () => {
             dispatch(deleteLoanTransaction(id))
+            setAlertText(`${employeeObject?.firstName}  has been successfully deleted.`)
+            if (!storeProcess) {
+                handleClickOpen()
+            }
             handleRowOptionsClose()
         }
 
         return (
             <>
-                <div style={{fontSize: 10}} onClick={handleRowOptionsClick}>
+                <div style={{ fontSize: 10 }} onClick={handleRowOptionsClick}>
                     {/* <DotsVertical /> */}
                     Options
                 </div>
