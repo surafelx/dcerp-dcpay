@@ -115,7 +115,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefinition, parameter, setParameter, reset }: any) => {
+const EnhancedTable = ({ rows, formData, setFormData, mainParameters, setFormMainParameterDefinitionObject, deleteSubParameterDefinition, setParameter, reset }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -143,7 +143,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefiniti
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
 
-    const RowOptions = ({ id, parameterName }: any) => {
+    const RowOptions = ({ id, parameter, parameterName }: any) => {
         // ** Hooks
         const dispatch = useDispatch<AppDispatch>()
 
@@ -167,6 +167,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefiniti
                     parameterName,
                 }
             )
+            setFormMainParameterDefinitionObject(mainParameters.filter((mainParameter: any) => mainParameter.id == parameter)[0])
         }
 
         useEffect(() => {
@@ -178,6 +179,14 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefiniti
 
         const handleDelete = () => {
             dispatch(deleteSubParameterDefinition(id))
+            reset(
+                {
+                    id: '',
+                    parameterId: '',
+                    parameterName: '',
+                }
+            )
+            setFormMainParameterDefinitionObject({ id: '', parameterName: '' })
             setParameter('')
         }
 
@@ -228,11 +237,11 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefiniti
                         numSelected={selected.length}
                         onRequestSort={handleRequestSort}
                     />
+
                     <TableBody>
                         {stableSort(rows, getComparator(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((row, index) => {
-
                                 return (
                                     <TableRow
                                         tabIndex={index}
@@ -247,8 +256,8 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteSubParameterDefiniti
                                         <TableCell sx={{ fontSize: 11 }}>
                                             <RowOptions
                                                 id={row.id}
-                                                branchCode={row.branchCode}
-                                                branchName={row.branchName}
+                                                parameterName={row.parameterName}
+                                                parameter={row.parameterId}
                                             /></TableCell>
                                     </TableRow>
                                 )

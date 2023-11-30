@@ -138,7 +138,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormData, storeProcess, deleteLoanTransaction, employeeObject, setEmployeeObject, setTransactionObject, reset, transactionDefinitionStore, employeeStore }: any) => {
+const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormData, storeProcess, deleteLoanTransaction, employeeObject, setEmployeeObject, setTransaction, setTransactionObject, reset, transactionDefinitionStore, employeeStore }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -193,6 +193,7 @@ const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormD
         const handleEdit = () => {
             setEmployeeObject(employeeStore.data.filter((employee: any) => employee.id == employeeId)[0])
             setTransactionObject(transactionDefinitionStore.data.filter((tran: any) => tran.id == transactionId)[0])
+            setTransaction(transactionId)
             reset(
                 {
                     id,
@@ -215,11 +216,24 @@ const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormD
 
         const handleDelete = () => {
             dispatch(deleteLoanTransaction(id))
+            setEmployeeObject(employeeStore.data.filter((employee: any) => employee.id == employeeId)[0])
             setAlertText(`${employeeObject?.firstName}  has been successfully deleted.`)
             if (!storeProcess) {
                 handleClickOpen()
             }
             handleRowOptionsClose()
+            reset(
+                {
+                    id: '',
+                    employeeId: '',
+                    transactionId: '',
+                    totalLoan: '',
+                    transactionAmount: '',
+                    remainingBalance: ''
+                }
+            )
+            setEmployeeObject({ id: '', employeeCode: '', firstName: '' })
+            setTransactionObject({ id: '', transactionName: '' })
         }
 
         return (

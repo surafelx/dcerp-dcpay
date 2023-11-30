@@ -79,37 +79,42 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
-      if (storedToken) {
-        setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
-            setLoading(false)
-            window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-            setUser({ ...response.data.userData })
-          })
-          .catch(() => {
-            setUser(null)
-            window.localStorage.removeItem('userData')
-            window.localStorage.removeItem(authConfig.storageTokenKeyName)
-            router.push('/login')
-            window.localStorage.removeItem('refreshToken')
-            window.localStorage.removeItem('accessToken')
-            setUser(null)
-            setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
+      try {
+        const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
+        if (storedToken) {
+          setLoading(true)
+          await axios
+            .get(authConfig.meEndpoint, {
+              headers: {
+                Authorization: storedToken
+              }
+            })
+            .then(async response => {
+              setLoading(false)
+              window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
+              setUser({ ...response.data.userData })
+            })
+            .catch(() => {
+              setUser(null)
+              window.localStorage.removeItem('userData')
+              window.localStorage.removeItem(authConfig.storageTokenKeyName)
+              router.push('/login')
+              window.localStorage.removeItem('refreshToken')
+              window.localStorage.removeItem('accessToken')
+              setUser(null)
+              setLoading(false)
+              if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
+                router.replace('/login')
+              }
               router.replace('/login')
-            }
-            router.replace('/login')
-          })
-      } else {
-        setLoading(false)
+            })
+        } else {
+          setLoading(false)
+        }
+      } catch (err) {
+        console.log("Authorization", err)
       }
+
     }
     initAuth()
   }, [router])

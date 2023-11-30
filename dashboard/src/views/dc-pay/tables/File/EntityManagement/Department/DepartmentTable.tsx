@@ -119,7 +119,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, page, setAlertText, setPage, branches, formData, setFormData, reset, setBranchObject, deleteDepartment }: any) => {
+const EnhancedTable = ({ rows, page, setAlertText, setPage, branches, formData, setFormData, reset, setBranchObject, deleteDepartment, storeProcess, handleClickOpen }: any) => {
     // ** States
 
     const [order, setOrder] = useState<Order>('asc')
@@ -164,17 +164,10 @@ const EnhancedTable = ({ rows, page, setAlertText, setPage, branches, formData, 
         }
 
         const handleEdit = () => {
-
             setBranchObject(branches.filter((branch: any) => branch.id == branchId)[0])
             reset({
                 id, branchId, departmentCode, departmentName, permanentAccount, contractAccount
             })
-            setFormData(
-                {
-                    id, branchId, departmentCode, departmentName, permanentAccount, contractAccount
-                }
-            )
-
         }
 
         useEffect(() => {
@@ -189,6 +182,9 @@ const EnhancedTable = ({ rows, page, setAlertText, setPage, branches, formData, 
             setAlertText(`${departmentCode} ${departmentName} has been successfully deleted.`)
             dispatch(deleteDepartment(id))
             handleRowOptionsClose()
+            if (!storeProcess) {
+                handleClickOpen()
+            }
         }
 
 

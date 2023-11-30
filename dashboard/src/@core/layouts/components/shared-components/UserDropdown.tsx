@@ -37,6 +37,20 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
 }))
 
 const UserDropdown = (props: Props) => {
+
+  // @ts-ignore
+  const userData = JSON.parse(window.localStorage.getItem('userData'))
+  let firstName = 'Default'
+  let lastName = 'User'
+  let role = ''
+
+
+  if (userData) {
+    firstName = userData.first_name
+    lastName = userData.last_name
+    role = userData.role
+  }
+
   // ** Props
   const { settings } = props
 
@@ -94,7 +108,7 @@ const UserDropdown = (props: Props) => {
         }}
       >
         <Avatar
-          alt='John Doe'
+          alt={`${firstName} ${lastName}`}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
           src='/images/avatars/1.png'
@@ -121,16 +135,16 @@ const UserDropdown = (props: Props) => {
               <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>John Doe</Typography>
-              <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                Admin
+              <Typography sx={{ fontWeight: 600, textTransform: 'capitalize' }}>{`${firstName} ${lastName}`}</Typography>
+              <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled', textTransform: 'capitalize' }}>
+                {`${role}`}
               </Typography>
             </Box>
           </Box>
         </Box>
         <Divider sx={{ mt: '0 !important' }} />
-        
-        
+
+
         {/* <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
           <Box sx={styles}>
             <Icon icon='mdi:account-outline' />
@@ -152,8 +166,8 @@ const UserDropdown = (props: Props) => {
 
 
         {/* <Divider /> */}
-        
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/account-settings/account')}>
+
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/apps/settings/user-management')}>
           <Box sx={styles}>
             <Icon icon='mdi:cog-outline' />
             Settings

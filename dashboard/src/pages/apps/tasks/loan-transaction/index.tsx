@@ -88,11 +88,11 @@ const UserList = () => {
 
 
     const clearAllFields = () => {
+        reset(emptyValues)
         setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
         setTransactionObject({ id: '', transactionName: '' })
         setEmployee('')
         setTransaction('')
-        reset(emptyValues)
     }
 
     const DialogAlert = () => {
@@ -128,7 +128,7 @@ const UserList = () => {
         data.transactionId = transaction
 
         if (!storeProcess) {
-            setAlertText(`${employeeObject.employeeCode} ${employeeObject.firstName} has a total loan of ${data.totalLoan}, a transcation amount of ${data.transactionAmount} and a remaining balance of ${data.remainingBalance}.`)
+            setAlertText(`${employeeObject.employeeCode} ${employeeObject.firstName} has a total loan of ${data.totalLoan}, a transaction amount of ${data.transactionAmount} and a remaining balance of ${data.totalLoan}.`)
             if (data.id) {
                 dispatch(editLoanTransaction({ ...data }))
             } else {
@@ -233,7 +233,6 @@ const UserList = () => {
             trigger('transactionId')
         }
     }
-
 
     return (
         <Grid container spacing={3}>
@@ -394,12 +393,14 @@ const UserList = () => {
             </Grid>
             <Grid item xs={12} md={12} lg={12}>
                 <Card>
+                    <CardHeader title={'Loan Transaction'} />
                     <CardContent>
                         <LoanTransactionTable
                             setTransaction={setTransaction}
                             rows={store.data}
                             formData={formData}
                             setFormData={setFormData}
+                            employeeObject={employeeObject}
                             deleteLoanTransaction={deleteLoanTransaction}
                             setEmployeeObject={setEmployeeObject}
                             setTransactionObject={setTransactionObject}

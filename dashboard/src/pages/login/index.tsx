@@ -118,6 +118,7 @@ const LoginPage = () => {
 
   const onSubmit = (data: FormData) => {
     const { email, password } = data
+    console.log('is Submitting')
     auth.login({ email, password, rememberMe }, (error: any) => {
       if (error?.response?.data?.errors[0].param == 'password' && error?.response?.data?.errors[0].msg !== 'Invalid Email or Password.') {
         setError('password', {
@@ -125,13 +126,13 @@ const LoginPage = () => {
           message: `${error?.response?.data?.errors[0].msg || 'Email or Password is Invalid.'}`
         })
       }
-      if (error?.response?.data?.errors[0].param == 'email'  && error?.response?.data?.errors[0].msg !== 'Invalid Email or Password.') {
+      if (error?.response?.data?.errors[0].param == 'email' && error?.response?.data?.errors[0].msg !== 'Invalid Email or Password.') {
         setError('email', {
           type: 'manual',
           message: `${error?.response?.data?.errors[0].msg || 'Email or Password is Invalid.'}`
         })
       }
-      
+
       if (error?.response?.data?.errors[0].msg == 'Invalid Email or Password.') {
         setGeneralError('Invalid Email or Password.')
       }

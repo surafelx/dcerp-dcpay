@@ -23,7 +23,7 @@ import CardStatisticsCharacter from 'src/@core/components/card-statistics/card-s
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
-import CrmTransactions from 'src/views/dashboards/crm/CrmTransactions'
+import CrmTransactions from 'src/views/dc-pay/dashboards/crm/CrmTransactions'
 
 
 const CRMDashboard = () => {
@@ -65,7 +65,7 @@ const CRMDashboard = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
-        <Grid item xs={12} sm={6} md={3} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
+        <Grid item xs={12} sm={4} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
           <CardStatisticsCharacter
             data={{
               stats: String(branchStore.data.length),
@@ -79,7 +79,7 @@ const CRMDashboard = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
+        <Grid item xs={12} sm={6} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
           <CardStatisticsCharacter
             data={{
               stats: String(departmentStore.data.length),
@@ -92,11 +92,11 @@ const CRMDashboard = () => {
               src: '/images/cards/pose_f9.png'
             }} />
         </Grid>
-        <Grid item xs={12} sm={6} md={3} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
+        <Grid item xs={12} sm={6} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
           <CardStatisticsCharacter
             data={{
               stats: String(employeeStore.data.length),
-
+              
               // trend: 'negative',
               title: 'Employees',
               trendNumber: '',

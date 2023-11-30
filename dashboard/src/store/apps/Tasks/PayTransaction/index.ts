@@ -12,6 +12,13 @@ interface Redux {
 }
 
 // ** Fetch Branches
+export const fetchAll = createAsyncThunk('appPayTransactions/fetchData', async (params: any) => {
+  const response = await apiRequest.get(`tasks/pay-transaction/all`, { params })
+  
+  return response.data
+})
+
+// ** Fetch Branches
 export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async (params: any) => {
   const response = await apiRequest.get(`tasks/pay-transaction`, { params })
   
