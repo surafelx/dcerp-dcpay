@@ -1,5 +1,7 @@
 
 import transactionDefinitionDao from './dao'
+import periodTransactionService from '../../process/period-transactions/service'
+import processedTransactionService from '../../process/payroll-process/service'
 
 const create = async (newTransactionDefinition: any): Promise<string> => await transactionDefinitionDao.create({ ...newTransactionDefinition })
 
@@ -18,13 +20,25 @@ const setupApp = async(organizationId: string, branchId: string) => await transa
 const getTransactionDefinitionByNameByOrganization = async (organizationId: any, transactionName: any): Promise<any[]> => await transactionDefinitionDao.getTransactionDefinitionByNameByOrganization(organizationId, transactionName)
 
 const getInfo = async (transactionId: any) => await transactionDefinitionDao.getInfo(transactionId)
+
+const checkInPeriodTransactionos = async (transactionId: any) => await periodTransactionService.checkTransactionIdExists(transactionId)
+
+const checkInProcessedTransactions = async (transactionId: any) => await processedTransactionService.checkTransactionIdExists(transactionId)
+
+
+const parameterDefinitionExists= async(parameterId: any) => await transactionDefinitionDao.parameterDefinitionExists(parameterId)
+
+
 export default {
     create,
+    checkInPeriodTransactionos,
+    checkInProcessedTransactions,
     deleteTransactionDefinition,
     getAllFromOrganization,
     getAllFromTransactionGroup,
     getByNameAndOrganization,
     updateTransactionDefinition,
+    parameterDefinitionExists,
     getTransactionDefinitionByNameByOrganization,
     getInfo,
     setupApp

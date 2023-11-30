@@ -111,9 +111,16 @@ export const getById = async (loanTransactionId: string): Promise<any> => {
 
 
 
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM loan_transaction WHERE employee_id=$1', [employeeId])
+}
+
+
+
 export default {
     create,
     deleteLoanTransaction,
+    deleteByEmployeeId,
     getAllFromOrganization,
     getById,
     updateLoanTransaction

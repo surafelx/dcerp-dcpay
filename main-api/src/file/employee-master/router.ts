@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import employeeService from './service'
 import userService from '../../settings/user-management/users/service'
 import periodService from '../period/service'
-
+import employeeValidator from './validator'
 
 const router = Router()
 
@@ -11,12 +11,12 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', branch = null, department = null} = req.query ?? ''
+            const { q = '', branch = null, department = null } = req.query ?? ''
             const branchId = branch
             const departmentId = department
             const queryLowered = q.toString().toLowerCase()
             const employees = await employeeService.getAllFromOrganization(organizationId, branchId, departmentId)
-            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name}) => ({
+            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name }) => ({
                 id,
                 employeeBranch: branch_id,
                 employeeDepartment: department_id,
@@ -71,7 +71,7 @@ router.post('/',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {periodId: currentPeriod[0].id, userId, organizationId}
+            const userInfo = { periodId: currentPeriod[0].id, userId, organizationId }
             const createdEmployee = await employeeService.create(req, String(organizationId), userInfo)
             res.send(createdEmployee)
         } catch (err) {
@@ -82,13 +82,13 @@ router.post('/',
     })
 
 router.delete('/:id',
-    // usersValidations.newUser,
+    employeeValidator.deleteEmployee,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             const { id } = req.params
             await employeeService.deleteEmployee(String(id), userInfo)
             res.send(200)

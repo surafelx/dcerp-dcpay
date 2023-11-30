@@ -54,9 +54,15 @@ const updateLoanTransaction = async (newPayTransaction: any, userInfo: any): Pro
     return updatedLoanTransaction
 }
 
+const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await loanTransactionDao.deleteByEmployeeId(employeeId)
+}
+
+
 export default {
     create,
     deleteLoanTransaction,
+    deleteByEmployeeId,
     getAllFromOrganization,
     updateLoanTransaction
 }

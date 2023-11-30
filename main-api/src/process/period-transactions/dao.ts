@@ -39,7 +39,7 @@ export const create = async (newPeriodTransaction: any): Promise<any> => {
         transactionAmount,
         0,
         false,
-        userId, 
+        userId,
         0,
         new Date()
     ])
@@ -80,17 +80,17 @@ export const deletePeriodTransactionByPayTransaction = async (deletedPayTransact
     period_id=$2 AND
     employee_id=$3 AND
     transaction_id=$4 AND
-    transaction_amount=$5`, 
-    [ organizationId,
-        periodId,
-        employeeId,
-        transactionId,
-        transactionAmount])
+    transaction_amount=$5`,
+        [organizationId,
+            periodId,
+            employeeId,
+            transactionId,
+            transactionAmount])
 }
 
 export const updatePeriodTransaction = async (updatedPeriodTransaction: any): Promise<string> => {
     const {
-        organizationId, 
+        organizationId,
         employeeId,
         transactionId,
         transactionAmount,
@@ -110,7 +110,7 @@ export const updatePeriodTransaction = async (updatedPeriodTransaction: any): Pr
     const res = await pool.query(query, [
         transactionAmount,
         organizationId,
-        employeeId, 
+        employeeId,
         transactionId,
         periodId
     ])
@@ -119,11 +119,24 @@ export const updatePeriodTransaction = async (updatedPeriodTransaction: any): Pr
 
 
 
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM period_transactions WHERE employee_id=$1', [employeeId])
+}
+
+
+export const checkTransactionIdExists = async (transactionId: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from period_transactions where transaction_id = $1)',
+        [transactionId])
+    return res[0].exists
+}
 
 export default {
     create,
+    checkTransactionIdExists,
     deletePeriodTransaction,
     deletePeriodTransactionByPayTransaction,
+    deleteByEmployeeId,
     getAllFromOrganization,
     updatePeriodTransaction,
 }

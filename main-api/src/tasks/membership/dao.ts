@@ -70,6 +70,10 @@ export const deleteMembership = async (branchId: string): Promise<any> => {
 }
 
 
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM membership WHERE employee_id=$1', [employeeId])
+}
+
 export const updateMembership = async (updatedMembership: any): Promise<string> => {
     const {
         id,
@@ -96,6 +100,7 @@ export const updateMembership = async (updatedMembership: any): Promise<string> 
 export default {
     create,
     deleteMembership,
+    deleteByEmployeeId,
     getAllFromOrganization,
     getInfo,
     updateMembership

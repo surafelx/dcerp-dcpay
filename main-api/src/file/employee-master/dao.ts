@@ -250,11 +250,18 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
 }
 
 
+export const parameterDefinitionExists = async (parameterId: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'SELECT EXISTS(SELECT 1 FROM employee WHERE employee_title = $1 OR employee_status = $1 OR employee_type = $1 OR employee_bank = $1 OR employee_position = $1)',
+        [[parameterId]])
+        return res[0].exists
+}
 
 export default {
     create,
     deleteEmployee,
     getAllFromOrganization,
+    parameterDefinitionExists,
     getInfo,
     updateEmployee
 }

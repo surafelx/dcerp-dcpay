@@ -7,6 +7,7 @@ const create = async (newMembership: any, userInfo: any): Promise<string> => {
     const { userId, periodId, organizationId} = userInfo
     newMembership.organizationId = organizationId
     const createdMembership =  await membershipDao.create({ ...newMembership })
+    console.log(createdMembership)
     const tranDef = await payrollProcessDao.getTranCal(createdMembership.transaction_id, createdMembership.employee_id)
     const calculatedTranDef = payrollProcessDao.calculateTransactionCalculations(tranDef[0])
     const newPeriodTransaction = { 
@@ -46,10 +47,14 @@ const deleteMembership = async (membershipId: string, userInfo: any): Promise<an
 
 const updateMembership = async (menuLevelData: any): Promise<any> => await membershipDao.updateMembership(menuLevelData)
 
+const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await membershipDao.deleteByEmployeeId(employeeId)
+}
 
 export default {
     create,
     deleteMembership,
+    deleteByEmployeeId,
     getAllFromOrganization,
     updateMembership
 }

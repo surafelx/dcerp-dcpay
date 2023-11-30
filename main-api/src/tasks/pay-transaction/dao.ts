@@ -35,7 +35,7 @@ export const create = async (newMenu: any, periodId: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
+export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
     const { periodId } = userInfo
     const { rows: payTransactions } = await pool.query(`
     SELECT *
@@ -68,10 +68,48 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     return payTransactions
 }
 
+export const getAllFromOrganizationByPeriod = async (organizationId: string, userInfo: any): Promise<any> => {
+    const { periodId } = userInfo
+    const { rows: payTransactions } = await pool.query(`
+    SELECT *
+    FROM (
+        SELECT DISTINCT
+            pt.id,
+            pt.employee_id,
+            td.id as transaction_id,
+            pt.transaction_amount,
+            e1.employee_code,
+            e1.first_name as employee_first_name,
+            e1.last_name as employee_last_name,
+            td.id as transaction_definition_id,
+            td.transaction_name,
+            td.transaction_code,
+            pd.parameter_name as transaction_type_name
+        FROM period_transactions pt
+        INNER JOIN employee e1 ON pt.employee_id = e1.id
+        INNER JOIN transaction_definition td ON pt.transaction_id = td.id
+        INNER JOIN parameter_definition pd ON pd.id = td.transaction_type
+        WHERE e1.organization_id = $1 AND
+            pt.period_id = $2
+    ) AS distinct_results
+    ORDER BY CAST(employee_code AS NUMERIC) ASC;
+    
+
+    `,
+        [organizationId, periodId])
+    return payTransactions
+}
+
 
 export const deletePayTransaction = async (branchId: string): Promise<any> => {
     await pool.query('DELETE FROM pay_transaction WHERE id=$1', [branchId])
 }
+
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM pay_transaction WHERE employee_id=$1', [employeeId])
+}
+
+
 
 
 export const updatePayTransaction = async (updatedPayTransaction: any): Promise<any> => {
@@ -116,7 +154,9 @@ export const getById = async (payTransactionId: string): Promise<any> => {
 export default {
     create,
     deletePayTransaction,
-    getAllFromOrganization,
+    deleteByEmployeeId,
+    getAllFromOrganizationByEmployeeByPeriod,
+    getAllFromOrganizationByPeriod,
     getById,
     updatePayTransaction
 }

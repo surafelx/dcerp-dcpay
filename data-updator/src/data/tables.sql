@@ -7,14 +7,16 @@ CREATE TABLE organizations (
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
   organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),
-    menu_code VARCHAR(40), 
+  menu_code VARCHAR(40), 
   parent_id VARCHAR(40),
   menu_title VARCHAR(50) NOT NULL,
   menu_path VARCHAR(100) NOT NULL,
+  icon VARCHAR(50), -- Adding the icon column with a string data type
   CONSTRAINT fk_parent_menu_item
     FOREIGN KEY (parent_id)
     REFERENCES menu_items (id)
 );
+
 
 CREATE TABLE periods (
 		id VARCHAR(40) NOT NULL UNIQUE,

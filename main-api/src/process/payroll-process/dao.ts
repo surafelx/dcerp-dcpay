@@ -477,7 +477,7 @@ const calculateTransactionCalculations = (transaction: any) => {
         transaction_amount = parseFloat(transaction.second_transaction_value) / 30
     if (transaction.first_option_value === '*')
         transaction_amount *= parseFloat(transaction.third_transaction_value)
-    if (transaction.second_option_value === '*' )
+    if (transaction.second_option_value === '*')
         transaction_amount *= parseFloat(transaction.rate)
     if (transaction.first_option_value === '=' && transaction.second_option_value === '=')
         transaction_amount = parseFloat(transaction.rate)
@@ -512,16 +512,38 @@ const getProcessedTransactionsByEmployee = async (periodId: any, employeeId: any
   WHERE pt.period_id = $1
   AND pt.employee_id = $2
           `,
-        [periodId, employeeId]); // Pass the employee's ID as the second parameter
+        [periodId, employeeId]);
 
     return processedTransactions
 }
+
+const getAllByEmployee = async (employeeId: any): Promise<any[]> => {
+    const { rows: processedTransactions } = await pool.query(`
+    SELECT
+   *
+  FROM processed_transactions pt
+  WHERE pt.employee_id = $1
+          `,
+        [employeeId]);
+
+    return processedTransactions
+}
+
+export const checkTransactionIdExists = async (transactionId: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from processed_transactions where transaction_id = $1)',
+        [transactionId])
+    return res[0].exists
+}
+
 
 
 export default {
     getAllFromOrganization,
     processPayLoanMembershipTransactions,
     getTransactionCalculationFormat,
+    getAllByEmployee,
+    checkTransactionIdExists,
     getProcessedTransactionsByEmployee,
     getTranCal,
     calculateTransactionCalculations,

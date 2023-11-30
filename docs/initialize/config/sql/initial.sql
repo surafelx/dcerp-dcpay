@@ -103,6 +103,7 @@ CREATE TABLE role_menu (
 		parent_id VARCHAR(255)
 	);
 
+
 CREATE TABLE menu_items (
   id VARCHAR(40) NOT NULL UNIQUE,
   organization_id VARCHAR(40) NOT NULL REFERENCES organizations(id),

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import loanTransactionService from './service'
 import userService from '../../settings/user-management/users/service'
 import periodService from '../../file/period/service'
+import loanTransactionValidation from './validator'
 
 const router = Router()
 
@@ -10,7 +11,7 @@ router.get('/',
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', employee=null } = req.query ?? ''
+            const { q = '', employee = null } = req.query ?? ''
             const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
             const loanTransactions = await loanTransactionService.getAllFromOrganization(organizationId, employeeId)
@@ -68,7 +69,7 @@ router.post('/',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             const createdLoanTransaction = await loanTransactionService.create({ ...req.body.data }, userInfo)
             res.send(createdLoanTransaction)
         } catch (err) {
@@ -84,7 +85,7 @@ router.delete('/:id',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             await loanTransactionService.deleteLoanTransaction(String(id), userInfo)
             res.send(200)
         } catch (err) {
@@ -95,12 +96,13 @@ router.delete('/:id',
     })
 
 router.put('/',
+    loanTransactionValidation.editTransaction,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             const updatedLoanTransaction = await loanTransactionService.updateLoanTransaction(req.body.data, userInfo)
             res.send(updatedLoanTransaction)
         } catch (err) {
