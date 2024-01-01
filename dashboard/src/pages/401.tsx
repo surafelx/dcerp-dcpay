@@ -16,6 +16,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
 
+// ** Spinner Import
+import Spinner from 'src/@core/components/spinner'
+
 // ** Styled Components
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -37,24 +40,6 @@ const Img = styled('img')(({ theme }) => ({
   }
 }))
 
-// const TreeIllustration = styled('img')(({ theme }) => ({
-//   left: 0,
-//   bottom: '5rem',
-//   position: 'absolute',
-//   [theme.breakpoints.down('lg')]: {
-//     bottom: 0
-//   }
-// }))
-
-const Loading = () => {
-  return (
-    <Box className='content-center'>
-      <Typography variant='h5' sx={{ mb: 2 }}>
-        Loading...
-      </Typography>
-    </Box>
-  );
-};
 
 const Error404 = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +58,7 @@ const Error404 = () => {
   return (
     <>
       {isLoading ? (
-        <Loading />
+        <Spinner />
       ) :
         (
           <>

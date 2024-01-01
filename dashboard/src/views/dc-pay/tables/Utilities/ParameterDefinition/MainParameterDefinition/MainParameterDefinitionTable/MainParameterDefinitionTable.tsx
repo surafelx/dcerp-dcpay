@@ -243,9 +243,9 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteBranch }: any) => {
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.branchCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.branchName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.branchCode}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.branchName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 branchCode={row.branchCode}

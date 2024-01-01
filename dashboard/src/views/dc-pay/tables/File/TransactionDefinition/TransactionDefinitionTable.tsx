@@ -303,12 +303,12 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.shortName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionTypeName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.updateTypeName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.permanent ? (
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionCode}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.shortName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionTypeName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.updateTypeName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.permanent ? (
 
                                             <Icon icon='mdi:check-bold' fontSize={11} color={'green'} />
                                         ) : (
@@ -316,7 +316,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
                                             <Icon icon='mdi:close-thick' fontSize={11} color={'red'} />
                                         )}
                                         </TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.taxable ? (
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.taxable ? (
 
 <Icon icon='mdi:check-bold' fontSize={11} color={'green'} />
 ) : (
@@ -324,8 +324,8 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
 <Icon icon='mdi:close-thick' fontSize={11} color={'red'} />
 )}
 </TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionGroupName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionGroupName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 transactionCode={row.transactionCode}

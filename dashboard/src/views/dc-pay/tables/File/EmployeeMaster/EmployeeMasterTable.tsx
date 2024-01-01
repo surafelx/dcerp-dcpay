@@ -258,7 +258,17 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
                     }}
                     PaperProps={{ style: { minWidth: '8rem' } }}
                 > */}
-
+                    {/* <IconButton
+                onClick={handleEdit}
+                sx={{
+                  top: '5rem',
+                  color: 'grey.100',
+                  right: '2.5625rem',
+                  position: 'absolute'
+                }}
+              >
+                <Icon icon='mdi:pencil-outline' fontSize={20} />
+              </IconButton> */}
                     <div onClick={handleEdit}>
                         {/* <PencilOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Edit
@@ -299,10 +309,10 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.employeeCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {`${row.employeeTitleName} ${row.firstName} ${row.middleName} ${row.lastName}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {parseFloat(String(row.basicSalary)).toFixed(2)}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.employeeCode}</TableCell>
+                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {`${row.employeeTitleName} ${row.firstName} ${row.middleName} ${row.lastName}`}</TableCell>
+                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {parseFloat(String(row.basicSalary)).toFixed(2)}</TableCell>
+                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeCode={row.employeeCode}

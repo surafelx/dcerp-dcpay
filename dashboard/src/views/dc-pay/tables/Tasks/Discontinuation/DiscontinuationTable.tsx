@@ -256,10 +256,10 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setT
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.referrenceNumber}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.actionTypeName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.actionDate}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.referrenceNumber}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.actionTypeName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.actionDate}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeId={row.employeeId}

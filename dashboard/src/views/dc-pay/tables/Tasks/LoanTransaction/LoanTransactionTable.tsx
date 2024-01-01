@@ -296,13 +296,13 @@ const EnhancedTable = ({ rows, formData, handleClickOpen, setAlertText, setFormD
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.employeeCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{`${row.employeeFirstName} ${row.employeeLastName}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.totalLoan}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{parseFloat(String(row.transactionAmount)).toFixed(2)}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{parseFloat(String(row.remainingBalance)).toFixed(2)}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.employeeCode}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{`${row.employeeFirstName} ${row.employeeLastName}`}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.totalLoan}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{parseFloat(String(row.transactionAmount)).toFixed(2)}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{parseFloat(String(row.remainingBalance)).toFixed(2)}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeId={row.employeeId}

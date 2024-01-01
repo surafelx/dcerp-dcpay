@@ -250,10 +250,10 @@ const EnhancedTable = ({ rows, page, setAlertText, setPage, branches, formData, 
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.branchName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.departmentCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.departmentName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.branchName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.departmentCode}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.departmentName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 branchId={row.branchId}

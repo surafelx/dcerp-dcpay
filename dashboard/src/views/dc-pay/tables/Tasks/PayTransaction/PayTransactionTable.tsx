@@ -263,10 +263,10 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, empl
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.transactionName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(String(row.transactionAmount)).toFixed(2) : ''}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount" || row.transactionName === "Basic Salary") ? parseFloat(String(row.transactionAmount)).toFixed(2) : ''}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.transactionName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {(row.transactionTypeName === "Deduction Quantity" || row.transactionTypeName === "Earning Quantity") ? parseFloat(String(row.transactionAmount)).toFixed(2) : ''}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount" || row.transactionName === "Basic Salary") ? parseFloat(String(row.transactionAmount)).toFixed(2) : ''}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeId={row.employeeId}
