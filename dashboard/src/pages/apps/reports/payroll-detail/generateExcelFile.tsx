@@ -766,7 +766,7 @@ export const generateExcelFile = (store: any) => {
 
             });
         }
-        
+
         // ...
     });
 
