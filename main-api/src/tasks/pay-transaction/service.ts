@@ -19,7 +19,7 @@ const create = async (newPayTransaction: any, userInfo: any): Promise<string> =>
 
 }
 
-const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
+// const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
 
 const getPeriodTransactionById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getPeriodTransactionById(payTransactionId)
 

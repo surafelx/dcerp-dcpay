@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import membershipService from './service'
 import userService from '../../settings/user-management/users/service'
 import periodService from '../../file/period/service'
-import employeeService from '../../file/employee-master/service'
+// import employeeService from '../../file/employee-master/service'
 
 const router = Router()
 
@@ -94,7 +94,7 @@ router.delete('/:id',
 router.put('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.params
+            // const { id } = req.params
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
