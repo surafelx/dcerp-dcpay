@@ -22,7 +22,13 @@ const getAllFromOrganization = async (organizationId: any, branchId: any, depart
     return await employeeDao.getAllFromOrganization(organizationId, basicSalaryId?.id, branchId, departmentId)
 }
 
+const getFromOrganization = async (organizationId: any): Promise<any[]> => {
+    return await employeeDao.getFromOrganization(organizationId)
+}
+
 const getInfo = async (employeeId: any): Promise<any> => await employeeDao.getInfo(employeeId)
+
+const getInfoByCodeByOrganization = async (organizationId: any, employeeCode: any): Promise<any> => await employeeDao.getInfoByCodeByOrganization(organizationId, employeeCode)
 
 const deleteEmployee = async (employeeId: string, userInfo: any): Promise<any> => {
     await payTransactionService.deleteByEmployeeId(employeeId)
@@ -47,8 +53,10 @@ export default {
     parameterDefinitionExists,
     deleteEmployee,
     isProcessed,
+    getFromOrganization,
     getAllFromOrganization,
     getInfo,
+    getInfoByCodeByOrganization,
     updateEmployee
 }
 

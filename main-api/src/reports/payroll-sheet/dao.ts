@@ -348,17 +348,23 @@ const getProcessedTransactions = async (employeeId: any, periodId: any) => {
     return periodTransactions
 }
 
-const getAllFromOrganization = async (organizationId: string, branchId: string, departmentId: string, userInfo: any): Promise<any[]> => {
+const getAllFromOrganization = async (organizationId: string, branchId: string, departmentId: string, bankId: string, userInfo: any): Promise<any[]> => {
 
     const { rows: processedTransactions } = await pool.query(`
         WITH EmployeeTransactionData AS (
             SELECT
-              employee.id AS employee_id,
-              employee.first_name,
-              employee.last_name,
-              employee.employee_code,
-              employee.employee_account_number,
-              employee.employee_bank,
+              e1.id AS employee_id,
+              e1.first_name,
+              e1.middle_name,
+              e1.branch_id,
+              e1.last_name,
+              e1.employee_code,
+              e1.employee_account_number,
+              e1.employee_bank,
+              e1.department_id,
+              e1.monthly_working_hours,
+              e1.employee_status,
+              e1.employee_bank as bank_id,
               pt.id AS processed_transaction_id,
               td.id AS transaction_id,
               td.transaction_code,
@@ -368,22 +374,35 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               pd1.parameter_name AS update_type_name,
               pd2.parameter_name AS transaction_group_name,
               pd3.parameter_name AS transaction_type_name,
-              pd4.parameter_name AS bank_name
+              pd4.parameter_name AS bank_name,
+              pd5.parameter_name AS employee_status_name,
+              dep.department_name as employee_department,
+              dep.department_code
             FROM processed_transactions pt
             INNER JOIN transaction_definition td ON td.id = pt.transaction_id
             INNER JOIN parameter_definition pd1 ON pd1.id = td.update_type
             INNER JOIN parameter_definition pd2 ON pd2.id = td.transaction_group
             INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_type
-            INNER JOIN employee ON pt.employee_id = employee.id
-            INNER JOIN parameter_definition pd4 ON pd4.id = employee.employee_bank
+            INNER JOIN employee e1 ON pt.employee_id = e1.id
+            INNER JOIN parameter_definition pd4 ON pd4.id = e1.employee_bank
+            INNER JOIN parameter_definition pd5 ON pd5.id = e1.employee_status
+            INNER JOIN department dep ON dep.id = e1.department_id
             WHERE pt.period_id = $1
           )
           SELECT
             employee_id AS id,
             employee_code,
             employee_account_number,
+            bank_id,
             first_name,
+            middle_name,
+            last_name,
             bank_name,
+            employee_department,
+            branch_id,
+            department_id,
+            employee_status_name,
+            monthly_working_hours,
             ARRAY_AGG(
               JSONB_BUILD_OBJECT(
                 'processed_transaction_id', processed_transaction_id,
@@ -398,10 +417,13 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               )
             ) AS transactions
           FROM EmployeeTransactionData
-          GROUP BY employee_id, employee_code, first_name, employee_account_number, bank_name
-          ORDER BY CAST(employee_code AS NUMERIC) ASC;
+
+          GROUP BY employee_id, branch_id, department_id, bank_id, employee_code, first_name, middle_name, last_name, employee_account_number, bank_name, employee_department, department_code, monthly_working_hours, employee_status_name
+          ORDER BY CAST(department_code AS NUMERIC) ASC, CAST(employee_code AS NUMERIC) ASC
+         ;
           `,
         [userInfo.periodId])
+
     return processedTransactions
 }
 

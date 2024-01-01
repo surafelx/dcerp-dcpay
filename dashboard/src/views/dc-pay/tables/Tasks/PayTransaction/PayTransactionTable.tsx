@@ -14,10 +14,8 @@ import TableHead from '@mui/material/TableHead'
 import TableContainer from '@mui/material/TableContainer'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import TablePagination from '@mui/material/TablePagination'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import { useDispatch } from 'react-redux'
-import {  AppDispatch } from 'src/store'
+import { AppDispatch } from 'src/store'
 
 // ** Icon Imports
 
@@ -121,7 +119,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setTransactionObject, transactionDefinitionStore, setEmployee, setTransaction, reset, employee, }: any) => {
+const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, employeeCodeRef, setTransactionObject, setEmployeeObject, transactionDefinitionStore, setEmployee, setTransaction, reset, employee, }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -159,15 +157,11 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setT
         const dispatch = useDispatch<AppDispatch>()
 
         // ** State
-        const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+        const [, setAnchorEl] = useState<null | HTMLElement>(null)
 
-        const rowOptionsOpen = Boolean(anchorEl)
 
         const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget)
-        }
-        const handleRowOptionsClose = () => {
-            setAnchorEl(null)
         }
 
         const handleEdit = () => {
@@ -193,13 +187,25 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setT
 
         const handleDelete = () => {
             dispatch(deletePayTransaction(id))
-            handleRowOptionsClose()
+            setEmployee('')
+            setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
+            setTransaction('')
+            setTransactionObject({ id: '', transactionName: '' })
+            reset(
+                {
+                    id: '',
+                    employeeId: '',
+                    transactionId: '',
+                    transactionAmount: '',
+                }
+            )
+            employeeCodeRef.current.focus()
         }
 
         return (
             <>
-                <div style={{fontSize: 10}} onClick={handleRowOptionsClick}>
-                    {/* <DotsVertical /> */}
+                <div style={{ fontSize: 10, display: 'flex', gap: '5px'}} onClick={handleRowOptionsClick}>
+                    {/* <DotsVertical />
                     Options
                 </div>    <Menu
                     keepMounted
@@ -215,21 +221,22 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, setT
                         horizontal: 'right'
                     }}
                     PaperProps={{ style: { minWidth: '8rem' } }}
-                >
-                   
-                    <MenuItem onClick={handleEdit}>
+                > */}
+
+                    <div onClick={handleEdit}>
                         {/* <PencilOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Edit
-                    </MenuItem>
-                    <MenuItem onClick={handleDelete}>
+                    </div>
+                    <div onClick={handleDelete}>
                         {/* <DeleteOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Delete
-                    </MenuItem>
-                </Menu>
+                    </div>
+                    {/* </Menu> */}
+                </div >
             </>
         )
     }
-    
+
     return (
         <>
             {/* <EnhancedTableToolbar numSelected={selected.length} /> */}

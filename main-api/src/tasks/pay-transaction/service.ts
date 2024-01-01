@@ -21,13 +21,18 @@ const create = async (newPayTransaction: any, userInfo: any): Promise<string> =>
 
 const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
 
+const getPeriodTransactionById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getPeriodTransactionById(payTransactionId)
+
 const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganizationByEmployeeByPeriod(organizationId, employeeId, userInfo)
+
+const getPayByEmployeeByTransaction = async (employeeId: any, transactionId: any): Promise<any[]> => await payTransactionDao.getPayByEmployeeByTransaction(employeeId, transactionId)
 
 const getAllFromOrganizationByPeriod = async (organizationId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganizationByPeriod(organizationId, userInfo)
 
 const deletePayTransaction = async (payTransactionId: string, userInfo: any): Promise<any> => {
-    const payTransaction = await getById(payTransactionId)
+    const payTransaction = await getPeriodTransactionById(payTransactionId)
     const { userId, organizationId, periodId } = userInfo
+    console.log(payTransaction)
     await payTransactionDao.deletePayTransaction(payTransactionId)
     const deletedPayTransaction = {
         employeeId: payTransaction.employee_id,
@@ -44,10 +49,10 @@ const updatePayTransaction = async (newPayTransaction: any, userInfo: any): Prom
     const updatedPayTransaction = await payTransactionDao.updatePayTransaction(newPayTransaction)
     const { organizationId, userId, periodId } = userInfo
     const updatedPeriodTransaction = {
-        employeeId: updatedPayTransaction.employee_id,
-        transactionId: updatedPayTransaction.transaction_id,
+        employeeId: newPayTransaction.employeeId,
+        transactionId: newPayTransaction.transactionId,
         organizationId,
-        transactionAmount: updatedPayTransaction.transaction_amount,
+        transactionAmount: newPayTransaction.transactionAmount,
         userId,
         periodId
     }
@@ -67,5 +72,6 @@ export default {
     deleteByEmployeeId,
     getAllFromOrganizationByEmployeeByPeriod,
     getAllFromOrganizationByPeriod,
+    getPayByEmployeeByTransaction,
     updatePayTransaction
 }

@@ -24,7 +24,8 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
 import CrmTransactions from 'src/views/dc-pay/dashboards/crm/CrmTransactions'
-
+import CrmSalesOverview from 'src/views/dc-pay/dashboards/crm/CrmSalesOverview'
+import CrmTotalProfit from 'src/views/dc-pay/dashboards/crm/CrmTotalProfit'
 
 const CRMDashboard = () => {
   const [role] = useState<string>('')
@@ -75,49 +76,46 @@ const CRMDashboard = () => {
               trendNumber: '',
               chipText: 'Total',
               chipColor: 'primary',
-              src: '/images/cards/pose_m18.png'
+              src: '/images/avatars/branches.png'
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
+          <CardStatisticsCharacter
+            data={{
+              stats: String(departmentStore.data.length),
+              
+              // trend: 'negative',
+              title: 'Departments',
+              trendNumber: '',
+              chipText: 'Total',
+              chipColor: 'primary',
+              src: '/images/avatars/departments.png'
             }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
           <CardStatisticsCharacter
             data={{
-              stats: String(departmentStore.data.length),
-
-              // trend: 'negative',
-              title: 'Departments',
-              trendNumber: '',
-              chipText: 'Total',
-              chipColor: 'primary',
-              src: '/images/cards/pose_f9.png'
-            }} />
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
-          <CardStatisticsCharacter
-            data={{
               stats: String(employeeStore.data.length),
-              
+
               // trend: 'negative',
               title: 'Employees',
               trendNumber: '',
               chipText: 'Total',
               chipColor: 'primary',
-              src: '/images/cards/pose_m35.png'
+              src: '/images/avatars/employees.png'
             }} />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid sx={{display: 'flex', width: '100%', my: 'auto' }} item xs={12} md={6}>
           <CrmTransactions />
         </Grid>
-
-        {/* <Grid item xs={12} sm={6} md={3}>
-          <CrmTotalSales />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <CrmRevenueReport />
-        </Grid>
-        <Grid item xs={12} md={6}>
+         <Grid item xs={12} md={7}>
+          <CrmTotalProfit />
+        </Grid> 
+        <Grid item xs={12} md={5}>
           <CrmSalesOverview />
-        </Grid> */}
+        </Grid> 
       </Grid>
     </ApexChartWrapper>
   )

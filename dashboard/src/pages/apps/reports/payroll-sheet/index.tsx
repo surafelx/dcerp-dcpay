@@ -40,7 +40,8 @@ import { RootState, AppDispatch } from 'src/store'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-
+import { fetchData as fetchMainParameterDefinitions } from 'src/store/apps/File/ParameterDefinition/MainParameterDefinition'
+import { fetchData as fetchSubParameterDefinition } from 'src/store/apps/File/ParameterDefinition/SubParameterDefinition'
 
 const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     display: 'flex',
@@ -76,7 +77,8 @@ const PayrollAdvice = () => {
     const [branchObject, setBranchObject] = useState<any>({ id: '', branchName: '' })
     const [department, setDepartment] = useState<string>('')
     const [departmentObject, setDepartmentObject] = useState<any>({ id: '', departmentName: '' })
-
+    const [bankObject, setBankObject] = useState<any>()
+    const [bank, setBank] = useState<string>('')
     const [value] = useState<string>('')
 
 
@@ -85,6 +87,10 @@ const PayrollAdvice = () => {
 
     const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
+
+    const subParameters = useSelector((state: RootState) => state.subParameterDefinition)
+    const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
+
 
     useEffect(() => {
         dispatch(
@@ -99,6 +105,20 @@ const PayrollAdvice = () => {
         )
     }, [dispatch])
 
+    const filterSubParametersByName = (parentParamName: any) => {
+        const parent: any = mainParameters.allData.find((parent: any) => parent.parameterName === parentParamName);
+        if (!parent) {
+            return [];
+        }
+
+        const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
+
+        return filteredChild
+    }
+
+
+
+    const bankOptions: any = filterSubParametersByName('Bank')
 
     const generateExcelFile = () => {
         const tableData = [
@@ -118,7 +138,21 @@ const PayrollAdvice = () => {
     };
 
 
+    useEffect(() => {
+        dispatch(
+            fetchMainParameterDefinitions({
+                q: ''
+            })
+        )
+    }, [dispatch])
 
+    useEffect(() => {
+        dispatch(
+            fetchSubParameterDefinition({
+                q: ''
+            })
+        )
+    }, [dispatch])
 
     const handleBranchChange = (e: any, newValue: any) => {
         if (newValue?.id) {
@@ -133,6 +167,13 @@ const PayrollAdvice = () => {
         if (newValue?.id) {
             setDepartmentObject(newValue)
             setDepartment(newValue.id)
+        }
+    }
+
+    const handleBankChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setBankObject(newValue)
+            setBank(newValue.id)
         }
     }
 
@@ -152,13 +193,14 @@ const PayrollAdvice = () => {
             fetchData({
                 branch,
                 department,
+                bank,
                 q: value,
                 currentPlan: ''
             })
         )
     }
 
-     
+
     return (
         <Grid container spacing={3}>
             <Grid item xl={12} md={12} xs={12}>
@@ -167,7 +209,7 @@ const PayrollAdvice = () => {
                         <CardHeader title='Payroll Sheet' />
                         <CardContent>
                             <Grid container spacing={3}>
-                                <Grid item xs={6}>
+                                <Grid item xs={4}>
                                     <FormControl fullWidth>
                                         <Autocomplete
                                             autoSelect
@@ -182,7 +224,7 @@ const PayrollAdvice = () => {
                                         />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={4}>
                                     <FormControl fullWidth>
                                         <Autocomplete
                                             autoSelect
@@ -194,6 +236,21 @@ const PayrollAdvice = () => {
                                             id='autocomplete-controlled'
                                             getOptionLabel={(option: any) => option.departmentName}
                                             renderInput={params => <TextField {...params} label='Select Department' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={bankObject}
+                                            options={bankOptions}
+                                            onChange={handleBankChange}
+                                            isOptionEqualToValue={(option: any, value: any) => option.parameterName == value.parameterName}
+                                            id='autocomplete-controlled'
+                                            getOptionLabel={(option: any) => option.parameterName}
+                                            renderInput={params => <TextField {...params} label='Select Bank' />}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -260,7 +317,7 @@ const PayrollAdvice = () => {
                                 {
                                     store.data.map(({ employeeCode, employeeName, employeeAccountNumber, bankName, transactions, }: any, index) => {
                                         const netPay = transactions?.filter(({ transaction_code }: any) => transaction_code == '99')[0]?.transaction_amount
-                                       
+
                                         return (
                                             <TableRow key={index} >
                                                 <TableCell>{`${employeeCode}`}</TableCell>
@@ -304,3 +361,5 @@ const PayrollAdvice = () => {
 }
 
 export default PayrollAdvice
+
+

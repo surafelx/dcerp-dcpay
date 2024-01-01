@@ -130,7 +130,7 @@ const UserList = () => {
     const earningAmounts = earningStore.filter((transaction: any) => transaction.transactionTypeName == 'Earning Amount')
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const grossTaxable: any = store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary"))
-
+    
     useEffect(() => {
         dispatch(
             fetchData({

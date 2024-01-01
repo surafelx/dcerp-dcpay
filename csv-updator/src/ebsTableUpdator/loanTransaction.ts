@@ -48,7 +48,7 @@ export const getEmployeeByEmployeeCodeByOrganization = async (organizationId: st
     WHERE e.organization_id=$1 AND
     e.employee_code = $2`,
         [organizationId, employeeCode])
-        
+
     return employees[0].id
 }
 
@@ -102,7 +102,7 @@ export const createPeriodTransaction = async (newPeriodTransaction: any): Promis
         transactionAmount,
         0,
         false,
-        userId, 
+        userId,
         0,
         new Date()
     ])
@@ -112,9 +112,9 @@ export const createPeriodTransaction = async (newPeriodTransaction: any): Promis
 
 const processCSV = async (organizationId: string, csvFile: any, userInfo: any) => {
     try {
-        const resultArray: any= [];
+        const resultArray: any = [];
 
-        const {  organizationId, periodId, userId } = userInfo
+        const { organizationId, periodId, userId } = userInfo
 
         // Define your conditions for each column here
         const processRow = (row: any) => {
@@ -159,17 +159,18 @@ const processCSV = async (organizationId: string, csvFile: any, userInfo: any) =
                             loanTransaction.transactionId = transactionId;
                             loanTransaction.organizationId = organizationId
                             const createdLoanTransaction = await create(loanTransaction);
-                            const newPeriodTransaction = { 
+                            const newPeriodTransaction = {
                                 employeeId: createdLoanTransaction.employee_id,
                                 transactionId: createdLoanTransaction.transaction_id,
                                 organizationId,
                                 transactionAmount: createdLoanTransaction.transaction_amount,
-                                userId, 
+                                userId,
                                 periodId
                             }
                             await createPeriodTransaction(newPeriodTransaction)
                         } catch (err) {
                             console.log('Error processing row:', err);
+                            console.error('Row Error:', loanTransaction);
                         }
                     }
                     console.log('Processing complete');
@@ -180,6 +181,7 @@ const processCSV = async (organizationId: string, csvFile: any, userInfo: any) =
         return resultArray;
     } catch (err) {
         console.error('Error in processCSV:', err);
+
     }
 };
 

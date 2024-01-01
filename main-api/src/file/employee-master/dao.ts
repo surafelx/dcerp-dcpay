@@ -94,6 +94,7 @@ export const create = async (newMenu: any): Promise<any> => {
 }
 
 export const getAllFromOrganization = async (organizationId: string, basicSalaryId: string, branchId: any, departmentId: any): Promise<any> => {
+ 
     let fixedBranchId: string | null = branchId
     let fixedDepartmentId: string | null = departmentId
 
@@ -133,12 +134,14 @@ export const getAllFromOrganization = async (organizationId: string, basicSalary
             pt.transaction_amount as basic_salary,
             pd1.parameter_name as employee_title_name,
             pd2.parameter_name as employee_bank_name,
-            pd3.parameter_name as employee_type_name
+            pd3.parameter_name as employee_type_name, 
+            pd4.parameter_name as employee_status_name
         FROM employee e
         INNER JOIN period_transactions pt ON pt.employee_id = e.id
         INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
         INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
         INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
+        INNER JOIN parameter_definition pd4 ON pd4.id = e.employee_status
         WHERE 
         e.organization_id = $1 AND 
         pt.organization_id = $1 AND
@@ -162,6 +165,62 @@ export const getInfo = async (employeeId: any): Promise<any> => {
         [employeeId])
 
     return employees[0]
+}
+
+export const getInfoByCodeByOrganization = async (organizationId: any, employeeCode: any): Promise<any> => {
+    const { rows: employees } = await pool.query(`
+    SELECT 
+    *
+    FROM employee
+    WHERE organization_id=$1 AND employee_code=$2`,
+        [organizationId, employeeCode])
+
+    return employees[0]
+}
+
+
+export const getFromOrganization = async (organizationId: any): Promise<any> => {
+    const { rows: employees } = await pool.query(`
+    SELECT 
+    e.id,
+    e.organization_id,
+    e.branch_id,
+    e.department_id,
+    e.employee_code,
+    e.employee_title,
+    e.first_name,
+    e.middle_name,
+    e.last_name,
+    e.sex,
+    e.employee_status,
+    e.employee_type,
+    e.employment_date, 
+    e.contract_start_date,
+    e.contract_end_date,
+    e.monthly_working_hours,
+    e.pension_number,
+    e.pension_status,
+    e.tin_number,
+    e.working_days,
+    e.employee_position,
+    e.employee_bank,
+    e.employee_account_number,
+    pt.transaction_amount as basic_salary,
+    pd1.parameter_name as employee_title_name,
+    pd2.parameter_name as employee_bank_name,
+    pd3.parameter_name as employee_type_name, 
+    pd4.parameter_name as employee_status_name
+FROM employee e
+INNER JOIN period_transactions pt ON pt.employee_id = e.id
+INNER JOIN parameter_definition pd1 ON pd1.id = e.employee_title
+INNER JOIN parameter_definition pd2 ON pd2.id = e.employee_bank
+INNER JOIN parameter_definition pd3 ON pd3.id = e.employee_type
+INNER JOIN parameter_definition pd4 ON pd4.id = e.employee_status
+WHERE 
+e.organization_id = $1 `,
+        [organizationId])
+
+    return employees
 }
 
 
@@ -193,7 +252,7 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         tinNumber,
         workingDays,
         employeePosition,
-        employeeBank, 
+        employeeBank,
         employeeBankAccount
     } = updatedEmployee
     const query = `
@@ -242,7 +301,7 @@ export const updateEmployee = async (updatedEmployee: any): Promise<string> => {
         workingDays,
         employeePosition,
         pensionStatus,
-        employeeBank, 
+        employeeBank,
         employeeBankAccount,
         id])
     const branchId = res.rows[0]
@@ -254,14 +313,16 @@ export const parameterDefinitionExists = async (parameterId: any): Promise<boole
     const { rows: res } = await pool.query(
         'SELECT EXISTS(SELECT 1 FROM employee WHERE employee_title = $1 OR employee_status = $1 OR employee_type = $1 OR employee_bank = $1 OR employee_position = $1)',
         [[parameterId]])
-        return res[0].exists
+    return res[0].exists
 }
 
 export default {
     create,
     deleteEmployee,
     getAllFromOrganization,
+    getFromOrganization,
     parameterDefinitionExists,
     getInfo,
+    getInfoByCodeByOrganization,
     updateEmployee
 }

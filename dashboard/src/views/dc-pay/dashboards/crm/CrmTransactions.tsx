@@ -55,10 +55,10 @@ const CrmTransactions = () => {
     const membershipStore = useSelector((state: RootState) => state.membership)
     const discontinuationStore = useSelector((state: RootState) => state.discontinuation)
 
-    const totalTransacations = payTransactionStore.data.length +  loanTransactionStore.data.length + membershipStore.data.length + discontinuationStore.data.length
+    // const totalTransacations = payTransactionStore.data.length +  loanTransactionStore.data.length + membershipStore.data.length + discontinuationStore.data.length
     
     return (
-        <Card>
+        <Card sx={{ width: '100%', mt:"20px"}}>
             <CardHeader
                 title='Transactions'
                 action={
@@ -68,16 +68,12 @@ const CrmTransactions = () => {
                     />
                 }
                 subheader={
-                    <Typography variant='body2'>
-                        <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-                            Total of {`${totalTransacations}`} transactions
-                        </Box>{' '}
-                        this period.
-                    </Typography>
+                    <>
+                    </>
                 }
                 titleTypographyProps={{
                     sx: {
-                        mb: 2.25,
+                        // mb: 2.25,
                         lineHeight: '2rem !important',
                         letterSpacing: '0.15px !important'
                     }
@@ -88,7 +84,7 @@ const CrmTransactions = () => {
                     <Grid item xs={12} sm={3} key={1}>
                         <Box key={1} sx={{ display: 'flex', alignItems: 'center' }}>
                             <CustomAvatar variant='rounded' color={'primary'} sx={{ mr: 3, boxShadow: 3, width: 44, height: 44 }}>
-                                <Icon icon={'mdi:trending-up'} fontSize='1.75rem' />
+                                <Icon icon={'mdi:cash'} fontSize='1.75rem' />
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Pay</Typography>
@@ -99,7 +95,7 @@ const CrmTransactions = () => {
                     <Grid item xs={12} sm={3}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <CustomAvatar variant='rounded' color={'primary'} sx={{ mr: 3, boxShadow: 3, width: 44, height: 44 }}>
-                                <Icon icon={'mdi:trending-up'} fontSize='1.75rem' />
+                                <Icon icon={'mdi:hand-coin'} fontSize='1.75rem' />
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Loan</Typography>
@@ -110,7 +106,7 @@ const CrmTransactions = () => {
                     <Grid item xs={12} sm={3}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <CustomAvatar variant='rounded' color={'primary'} sx={{ mr: 3, boxShadow: 3, width: 44, height: 44 }}>
-                                <Icon icon={'mdi:trending-up'} fontSize='1.75rem' />
+                                <Icon icon={'mdi:account-multiple-plus'} fontSize='1.75rem' />
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Memberships</Typography>
@@ -121,7 +117,7 @@ const CrmTransactions = () => {
                     <Grid item xs={12} sm={3}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <CustomAvatar variant='rounded' color={'primary'} sx={{ mr: 3, boxShadow: 3, width: 44, height: 44 }}>
-                                <Icon icon={'mdi:trending-up'} fontSize='1.75rem' />
+                                <Icon icon={'mdi:stop-circle'} fontSize='1.75rem' />
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Discontinuations</Typography>

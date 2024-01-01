@@ -46,7 +46,42 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN transaction_definition td ON ms.transaction_id = td.id
     WHERE e1.organization_id=$1`,
         [organizationId])
+
     return memberships
+}
+
+
+export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
+    const { periodId } = userInfo
+
+    let query = `
+        SELECT 
+        DISTINCT
+        ms.id,
+        ms.employee_id,
+        ms.transaction_id,
+        e1.employee_code,
+        e1.first_name as employee_first_name,
+        e1.last_name as employee_last_name,
+        td.transaction_name,
+        td.transaction_code
+        FROM membership ms
+        INNER JOIN employee e1 ON ms.employee_id = e1.id
+        INNER JOIN transaction_definition td ON ms.transaction_id = td.id
+        INNER JOIN period_transactions pt ON pt.transaction_id = ms.transaction_id
+        WHERE e1.organization_id = $1 AND pt.period_id = $2
+    `
+
+    const queryParams = [organizationId, periodId]
+
+    if (employeeId) {
+        query += ` AND e1.id = $3`;
+        queryParams.push(employeeId);
+    }
+
+    const { rows: memberships } = await pool.query(query, queryParams);
+    return memberships
+
 }
 
 
@@ -102,6 +137,7 @@ export default {
     deleteMembership,
     deleteByEmployeeId,
     getAllFromOrganization,
+    getAllFromOrganizationByEmployeeByPeriod,
     getInfo,
     updateMembership
 }

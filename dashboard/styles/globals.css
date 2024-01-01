@@ -15,29 +15,19 @@ code {
   color: #d400ff;
   border-radius: 0.1335rem;
 }
+
 code:not([class*='language-']):before,
 code:not([class*='language-']):after {
   content: '`';
 }
+
 code[class*='language-'] {
   padding: 0;
 }
 
-/* 
-@media print {
-  @page {
-    margin: 0;
-  }
 
-  body {
-    margin: 1.6cm;
-  }
-
-  .MuiAppBar-root,
-  .MuiToolbar-root {
-    display: none;
-  }
-  .page-number:before {
-    content: "Page " counter(page);
-  }
-} */
+tr,
+div {
+  -webkit-print-color-adjust: exact;
+  font-family: 'Inter'
+}

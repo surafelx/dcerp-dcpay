@@ -32,6 +32,28 @@ const VerticalNavItems = (props: Props) => {
   // ** Props
   const { verticalNavItems } = props
 
+  // const navItems = [
+  //   {
+  //     title: 'Dashboards',
+  //     icon: 'mdi:home-outline',
+  //     badgeContent: 'new',
+  //     badgeColor: 'error',
+  //     children: [
+  //       {
+  //         title: 'CRM',
+  //         path: '/dashboards/crm'
+  //       },
+  //       {
+  //         title: 'Analytics',
+  //         path: '/dashboards/analytics'
+  //       },
+  //       {
+  //         title: 'eCommerce',
+  //         path: '/dashboards/ecommerce'
+  //       }
+  //     ]
+  //   },
+  // ]
   const RenderMenuItems = verticalNavItems?.map((item: NavGroup | NavLink | NavSectionTitle, index: number) => {
     const TagName: any = resolveNavItemComponent(item)
 

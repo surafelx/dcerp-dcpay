@@ -18,7 +18,7 @@ const create = async (newLoanTransaction: any, userInfo: any): Promise<string> =
     return createdLoanTransaciton
 }
 
-const getAllFromOrganization = async (organizationId: any, employeeId: any): Promise<any[]> => await loanTransactionDao.getAllFromOrganization(organizationId, employeeId)
+const getAllFromOrganization = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await loanTransactionDao.getAllFromOrganization(organizationId, employeeId, userInfo)
 
 const getById = async (loanTransactionId: any): Promise<any> => await loanTransactionDao.getById(loanTransactionId)
 

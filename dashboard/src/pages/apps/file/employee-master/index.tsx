@@ -122,7 +122,7 @@ const UserList = () => {
     const [employmentTypeValue, setEmploymentTypeValue] = useState<any>('')
     const [contractStart, setContractStart] = useState<any>(null)
     const [contractEnd, setContractEnd] = useState<any>(null)
-    const [employmentDateError, ] = useState(null)
+    const [employmentDateError,] = useState(null)
 
     // ** State
     const [filterValue, setFilterValue] = useState<string>('')
@@ -400,10 +400,13 @@ const UserList = () => {
                                                                 setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
                                                                 reset(selectedEmployee)
                                                             } else {
-                                                                setFormBranchObject({ id: '', branchName: '' })
-                                                                setFormDepartmentObject({ id: '', departmentName: '' })
-                                                                reset(emptyValues)
-                                                                setValue('employeeCode', Number(e.target.value))
+                                                                if (!branchObject.id) {
+                                                                    setFormBranchObject({ id: '', branchName: '' })
+                                                                    setFormDepartmentObject({ id: '', departmentName: '' })
+                                                                    reset(emptyValues)
+                                                                    setValue('employeeCode', Number(e.target.value))
+                                                                }
+
                                                             }
                                                         }
                                                         }

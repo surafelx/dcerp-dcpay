@@ -26,6 +26,8 @@ const createPayTransaction = async (newMenu: any) => {
     return res.rows[0];
 }; 
 
+
+
 const createPeriodTransaction = async (newPeriodTransaction: any) => {
     const id = uuid()
     const { organizationId, periodId, employeeId, transactionId, transactionAmount, userId } = newPeriodTransaction;
@@ -120,6 +122,8 @@ const updateCurrentPeriod = async (organizationId: any, periodId: any, userId: a
             console.error(error);
         }
     }
+
+    
 };
 
 export default updateCurrentPeriod

@@ -9,12 +9,15 @@ const router = Router()
 router.get('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { id } = req.params
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             const { q = '', employee = null } = req.query ?? ''
             const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
-            const loanTransactions = await loanTransactionService.getAllFromOrganization(organizationId, employeeId)
+            const loanTransactions = await loanTransactionService.getAllFromOrganization(organizationId, employeeId, userInfo)
             const renamedLoanTransactions = loanTransactions.map(({
                 id,
                 employee_id,
@@ -96,7 +99,7 @@ router.delete('/:id',
     })
 
 router.put('/',
-    loanTransactionValidation.editTransaction,
+    // loanTransactionValidation.editTransaction,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];

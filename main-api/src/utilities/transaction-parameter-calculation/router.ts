@@ -79,7 +79,9 @@ router.get('/',
 router.post('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const createdTransactionParameterCalculation = await transactionParameterCalculationService.create({ ...req.body.data })
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const createdTransactionParameterCalculation = await transactionParameterCalculationService.create({ ...req.body.data, organizationId })
             res.send(createdTransactionParameterCalculation)
         } catch (err) {
             console.log(err)

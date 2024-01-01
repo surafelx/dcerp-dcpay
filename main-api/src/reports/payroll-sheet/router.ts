@@ -12,32 +12,41 @@ router.get('/',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {periodId: currentPeriod[0].id, userId, }
-            const { q = '', branch = null, department = null } = req.query ?? ''
+            const userInfo = { periodId: currentPeriod[0].id, userId, }
+            const { q = '', bank = null, branch = null, department = null } = req.query ?? ''
             const branchId = branch
             const departmentId = department
+            const bankId = bank
             const queryLowered = q.toString().toLowerCase()
-            const processedTransactions = await payrollSheetService.getAllFromOrganization(organizationId, branchId, departmentId, userInfo)
+            const processedTransactions = await payrollSheetService.getAllFromOrganization(organizationId, branchId, departmentId, bankId, userInfo)
             const renamedProcessedTransactions = processedTransactions.map(({
                 id,
-               employee_code,
-               employee_account_number,
-               bank_name,
-               first_name,
-               transactions
+                employee_code,
+                employee_department,
+                employee_account_number,
+                bank_name,
+                first_name,
+                middle_name,
+                last_name,
+                monthly_working_hours,
+                employee_status_name,
+                transactions
             }: any) => ({
                 id,
-              employeeCode: employee_code,
-              employeeName: first_name,
-              employeeAccountNumber: employee_account_number,
-              bankName: bank_name,
-              transactions
+                employeeDepartment: employee_department,
+                employeeCode: employee_code,
+                employeeName: `${first_name} ${middle_name} ${last_name}`,
+                employeeAccountNumber: employee_account_number,
+                monthlyWorkingHours: monthly_working_hours,
+                employeeStatusName: employee_status_name,
+                bankName: bank_name,
+                transactions
             }));
             const filteredData = renamedProcessedTransactions.filter(
                 (payrollSheet: any) =>
                 (
                     payrollSheet.employeeCode.toLowerCase().includes(queryLowered) ||
-                    payrollSheet.employeeName.toLowerCase().includes(queryLowered) 
+                    payrollSheet.employeeName.toLowerCase().includes(queryLowered)
                 )
             )
             res.send({
@@ -46,7 +55,7 @@ router.get('/',
                 query: req.query,
                 total: filteredData.length
             })
-      
+
         } catch (e) {
             next(e)
         }

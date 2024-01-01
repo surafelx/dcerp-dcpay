@@ -5,44 +5,44 @@ import processLoanTransactionCSV from './ebsTableUpdator/loanTransaction'
 import processPayTransactionCSV from './ebsTableUpdator/payTransaction'
 import processTransactionDefinitions from './ebsTableUpdator/transactionDefinition'
 import processTransactionCalculations from './ebsTableUpdator/transactionCalculations'
- 
+
 
 
 
 const setupProcess = async () => {
     try {
-        const organizationId = '9e685870-c358-41db-89b0-c4bb4da26f69'
-        const userId = 'e071e2fa-02b3-4b4f-ae62-64ae946b03f0'
-        const periodId = '59033e86-76b0-4b64-abff-3a03b62de930'
-        const branchId = '4233d1c7-2c58-4672-a701-53b67562586a'
+        const organizationId = '0b8e7dc2-7961-4bbc-aa7a-027faa5b652f'
+        const userId = '1c09ada8-db1e-41ec-8f96-89851ff9cbc8'
+        const periodId = '50d92bd0-d1f8-4b5c-a76e-f68456397147'
+        const branchId = 'c3183b5a-61f5-4363-9ee5-3dae2bf85814'
 
-        const userInfo = {organizationId, userId, periodId}
+        const userInfo = { organizationId, userId, periodId }
 
-        const branches = await processBranchCSV(organizationId, './data/ebs/branch.csv')
+        const branches = await processBranchCSV(organizationId, './data/ddfc/branch.csv')
         console.log(branches.length, "Branches Added")
-        
-        const departments = await processDepartmentCSV(organizationId,'./data/ebs/department.csv')
+
+        const departments = await processDepartmentCSV(organizationId, './data/ddfc/department.csv')
         console.log(departments.length, "Departments Added")
-       
+
         await processTransactionDefinitions(organizationId, branchId)
-        console.log( "Transaction Definitions Added")
-        
+        console.log("Transaction Definitions Added")
+
         await processTransactionCalculations(organizationId)
         console.log("Transaction Calculations Added")
 
-        const employees = await processEmployeeCSV(organizationId, './data/ebs/employees.csv', userInfo)
+        const employees = await processEmployeeCSV(organizationId, './data/ddfc/employees.csv', userInfo)
         console.log(employees.length, "Employees Added")
 
-        const loanTransactions = await processLoanTransactionCSV(organizationId, './data/ebs/loan.csv', userInfo)
+        const loanTransactions = await processLoanTransactionCSV(organizationId, './data/ddfc/loans.csv', userInfo)
         console.log(loanTransactions.length, "Loan Transactions Added")
-       
-        const payTransactions = await processPayTransactionCSV(organizationId, './data/ebs/processed.csv', userInfo)
+
+        const payTransactions = await processPayTransactionCSV(organizationId, './data/ddfc/periodtransactions.csv', userInfo)
         console.log(payTransactions.length, "Pay Transactions Added")
 
     } catch (error) {
         console.log(error)
 
-    } 
+    }
 }
 
 setupProcess()

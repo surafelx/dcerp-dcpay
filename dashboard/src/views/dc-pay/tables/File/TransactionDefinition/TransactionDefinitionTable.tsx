@@ -13,8 +13,6 @@ import TableHead from '@mui/material/TableHead'
 import TableContainer from '@mui/material/TableContainer'
 import TableSortLabel from '@mui/material/TableSortLabel'
 import TablePagination from '@mui/material/TablePagination'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import { useDispatch } from 'react-redux'
 import {  AppDispatch } from 'src/store'
 import Icon from 'src/@core/components/icon'
@@ -199,9 +197,8 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
         const dispatch = useDispatch<AppDispatch>()
 
         // ** State
-        const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+        const [, setAnchorEl] = useState<null | HTMLElement>(null)
 
-        const rowOptionsOpen = Boolean(anchorEl)
 
         const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
             setAnchorEl(event.currentTarget)
@@ -247,11 +244,10 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
 
         return (
             <>
-                <div style={{ fontSize: 10 }} onClick={handleRowOptionsClick}>
-                    {/* <DotsVertical /> */}
+                   <div style={{ fontSize: 10, display: 'flex', gap: '5px'}} onClick={handleRowOptionsClick}>
+                    {/* <DotsVertical />
                     Options
-                </div>
-                <Menu
+                </div>    <Menu
                     keepMounted
                     anchorEl={anchorEl}
                     open={rowOptionsOpen}
@@ -265,16 +261,18 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteTransactionDefinitio
                         horizontal: 'right'
                     }}
                     PaperProps={{ style: { minWidth: '8rem' } }}
-                >
-                    <MenuItem onClick={handleEdit}>
+                > */}
+
+                    <div onClick={handleEdit}>
                         {/* <PencilOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Edit
-                    </MenuItem>
-                    <MenuItem onClick={handleDelete}>
+                    </div>
+                    <div onClick={handleDelete}>
                         {/* <DeleteOutline fontSize='small' sx={{ mr: 2 }} /> */}
                         Delete
-                    </MenuItem>
-                </Menu>
+                    </div>
+                    {/* </Menu> */}
+                </div >
             </>
         )
     }

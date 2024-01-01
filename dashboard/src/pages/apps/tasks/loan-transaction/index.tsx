@@ -172,6 +172,8 @@ const UserList = () => {
     const employeeStore = useSelector((state: RootState) => state.employee)
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
+    const activeEmployees = employeeStore.data.filter(({ employeeStatusName }: any) => (employeeStatusName === "Active"))
+
     const handleTransactionValue = (transactionValue: any) => {
         const selectedTransactionId = transactionValue
         const existingObject: any = store.data.find(obj => (obj["transactionId"] === selectedTransactionId))
@@ -249,7 +251,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
@@ -265,7 +267,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}

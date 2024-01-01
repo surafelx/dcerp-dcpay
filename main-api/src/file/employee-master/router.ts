@@ -16,7 +16,7 @@ router.get('/',
             const departmentId = department
             const queryLowered = q.toString().toLowerCase()
             const employees = await employeeService.getAllFromOrganization(organizationId, branchId, departmentId)
-            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name }) => ({
+            const renamedEmployees = employees.map(({ id, branch_id, department_id, employee_code, employee_title, employee_title_name, first_name, middle_name, last_name, sex, employee_status, employee_type, contract_start_date, contract_end_date, monthly_working_hours, pension_number, pension_status, tin_number, working_days, employee_position, basic_salary, employment_date, employee_account_number, employee_bank, employee_bank_name, employee_type_name, employee_status_name }) => ({
                 id,
                 employeeBranch: branch_id,
                 employeeDepartment: department_id,
@@ -27,6 +27,7 @@ router.get('/',
                 employeeBankName: employee_bank_name,
                 employeeBankAccount: employee_account_number,
                 employeeTypeName: employee_type_name,
+                employeeStatusName: employee_status_name,
                 sex,
                 employeeStatus: employee_status,
                 employeeType: employee_type,

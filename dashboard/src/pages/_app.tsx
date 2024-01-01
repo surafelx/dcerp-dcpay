@@ -100,7 +100,7 @@ const App = (props: ExtendedAppProps) => {
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{`${themeConfig.templateName}`}</title>
+          <title>DDFC PAY</title>
           <meta
             name='description'
             content={`${themeConfig.templateName}`}

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 
 // ** MUI Imports
@@ -54,6 +54,9 @@ const UserList = () => {
     const [transaction, setTransaction] = useState<string>('')
     const [transactionObject, setTransactionObject] = useState<any>(null)
     const [value] = useState<string>('')
+
+    const employeeCodeRef: any = useRef()
+    const transactionRef: any = useRef()
 
     const [formData, setFormData] = useState({
         id: '',
@@ -113,7 +116,13 @@ const UserList = () => {
         setTransactionObject({ id: '', transactionName: '' })
         setEmployee('')
         setTransaction('')
-        reset(emptyValues)
+        reset(
+            {
+                id: '',
+                employeeId: '',
+                transactionId: '',
+            }
+        )
     }
 
     const handleEmployeeChange = (e: any, newValue: any) => {
@@ -139,13 +148,14 @@ const UserList = () => {
         } else {
             dispatch(addMembership({ ...data }))
         }
-        setTransaction('')
+        clearAllFields()
+        employeeCodeRef.current.focus()
     }
 
     const employeeStore = useSelector((state: RootState) => state.employee)
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
 
-    console.log(transactionDefinitionStore)
+    const activeEmployees = employeeStore.data.filter(({ employeeStatusName }: any) => (employeeStatusName === "Active"))
 
     return (
         <Grid container spacing={3}>
@@ -162,12 +172,18 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
-                                            onChange={handleEmployeeChange}
+                                            options={activeEmployees}
+                                            onChange={(e,v) => { 
+                                                handleEmployeeChange(e,v)
+                                                transactionRef.current.focus()
+                                            }}
+                                            onBlur={() => { 
+                                                transactionRef.current.focus()
+                                            }}
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
                                             getOptionLabel={(option: any) => option.employeeCode}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                            renderInput={params => <TextField {...params} inputRef={employeeCodeRef} label='Select Employee' />}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -177,7 +193,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
@@ -197,7 +213,7 @@ const UserList = () => {
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
                                             getOptionLabel={option => option.transactionName}
-                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                            renderInput={params => <TextField {...params} inputRef={transactionRef} label='Select Transaction' />}
                                         />
                                     </FormControl>
                                 </Grid>

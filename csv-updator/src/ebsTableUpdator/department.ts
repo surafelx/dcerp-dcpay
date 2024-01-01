@@ -3,17 +3,9 @@ import pool from '../config/pool'
 import { v4 as uuid } from 'uuid'
 import csv from 'csv-parser';
 
-const ADMINSTRATIVE_BRANCH = '1'
-const DISTRIBUTION_BRANCH = '2'
-const MEMBERSHIP_OFFICE_BRANCH = '3'
-const TRANSLATION_OFFICE = '4'
-const FCBH_BRANCH = '5'
-const COMPREHENSIVE_PLAN_WEELIFE_BRANCH = '6'
-const COMPREHENSIVE_PLAN_SEED_CO_BRANCH = '7'
-const GOOD_SAMARITIAN_PROJECT_CANADA_BRANCH = '8'
-const PROJECT_CHURCH_RELATION_BRANCH = '9'
-const PENSION_BRANCH = '10'
-const GOOD_SAMARITIAN_PROJECT_NORWAY_BRANCH = '11'
+const DIREDAWA_BRANCH = '1'
+const ADDISABABA_BRANCH = '2'
+
 
 export const codeExists = async (department: any, organizationId: any): Promise<boolean> => {
     const { branchId, departmentCode } = department
@@ -110,52 +102,14 @@ const processCSV = async (organizationId: any, csvFile: any) => {
                 .on('end', async () => {
                     for (const department of resultArray) {
                         try {
-                            if (department.branchCode == ADMINSTRATIVE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Administration');
+                            if (department.branchCode == DIREDAWA_BRANCH) {
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Dire Dewa Office');
                                 department.branchId = branch.id;
                             }
-                            if (department.branchCode == DISTRIBUTION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Distribution');
+                            if (department.branchCode == ADDISABABA_BRANCH) {
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Addis Ababa Office');
                                 department.branchId = branch.id;
                             }
-                            if (department.branchCode == MEMBERSHIP_OFFICE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Membership office');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == TRANSLATION_OFFICE) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Translation');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == FCBH_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'FCBH');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == COMPREHENSIVE_PLAN_WEELIFE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Comprensive Plan-Weeclife');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == COMPREHENSIVE_PLAN_SEED_CO_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Comprensive Plan-Seed Co');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == GOOD_SAMARITIAN_PROJECT_CANADA_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Good Samaritan project-Canada');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == PROJECT_CHURCH_RELATION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Project -Church Relation');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == PENSION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Pension');
-                                department.branchId = branch.id;
-                            }
-                            if (department.branchCode == GOOD_SAMARITIAN_PROJECT_NORWAY_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Good samaritan-Norway');
-                                department.branchId = branch.id;
-                            }
-
-
                             department.organizationId = organizationId;
                             const doesExist = await codeExists(department, organizationId)
                             if (!doesExist)

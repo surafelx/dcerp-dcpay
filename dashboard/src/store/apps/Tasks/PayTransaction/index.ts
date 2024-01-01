@@ -28,10 +28,11 @@ export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async 
 // ** Add User
 export const addPayTransaction = createAsyncThunk(
   'appPayTransactions/addPayTransaction',
-  async (data: { [key: string]: number | string }, {dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }) => {
     const response = await apiRequest.post(`tasks/pay-transaction`, { data })
-     const employee = response.data.employee_id
-    dispatch(fetchData({employee}))
+
+    //  const employee = response.data.employee_id
+    // dispatch(fetchData({employee}))
 
     return response.data
   }

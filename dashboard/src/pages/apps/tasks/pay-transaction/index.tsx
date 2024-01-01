@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Autocomplete from '@mui/material/Autocomplete'
 
@@ -67,6 +67,10 @@ const UserList = () => {
     });
 
 
+    const employeeCodeRef: any = useRef();
+    const transactionRef: any = useRef();
+    const transactionAmountRef: any = useRef()
+
 
     const {
         control,
@@ -82,11 +86,13 @@ const UserList = () => {
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.payTransaction)
-
     const employeeStore = useSelector((state: RootState) => state.employee)
+
+    const activeEmployees = employeeStore.data.filter(({ employeeStatusName }: any) => (employeeStatusName === "Active"))
     const deductionStore = store.data.filter(({ transactionTypeName, transactionAmount }: any) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount") && Number(transactionAmount))
     const earningStore = store.data.filter(({ transactionTypeName, transactionAmount, transactionName }: any) => ((transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && Number(transactionAmount)) || transactionName === 'Basic Salary')
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
+
 
     const handleTransactionValue = (transactionValue: any) => {
         const selectedTransactionId = transactionValue
@@ -117,7 +123,9 @@ const UserList = () => {
                 q: value,
             })
         )
-    }, [dispatch, employee, value])
+
+    }, [dispatch, employee, setEmployee, value])
+
 
     useEffect(() => {
         dispatch(
@@ -125,6 +133,10 @@ const UserList = () => {
                 q: ''
             })
         )
+    }, [dispatch])
+
+
+    useEffect(() => {
         dispatch(
             fetchTransactionDefinition({
                 q: ''
@@ -132,12 +144,21 @@ const UserList = () => {
         )
     }, [dispatch])
 
+
     const clearAllFields = () => {
         setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
         setTransactionObject({ id: '', transactionName: '' })
         setEmployee('')
         setTransaction('')
-        reset(emptyValues)
+        reset(
+            {
+                id: '',
+                employeeId: '',
+                transactionId: '',
+                transactionAmount: '',
+            }
+        )
+
     }
 
     const handleEmployeeChange = (e: any, newValue: any) => {
@@ -157,15 +178,18 @@ const UserList = () => {
     }
 
     const onSubmit = (data: any) => {
-        data.employeeId = employee
+        data.employeeId = employeeObject.id
         data.transactionId = transaction
         if (data.id) {
             dispatch(editPayTransaction({ ...data }))
         } else {
             dispatch(addPayTransaction({ ...data }))
         }
+        handleEmployeeChange('', { id: '', firstName: '', employeeCode: '' })
         clearAllFields()
+        employeeCodeRef.current.focus()
     }
+
 
     return (
         <Grid container spacing={3}>
@@ -182,12 +206,19 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
-                                            onChange={handleEmployeeChange}
+                                            options={activeEmployees}
+                                            onChange={(e, v) => {
+                                                handleEmployeeChange(e, v)
+                                                transactionRef.current.focus()
+                                            }
+                                            }
+                                            onBlur={() => {
+                                                transactionRef.current.focus()
+                                            }}
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
                                             getOptionLabel={(option: any) => option.employeeCode}
-                                            renderInput={params => <TextField {...params} label='Select Employee' />}
+                                            renderInput={params => <TextField {...params} inputRef={employeeCodeRef} label='Select Employee' />}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -197,7 +228,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
@@ -213,11 +244,15 @@ const UserList = () => {
                                             size={'small'}
                                             value={transactionObject}
                                             options={transactionDefinitionStore.data.filter((tran: any) => tran.updateTypeName === 'Input' && tran.transactionGroupName !== 'Loan' && tran.transactionName !== 'None')}
-                                            onChange={handleTransactionChange}
+                                            onChange={(e, v) => {
+                                                handleTransactionChange(e, v)
+                                                transactionAmountRef.current.focus()
+                                            }
+                                            }
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
                                             getOptionLabel={option => option.transactionName}
-                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
+                                            renderInput={params => <TextField {...params} inputRef={transactionRef} label='Select Transaction' />}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -231,13 +266,17 @@ const UserList = () => {
                                                 <TextField
                                                     size={'small'}
                                                     autoFocus
-                                                    dir={'rtl'}
                                                     label='Transaction Amount'
                                                     value={value}
                                                     onBlur={onBlur}
                                                     onChange={onChange}
                                                     error={Boolean(errors.transactionAmount)}
                                                     placeholder='Enter Transaction Amount'
+                                                    inputRef={transactionAmountRef}
+                                                    type='number'
+                                                    inputProps={{
+                                                        style: { textAlign: 'right' },
+                                                    }}
                                                 />
                                             )}
                                         />
@@ -257,7 +296,7 @@ const UserList = () => {
                                 </Grid>
                                 <Grid item xs={12} sm={3}>
                                     <FormControl fullWidth>
-                                        <Button color='secondary' fullWidth size='small' onClick={() => clearAllFields()} type='reset' variant='contained' sx={{ mb: 7 }}>
+                                        <Button color='secondary' fullWidth size='small' onClick={clearAllFields} type='reset' variant='contained' sx={{ mb: 7 }}>
                                             Reset
                                         </Button>
                                     </FormControl>
@@ -281,6 +320,7 @@ const UserList = () => {
                             setTransaction={setTransaction}
                             setTransactionObject={setTransactionObject}
                             reset={reset}
+                            employeeCodeRef={employeeCodeRef}
                             transaction={transaction}
                             transactionDefinitionStore={transactionDefinitionStore}
                             employeeStore={employeeStore}
@@ -305,6 +345,7 @@ const UserList = () => {
                             transaction={transaction}
                             transactionDefinitionStore={transactionDefinitionStore}
                             employeeStore={employeeStore}
+                            employeeCodeRef={employeeCodeRef}
                         />
                     </CardContent>
                 </Card>

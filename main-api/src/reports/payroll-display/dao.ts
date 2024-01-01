@@ -169,7 +169,7 @@ const processPayLoanMembershipTransactions = async (organizationId: any, employe
                 await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
             }
         }
-        if (td.update_type_name === 'Calculation' && td.transaction_group_name != 'Membership') {
+        if (td.update_type_name === 'Calculation' && td.transaction_group_name != 'Membership' && td.transaction_group_name != 'Absence') {
             const transactionCalculationFormat = await getTransactionCalculationFormat(employeeId, td.id, periodId)
             if (transactionCalculationFormat.length > 0) {
                 const calculatedTransaction = calculateTransactionCalculations(transactionCalculationFormat[0])
