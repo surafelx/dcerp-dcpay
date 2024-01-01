@@ -36,7 +36,7 @@ const TableHeader = (props: any) => {
                         autoSelect
                         size={'small'}
                         value={departmentObject}
-                        options={departments}
+                        options={[...departments.filter((department: any) => department?.branchId == branchObject?.id), {id: 'All', departmentName: 'All Departments'}]}
                         onChange={handleDepartmentChange}
                         isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
                         id='autocomplete-controlled'

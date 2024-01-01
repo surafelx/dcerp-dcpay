@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -37,27 +37,71 @@ const Img = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error401 = () => {
+// const TreeIllustration = styled('img')(({ theme }) => ({
+//   left: 0,
+//   bottom: '5rem',
+//   position: 'absolute',
+//   [theme.breakpoints.down('lg')]: {
+//     bottom: 0
+//   }
+// }))
+
+const Loading = () => {
   return (
     <Box className='content-center'>
-      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        <BoxWrapper>
-          <Typography variant='h1'>401</Typography>
-          <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
-            You are not authorized! 🔐
-          </Typography>
-          <Typography variant='body2'>You don&prime;t have permission to access this page. Go Home!</Typography>
-        </BoxWrapper>
-        <Img height='487' alt='error-illustration' src='/images/pages/401.png' />
-        <Button href='/' component={Link} variant='contained' sx={{ px: 5.5 }}>
-          Back to Home
-        </Button>
-      </Box>
-      <FooterIllustrations />
+      <Typography variant='h5' sx={{ mb: 2 }}>
+        Loading...
+      </Typography>
     </Box>
+  );
+};
+
+const Error404 = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    // Clear the timeout if the component is unmounted
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+
+  return (
+    <>
+      {isLoading ? (
+        <Loading />
+      ) :
+        (
+          <>
+            <Box className='content-center'>
+              <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                <BoxWrapper>
+                  <Typography variant='h1'>401</Typography>
+                  <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
+                    You are not authorized! 🔐
+                  </Typography>
+                  <Typography variant='body2'>You don&prime;t have permission to access this page. Go Home!</Typography>
+                </BoxWrapper>
+                <Img height='487' alt='error-illustration' src='/images/pages/401.png' />
+                <Button href='/' component={Link} variant='contained' sx={{ px: 5.5 }}>
+                  Back to Home
+                </Button>
+              </Box>
+              <FooterIllustrations />
+            </Box>
+          </>
+
+        )
+      }
+    </>
+
   )
 }
 
-Error401.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+Error404.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-export default Error401
+export default Error404

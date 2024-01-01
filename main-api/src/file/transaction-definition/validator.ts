@@ -1,14 +1,19 @@
-import { validateAll } from '@src/utils/validator'
+import { validateAll } from '../../utils/validator'
 import { check } from 'express-validator'
+import transcationDefinitionSerice from './service'
 
-
-const newUser = [
-    check('isActive').isBoolean(),
+const deleteTransaction = [
+    check('id').custom(async (value: string, { req }: any) => {
+        const isInPeriod = await transcationDefinitionSerice.checkInPeriodTransactionos(value)
+        const isProcessed = await transcationDefinitionSerice.checkInProcessedTransactions(value)
+        if (isProcessed || isInPeriod)
+            throw new Error(`Transaction is used in process.`)
+    }),
 ]
 
 
-export const usersValidations = {
-    newUser,
+export const transactionDefinitionValidation = {
+    deleteTransaction,
 }
 
-export default validateAll(usersValidations)
+export default validateAll(transactionDefinitionValidation)

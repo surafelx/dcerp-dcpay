@@ -18,7 +18,7 @@ const create = async (newLoanTransaction: any, userInfo: any): Promise<string> =
     return createdLoanTransaciton
 }
 
-const getAllFromOrganization = async (organizationId: any, employeeId: any): Promise<any[]> => await loanTransactionDao.getAllFromOrganization(organizationId, employeeId)
+const getAllFromOrganization = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await loanTransactionDao.getAllFromOrganization(organizationId, employeeId, userInfo)
 
 const getById = async (loanTransactionId: any): Promise<any> => await loanTransactionDao.getById(loanTransactionId)
 
@@ -54,9 +54,15 @@ const updateLoanTransaction = async (newPayTransaction: any, userInfo: any): Pro
     return updatedLoanTransaction
 }
 
+const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await loanTransactionDao.deleteByEmployeeId(employeeId)
+}
+
+
 export default {
     create,
     deleteLoanTransaction,
+    deleteByEmployeeId,
     getAllFromOrganization,
     updateLoanTransaction
 }

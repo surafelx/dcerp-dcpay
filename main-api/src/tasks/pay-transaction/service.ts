@@ -3,36 +3,43 @@ import payTransactionDao from './dao'
 import periodTransactionsService from '../../process/period-transactions/service'
 
 const create = async (newPayTransaction: any, userInfo: any): Promise<string> => {
-    const { userId, periodId, organizationId} = userInfo
+    const { userId, periodId, organizationId } = userInfo
     newPayTransaction.organizationId = organizationId
     const createdPayTransaction = await payTransactionDao.create({ ...newPayTransaction }, periodId)
-    const newPeriodTransaction = { 
+    const newPeriodTransaction = {
         employeeId: createdPayTransaction.employee_id,
         transactionId: createdPayTransaction.transaction_id,
         organizationId,
         transactionAmount: createdPayTransaction.transaction_amount,
-        userId, 
+        userId,
         periodId
     }
-await periodTransactionsService.create(newPeriodTransaction)
-return createdPayTransaction
+    await periodTransactionsService.create(newPeriodTransaction)
+    return createdPayTransaction
 
 }
 
-const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
+// const getById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getById(payTransactionId)
 
-const getAllFromOrganization = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganization(organizationId, employeeId, userInfo)
+const getPeriodTransactionById = async (payTransactionId: any): Promise<any> => await payTransactionDao.getPeriodTransactionById(payTransactionId)
+
+const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: any, employeeId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganizationByEmployeeByPeriod(organizationId, employeeId, userInfo)
+
+const getPayByEmployeeByTransaction = async (employeeId: any, transactionId: any): Promise<any[]> => await payTransactionDao.getPayByEmployeeByTransaction(employeeId, transactionId)
+
+const getAllFromOrganizationByPeriod = async (organizationId: any, userInfo: any): Promise<any[]> => await payTransactionDao.getAllFromOrganizationByPeriod(organizationId, userInfo)
 
 const deletePayTransaction = async (payTransactionId: string, userInfo: any): Promise<any> => {
-    const payTransaction = await getById(payTransactionId)
-    const {userId, organizationId, periodId} = userInfo
+    const payTransaction = await getPeriodTransactionById(payTransactionId)
+    const { userId, organizationId, periodId } = userInfo
+    console.log(payTransaction)
     await payTransactionDao.deletePayTransaction(payTransactionId)
-    const deletedPayTransaction = { 
+    const deletedPayTransaction = {
         employeeId: payTransaction.employee_id,
         transactionId: payTransaction.transaction_id,
         organizationId,
         transactionAmount: payTransaction.transaction_amount,
-        userId, 
+        userId,
         periodId
     }
     await periodTransactionsService.deletePeriodTransactionByPayTransaction(deletedPayTransaction)
@@ -40,22 +47,31 @@ const deletePayTransaction = async (payTransactionId: string, userInfo: any): Pr
 
 const updatePayTransaction = async (newPayTransaction: any, userInfo: any): Promise<any> => {
     const updatedPayTransaction = await payTransactionDao.updatePayTransaction(newPayTransaction)
-    const {organizationId, userId, periodId} = userInfo
-    const updatedPeriodTransaction = { 
-        employeeId: updatedPayTransaction.employee_id,
-        transactionId: updatedPayTransaction.transaction_id,
+    const { organizationId, userId, periodId } = userInfo
+    const updatedPeriodTransaction = {
+        employeeId: newPayTransaction.employeeId,
+        transactionId: newPayTransaction.transactionId,
         organizationId,
-        transactionAmount: updatedPayTransaction.transaction_amount,
-        userId, 
+        transactionAmount: newPayTransaction.transactionAmount,
+        userId,
         periodId
     }
     await periodTransactionsService.updatePeriodTransaction(updatedPeriodTransaction)
     return updatedPayTransaction
 }
 
+
+const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await payTransactionDao.deleteByEmployeeId(employeeId)
+    await periodTransactionsService.deleteByEmployeeId(employeeId)
+}
+
 export default {
     create,
     deletePayTransaction,
-    getAllFromOrganization,
+    deleteByEmployeeId,
+    getAllFromOrganizationByEmployeeByPeriod,
+    getAllFromOrganizationByPeriod,
+    getPayByEmployeeByTransaction,
     updatePayTransaction
 }

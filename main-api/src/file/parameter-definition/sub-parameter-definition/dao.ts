@@ -75,11 +75,18 @@ export const updateMainParameterDefinition = async (updatedMainParameterDefiniti
     return mainParameterDefinitionId
 }
 
+export const parameterIsParent = async ([parameterId]: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'select exists(select 1 from parameter_definition] where parent_parameter_id=$1)',
+        [[parameterId]])
+    return res[0].exists
+}
 
 
 export default {
     create,
     deleteMainParameterDefinition,
     getAllFromOrganization,
+    parameterIsParent,
     updateMainParameterDefinition
 }

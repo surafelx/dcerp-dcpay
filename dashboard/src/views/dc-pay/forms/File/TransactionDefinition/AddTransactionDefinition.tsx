@@ -1,5 +1,5 @@
 // ** React Imports
-import {useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 
 // ** MUI Imports
@@ -70,7 +70,7 @@ const schema = yup.object().shape({
 
 const emptyValues = {
     transactionCode: '',
-transactionName: '',
+    transactionName: '',
     shortName: '',
     transactionType: '',
     updateType: '',
@@ -117,7 +117,7 @@ const AddUser = ({ formData }: any) => {
 
 
 
-    const subParameters = useSelector((state:RootState) => state.subParameterDefinition)
+    const subParameters = useSelector((state: RootState) => state.subParameterDefinition)
     const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
 
 
@@ -128,8 +128,8 @@ const AddUser = ({ formData }: any) => {
         }
 
         const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
-        
-return filteredChild
+
+        return filteredChild
     }
 
     const transactionTypeOptions = filterSubParametersByName('Transaction Type')
@@ -164,7 +164,7 @@ return filteredChild
     }
 
 
-return (
+    return (
         <Card>
             <CardHeader title='Add Transaction Definition' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
@@ -274,11 +274,11 @@ return (
                                         <>
                                             <FormLabel >Update Type</FormLabel>
                                             <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={onChange}>
-                                            {
+                                                {
                                                     updateTypeOptions.map(({ id, parameterName }: any, index: any) => {
-                                                       
+
                                                         return (
-                                                            <FormControlLabel key={index} value={id} control={<Radio  size={'small'}  />} label={parameterName} />
+                                                            <FormControlLabel key={index} value={id} control={<Radio size={'small'} />} label={parameterName} />
                                                         )
                                                     })
                                                 }
@@ -291,14 +291,14 @@ return (
                         <Grid item xs={12} sm={12}>
                             <FormGroup row>
                                 <Controller
-                               
+
                                     name='permanent'
                                     control={control}
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange } }) => (
                                         <FormControlLabel
                                             label='Permanent'
-                                            control={<Checkbox  size={'small'} checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -310,7 +310,7 @@ return (
                                     render={({ field: { value, onChange } }) => (
                                         <FormControlLabel
                                             label='Taxable'
-                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -324,7 +324,7 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
-                                            size={'small'} 
+                                            size={'small'}
                                             autoFocus
                                             label='UnTaxable Limit'
                                             value={value}
@@ -346,7 +346,7 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Affect By Leave'
-                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -358,7 +358,7 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
-                                            size={'small'} 
+                                            size={'small'}
                                             autoFocus
                                             label='Leave Days'
                                             value={value}
@@ -380,7 +380,7 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Affect Back Payroll'
-                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -391,7 +391,7 @@ return (
                                     render={({ field: { value, onChange, } }) => (
                                         <FormControlLabel
                                             label='Beneficiary'
-                                            control={<Checkbox  size={'small'}  checked={value} onChange={onChange} name='controlled' />}
+                                            control={<Checkbox size={'small'} checked={value} onChange={onChange} name='controlled' />}
                                         />
                                     )}
                                 />
@@ -439,10 +439,10 @@ return (
                                         <>
                                             <FormLabel>GL-Entry By</FormLabel>
                                             <RadioGroup row aria-label='controlled' name='controlled' value={value} onChange={onChange}>
-                                                <FormControlLabel value='total' control={<Radio  size={'small'}  />} label='Total' />
-                                                <FormControlLabel value='department' control={<Radio  size={'small'} />} label='Department' />
-                                                <FormControlLabel value='individual' control={<Radio  size={'small'} />} label='Individual' />
-                                                <FormControlLabel value='na' control={<Radio  size={'small'} />} label='N/A' />
+                                                <FormControlLabel value='total' control={<Radio size={'small'} />} label='Total' />
+                                                <FormControlLabel value='department' control={<Radio size={'small'} />} label='Department' />
+                                                <FormControlLabel value='individual' control={<Radio size={'small'} />} label='Individual' />
+                                                <FormControlLabel value='na' control={<Radio size={'small'} />} label='N/A' />
                                             </RadioGroup>
                                         </>
                                     )}
@@ -457,7 +457,7 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
-                                        size={'small'} 
+                                            size={'small'}
                                             autoFocus
                                             label='Direct Account'
                                             value={value}
@@ -478,7 +478,7 @@ return (
                                     rules={{ required: true }}
                                     render={({ field: { value, onChange, onBlur } }) => (
                                         <TextField
-                                 size={'small'} 
+                                            size={'small'}
 
                                             autoFocus
                                             label='Contra. GL Account'

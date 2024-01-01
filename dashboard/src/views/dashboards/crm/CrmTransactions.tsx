@@ -39,6 +39,12 @@ const salesData: DataType[] = [
   {
     stats: '1.54k',
     color: 'warning',
+    title: 'Memberships',
+    icon: 'mdi:cellphone-link'
+  },
+  {
+    stats: '1.54k',
+    color: 'warning',
     title: 'Discontinuations',
     icon: 'mdi:cellphone-link'
   },
@@ -46,7 +52,7 @@ const salesData: DataType[] = [
 
 const renderStats = () => {
   return salesData.map((item: DataType, index: number) => (
-    <Grid item xs={12} sm={4} key={index}>
+    <Grid item xs={12} sm={3} key={index}>
       <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
         <CustomAvatar variant='rounded' color={item.color} sx={{ mr: 3, boxShadow: 3, width: 44, height: 44 }}>
           <Icon icon={item.icon} fontSize='1.75rem' />

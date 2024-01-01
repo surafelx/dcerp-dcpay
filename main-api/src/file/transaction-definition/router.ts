@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express'
 import transactionDefinitionService from './service'
 import userService from '../../settings/user-management/users/service'
 import parameterDefinitionService from '../parameter-definition/service'
+import transactionDefinitionValidator from './validator'
 
 const router = Router()
 
@@ -11,7 +12,6 @@ router.get('/parameter',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const { main, sub } = req.query
-            console.log(main, sub, "Hello")
             const transactionGroupId = await parameterDefinitionService.getSubParameterIdByName(main, sub)
             const transactionDefinition = await transactionDefinitionService.getAllFromTransactionGroup(organizationId, main, transactionGroupId)
             const renamedTransactionDefinition = transactionDefinition.map(({
@@ -121,7 +121,7 @@ router.post('/',
     })
 
 router.delete('/:id',
-    // usersValidations.newUser,
+    transactionDefinitionValidator.deleteTransaction,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params

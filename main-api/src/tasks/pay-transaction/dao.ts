@@ -35,8 +35,27 @@ export const create = async (newMenu: any, periodId: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
+export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
     const { periodId } = userInfo
+    const { rows: periodTransactions } = await pool.query(`
+    SELECT 
+    pts.id, 
+    pts.employee_id,
+    pts.transaction_id, 
+    td.permanent,
+    td.transaction_name,
+    pd1.parameter_name as transaction_group_name,
+    lt1.remaining_balance,
+    lt1.total_loan,
+    lt1.transaction_amount as loan_transaction_amount
+    FROM period_transactions pts
+    INNER JOIN transaction_definition td ON td.id = pts.transaction_id 
+    INNER JOIN parameter_definition pd1 ON pd1.id = td.transaction_group
+    LEFT JOIN loan_transaction lt1 ON lt1.transaction_id = td.id
+    WHERE pts.organization_id=$1 AND pts.period_id=$2 AND pts.employee_id = lt1.employee_id`, [organizationId, periodId])
+
+    console.log(periodTransactions.filter(({ transaction_group_name }: any) => transaction_group_name == 'Loan'))
+
     const { rows: payTransactions } = await pool.query(`
     SELECT *
     FROM (
@@ -68,10 +87,49 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     return payTransactions
 }
 
+export const getAllFromOrganizationByPeriod = async (organizationId: string, userInfo: any): Promise<any> => {
+    const { periodId } = userInfo
+    const { rows: payTransactions } = await pool.query(`
+    SELECT *
+    FROM (
+        SELECT DISTINCT
+            pt.id,
+            pt.employee_id,
+            td.id as transaction_id,
+            pt.transaction_amount,
+            e1.employee_code,
+            e1.first_name as employee_first_name,
+            e1.last_name as employee_last_name,
+            td.id as transaction_definition_id,
+            td.transaction_name,
+            td.transaction_code,
+            pd.parameter_name as transaction_type_name
+        FROM period_transactions pt
+        INNER JOIN employee e1 ON pt.employee_id = e1.id
+        INNER JOIN transaction_definition td ON pt.transaction_id = td.id
+        INNER JOIN parameter_definition pd ON pd.id = td.transaction_type
+        WHERE e1.organization_id = $1 AND
+            pt.period_id = $2
+    ) AS distinct_results
+    ORDER BY CAST(employee_code AS NUMERIC) ASC;
+    
+
+    `,
+        [organizationId, periodId])
+
+    return payTransactions
+}
+
 
 export const deletePayTransaction = async (branchId: string): Promise<any> => {
     await pool.query('DELETE FROM pay_transaction WHERE id=$1', [branchId])
 }
+
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM pay_transaction WHERE employee_id=$1', [employeeId])
+}
+
+
 
 
 export const updatePayTransaction = async (updatedPayTransaction: any): Promise<any> => {
@@ -111,12 +169,41 @@ export const getById = async (payTransactionId: string): Promise<any> => {
 }
 
 
+export const getPeriodTransactionById = async (payTransactionId: string): Promise<any> => {
+    const { rows: payTransactions } = await pool.query(`
+    SELECT 
+    *
+    FROM period_transactions
+    WHERE
+    id = $1
+    `,
+        [payTransactionId])
+    return payTransactions[0]
+}
+
+
+export const getPayByEmployeeByTransaction = async (employeeId: string, transactionId: any): Promise<any> => {
+    const { rows: payTransactions } = await pool.query(`
+    SELECT 
+    *
+    FROM period_transactions
+    WHERE
+    employee_id = $1 AND
+    transaction_id = $2
+    `,
+        [employeeId, transactionId])
+    return payTransactions[0]
+}
 
 
 export default {
     create,
     deletePayTransaction,
-    getAllFromOrganization,
+    deleteByEmployeeId,
+    getAllFromOrganizationByEmployeeByPeriod,
+    getAllFromOrganizationByPeriod,
     getById,
+    getPeriodTransactionById,
+    getPayByEmployeeByTransaction,
     updatePayTransaction
 }

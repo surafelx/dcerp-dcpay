@@ -88,11 +88,11 @@ const UserList = () => {
 
 
     const clearAllFields = () => {
+        reset(emptyValues)
         setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
         setTransactionObject({ id: '', transactionName: '' })
         setEmployee('')
         setTransaction('')
-        reset(emptyValues)
     }
 
     const DialogAlert = () => {
@@ -128,7 +128,7 @@ const UserList = () => {
         data.transactionId = transaction
 
         if (!storeProcess) {
-            setAlertText(`${employeeObject.employeeCode} ${employeeObject.firstName} has a total loan of ${data.totalLoan}, a transcation amount of ${data.transactionAmount} and a remaining balance of ${data.remainingBalance}.`)
+            setAlertText(`${employeeObject.employeeCode} ${employeeObject.firstName} has a total loan of ${data.totalLoan}, a transaction amount of ${data.transactionAmount} and a remaining balance of ${data.totalLoan}.`)
             if (data.id) {
                 dispatch(editLoanTransaction({ ...data }))
             } else {
@@ -171,6 +171,8 @@ const UserList = () => {
 
     const employeeStore = useSelector((state: RootState) => state.employee)
     const transactionDefinitionStore = useSelector((state: RootState) => state.transactionDefinition)
+
+    const activeEmployees = employeeStore.data.filter(({ employeeStatusName }: any) => (employeeStatusName === "Active"))
 
     const handleTransactionValue = (transactionValue: any) => {
         const selectedTransactionId = transactionValue
@@ -234,7 +236,6 @@ const UserList = () => {
         }
     }
 
-
     return (
         <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -250,7 +251,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
@@ -266,7 +267,7 @@ const UserList = () => {
                                             autoSelect
                                             size={'small'}
                                             value={employeeObject}
-                                            options={employeeStore.data}
+                                            options={activeEmployees}
                                             onChange={handleEmployeeChange}
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
@@ -394,12 +395,14 @@ const UserList = () => {
             </Grid>
             <Grid item xs={12} md={12} lg={12}>
                 <Card>
+                    <CardHeader title={'Loan Transaction'} />
                     <CardContent>
                         <LoanTransactionTable
                             setTransaction={setTransaction}
                             rows={store.data}
                             formData={formData}
                             setFormData={setFormData}
+                            employeeObject={employeeObject}
                             deleteLoanTransaction={deleteLoanTransaction}
                             setEmployeeObject={setEmployeeObject}
                             setTransactionObject={setTransactionObject}

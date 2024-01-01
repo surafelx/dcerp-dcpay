@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -46,24 +46,58 @@ const TreeIllustration = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error404 = () => {
+const Loading = () => {
   return (
     <Box className='content-center'>
-      <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-        <BoxWrapper>
-          <Typography variant='h1'>404</Typography>
-          <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
-            Page Not Found ⚠️
-          </Typography>
-          <Typography variant='body2'>We couldn&prime;t find the page you are looking for.</Typography>
-        </BoxWrapper>
-        <Img height='487' alt='error-illustration' src='/images/pages/404.png' />
-        <Button href='/' component={Link} variant='contained' sx={{ px: 5.5 }}>
-          Back to Home
-        </Button>
-      </Box>
-      <FooterIllustrations image={<TreeIllustration alt='tree' src='/images/pages/tree.png' />} />
+      <Typography variant='h5' sx={{ mb: 2 }}>
+        Loading...
+      </Typography>
     </Box>
+  );
+};
+
+const Error404 = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    // Clear the timeout if the component is unmounted
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+
+  return (
+    <>
+      {isLoading ? (
+        <Loading />
+      ) :
+        (
+          <>
+            <Box className='content-center'>
+              <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                <BoxWrapper>
+                  <Typography variant='h1'>404</Typography>
+                  <Typography variant='h5' sx={{ mb: 1, fontSize: '1.5rem !important' }}>
+                    Page Not Found ⚠️
+                  </Typography>
+                  <Typography variant='body2'>We couldn&prime;t find the page you are looking for.</Typography>
+                </BoxWrapper>
+                <Img height='487' alt='error-illustration' src='/images/pages/404.png' />
+                <Button href='/' component={Link} variant='contained' sx={{ px: 5.5 }}>
+                  Back to Home
+                </Button>
+              </Box >
+              <FooterIllustrations image={<TreeIllustration alt='tree' src='/images/pages/tree.png' />} />
+            </Box >
+          </>
+
+        )}
+    </>
+
   )
 }
 

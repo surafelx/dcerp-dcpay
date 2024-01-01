@@ -26,7 +26,7 @@ export const getNavigationMenu = async (roleId: string) => {
     const navigationQueryResponse = await pool.query(`
     SELECT
     parent.menu_title AS title,
-    'AccountOutline' AS icon,
+    parent.icon AS icon,
     ARRAY_AGG(
         json_build_object(
             'title', child.menu_title,
@@ -41,7 +41,7 @@ WHERE
     role_menu.read_allowed = TRUE
     AND role_menu.role_id = $1
 GROUP BY
-    parent.menu_title, parent.id, parent.menu_code
+    parent.menu_title, parent.id, parent.menu_code, parent.icon
 HAVING
     COUNT(child.id) > 0
 ORDER BY CAST(parent.menu_code AS NUMERIC) ASC;

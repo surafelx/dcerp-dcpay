@@ -25,7 +25,7 @@ export const addDepartment = createAsyncThunk(
   async (data: { [key: string]: number | string }, { getState, dispatch }: Redux) => {
     const response = await apiRequest.post(`file/entity-management/department`, { data })
     dispatch(fetchData(getState().user.params))
-
+    
     return response.data
   }
 )
@@ -67,7 +67,7 @@ export const appDepartmentsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchData.pending, (state) => {
-        state.isLoading = true; // Loading state when the request starts
+        state.isLoading = true; 
       })
     builder
       .addCase(addDepartment.pending, (state,) => {
@@ -76,9 +76,31 @@ export const appDepartmentsSlice = createSlice({
     builder
       .addCase(addDepartment.rejected, (state, action) => {
         state.isLoading = false;
-        
+
         //@ts-ignore
-        state.error = action.error; 
+        state.error = action.error;
+      })
+    builder
+      .addCase(editDepartment.pending, (state,) => {
+        state.isLoading = true;
+      })
+    builder
+      .addCase(editDepartment.rejected, (state, action) => {
+        state.isLoading = false;
+
+        //@ts-ignore
+        state.error = action.error;
+      })
+    builder
+      .addCase(deleteDepartment.pending, (state,) => {
+        state.isLoading = true;
+      })
+    builder
+      .addCase(deleteDepartment.rejected, (state, action) => {
+        state.isLoading = false;
+
+        //@ts-ignore
+        state.error = action.error;
       })
     builder
       .addCase(fetchData.fulfilled, (state, action) => {
@@ -90,7 +112,7 @@ export const appDepartmentsSlice = createSlice({
         state.error = null;
       })
     builder.addCase(fetchData.rejected, (state) => {
-      state.isLoading = false; 
+      state.isLoading = false;
     });
   },
 })

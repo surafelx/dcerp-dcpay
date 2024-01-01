@@ -4,52 +4,25 @@ import { v4 as uuid } from 'uuid'
 import csv from 'csv-parser';
 import moment from 'moment'
 
-const ADMINSTRATIVE_BRANCH = '1'
-const DISTRIBUTION_BRANCH = '2'
-const MEMBERSHIP_OFFICE_BRANCH = '3'
-const TRANSLATION_OFFICE = '4'
-const FCBH_BRANCH = '5'
-const COMPREHENSIVE_PLAN_WEELIFE_BRANCH = '6'
-const COMPREHENSIVE_PLAN_SEED_CO_BRANCH = '7'
-const GOOD_SAMARITIAN_PROJECT_CANADA_BRANCH = '8'
-const PROJECT_CHURCH_RELATION_BRANCH = '9'
-const PENSION_BRANCH = '10'
-const GOOD_SAMARITIAN_PROJECT_NORWAY_BRANCH = '11'
+const DIREDAWA_BRANCH = '1'
+const ADDISABABA_BRANCH = '2'
 
-
-const CHATOLIC_DEPARTMENT = '71'
-const BALE_DEPARTMENT = '210'
-const GENERAL_SECRETARY_OFFICE_DEPARTMENT = '11'
-const FINANCE_OFFICE_DEPARTMENT = '12'
-const HUMAN_RESOURCE_DEPARTMENT = '13'
-const DISTRIBUTION_OFFICE_BRANCH = '21'
-const ADAMA_BRANCH_DEPARTMENT = '22'
-const AWASSA_BRANCH_DEPARTMENT = '23'
-const DDAWA_DEPARTMENT = '24'
-const BDAR_BRANCH_DEPARTMENT = '25'
-const JUMMA_BRANCH_DEPARTMENT = '26'
-const MEKELE_BRANCH_DEPARTMENT = '27'
-const DESSIE_BRANCH_DEPARTMENT = '28'
-const NEKEMTE_BRANCH_DEPARTMENT = '29'
-const MEMBERSHIP_OFFICE_BRANCH_DEPARTMENT = '31'
-const TRANSITION_OFFICE_DEPARTMENT = '41'
-const EAST_OROMO_GERMANY_DEPARTMENT = '42'
-const AMHARIC_STUDY_BIBLE_DEPARTMNET = '43'
-const OROMO_BIBLE_REVISION_DEPARTMENT = '44'
-const HADIYA_PROJECT_DEPARTMENT = '45'
-const GEEZ_TRANSLATION_DEPARTMENT = '46'
-const FCBH_DEPARTMENT = '51'
-const EAST_OROMO_DEPARTMENT = '61'
-const KISTENA_PROJECT_DEPARTMENT = '62'
-const CP_OFFICE_DEPARTMENT = '63'
-const GUMUZ_DEPARTMENT = '72'
-const TAMTANGA_DEPARTMENT = '73'
-const SAHO_DEPARTMENT = '74'
-const GS_ADAMA_DEPARTMENT = '81'
-const GS_DESSIE_BRANCH_DEPARTMENT = '82'
-const PROJECT_CHURCH_RELATION_DEPARTMENT = '91'
-const PENSION_DEPARTMENT = '101'
-const GODD_SAMARITAN_NORWAY_DEPARTMNET = '111'
+const GENERAL_MANAGER_OFFICE = '11'
+const PLAN_AND_STATISTICS = '12'
+const FINANCE_DEPARTMENT = '13'
+const ADMINSRTATION_BRANCH = '14'
+const INTERNAL_AUDIT_DEPARTMENT = '15'
+const STORE_ADMINSTRATION_DIVISION = '16'
+const SALES_AND_MARKETING = '17'
+const PRODUCTION_AND_TECHNICAL = '18'
+const WORKSHOP_AND_TECHNICAL = '19'
+const FLOUR_PRODUCTIOON_DIVISION = '110'
+const BY_PRODUCT_AND_IMPURITY = '111'
+const PASTA_AND_MACARONI = '112'
+const HIGH_ENERGY_BISCUIT = '113'
+const QUALITY_CONTROL_SERVICE = '114'
+const BREAD_PRODUCTION_DIVISION = '115'
+const AA_BRANCH_OFFICE = '216'
 
 
 const MANAGEMENT_POSITION = '4001'
@@ -366,185 +339,77 @@ const processCSV = async (organizationId: any, csvFile: any, userInfo: any) => {
                         try {
 
 
-                            if (employee.branchCode == ADMINSTRATIVE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Administration');
+                            if (employee.branchCode == ADDISABABA_BRANCH) {
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Dire Dewa Office');
                                 employee.employeeBranch = branch.id;
                             }
-                            if (employee.branchCode == DISTRIBUTION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Distribution');
+                            if (employee.branchCode == DIREDAWA_BRANCH) {
+                                const branch = await getBranchByOrganizationByName(organizationId, 'Addis Ababa Office');
                                 employee.employeeBranch = branch.id;
                             }
-                            if (employee.branchCode == MEMBERSHIP_OFFICE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Membership office');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == TRANSLATION_OFFICE) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Translation');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == FCBH_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'FCBH');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == COMPREHENSIVE_PLAN_WEELIFE_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Comprensive Plan-Weeclife');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == COMPREHENSIVE_PLAN_SEED_CO_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Comprensive Plan-Seed Co');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == GOOD_SAMARITIAN_PROJECT_CANADA_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Good Samaritan project-Canada');
-                                employee.employeeBranch = branch.id;
-                            }
-                            
-                            if (employee.branchCode == PROJECT_CHURCH_RELATION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Project -Church Relation');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == PENSION_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Pension');
-                                employee.employeeBranch = branch.id;
-                            }
-                            if (employee.branchCode == GOOD_SAMARITIAN_PROJECT_NORWAY_BRANCH) {
-                                const branch = await getBranchByOrganizationByName(organizationId, 'Good samaritan-Norway');
-                                employee.employeeBranch = branch.id;
-                            }
-
-
-
-                          
-                            if (employee.departmentCode == CHATOLIC_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Chatolic')
+                           
+                            if (employee.departmentCode == GENERAL_MANAGER_OFFICE) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'GENERAL MANAGER OFFICE')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == BALE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Bale Branch')
+                            if (employee.departmentCode == PLAN_AND_STATISTICS) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'PLAN & STATISTICS SERVICE')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == GENERAL_SECRETARY_OFFICE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'General Secretery office')
+                            if (employee.departmentCode == FINANCE_DEPARTMENT) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'FINANCE DEPARTMENT')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == FINANCE_OFFICE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Finance Office')
+                            if (employee.departmentCode == ADMINSRTATION_BRANCH) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'ADMINISTRATION DEPARTMENT')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == HUMAN_RESOURCE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Human resource')
+                            if (employee.departmentCode == INTERNAL_AUDIT_DEPARTMENT) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'INTERNAL AUDIT DEPARTMENT')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == DISTRIBUTION_OFFICE_BRANCH) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'DISTRIBUTION OFFICE')
+                            if (employee.departmentCode == STORE_ADMINSTRATION_DIVISION) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'STORE ADMINISTRATION DIVISION')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == ADAMA_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Adama Branch')
+                            if (employee.departmentCode == SALES_AND_MARKETING) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'SALES & MARKETING')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == AWASSA_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Awassa Branch')
+                            if (employee.departmentCode == PRODUCTION_AND_TECHNICAL) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'PRODUCTION & TRCHNIQUE')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == DDAWA_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'D/Dawa Branch')
+                            if (employee.departmentCode == WORKSHOP_AND_TECHNICAL) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'WORKSHOP & TERCHENIQUE')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == BDAR_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'B/dar Branch')
+                            if (employee.departmentCode == FLOUR_PRODUCTIOON_DIVISION) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'FLOUR PRODUCTION DIVISION')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == JUMMA_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Jimma Branch')
+                            if (employee.departmentCode == BY_PRODUCT_AND_IMPURITY) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'BY-PRODUCT AND IMPURITY')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == MEKELE_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Mekele Branch')
+                            if (employee.departmentCode == PASTA_AND_MACARONI) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'PASTA AND MACARONI')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == DESSIE_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Dessie Branch')
+                            if (employee.departmentCode == HIGH_ENERGY_BISCUIT) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'HIGH ENERGY BISCUIT')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == NEKEMTE_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Nekemete  Branch')
+                            if (employee.departmentCode == QUALITY_CONTROL_SERVICE) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'QUALITY CONTROL SERVICE')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == MEMBERSHIP_OFFICE_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Membership office')
+                            if (employee.departmentCode == BREAD_PRODUCTION_DIVISION) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'BREAD PRODUCTION DIVISION')
                                 employee.employeeDepartment = department.id
                             }
-                            if (employee.departmentCode == TRANSITION_OFFICE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Transltion office')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == EAST_OROMO_GERMANY_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'East Oromo-Germeny')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == AMHARIC_STUDY_BIBLE_DEPARTMNET) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Amahric study bible')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == OROMO_BIBLE_REVISION_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Oromo Bible Revision')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == HADIYA_PROJECT_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Haddiya Project')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == GEEZ_TRANSLATION_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Geez Translation')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == FCBH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'FCBH')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == EAST_OROMO_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'East Oromo')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == KISTENA_PROJECT_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Kistena Project')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == CP_OFFICE_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'CP Office')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == GUMUZ_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Gumuz')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == TAMTANGA_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Tamtanga')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == SAHO_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Saho')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == GS_ADAMA_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'GS Adama')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == GS_DESSIE_BRANCH_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'GS Dessie Branch')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == PROJECT_CHURCH_RELATION_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Project -Church Relation')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == PENSION_DEPARTMENT) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Pension')
-                                employee.employeeDepartment = department.id
-                            }
-                            if (employee.departmentCode == GODD_SAMARITAN_NORWAY_DEPARTMNET) {
-                                const department = await getDepartmentByOrganizationByName(organizationId, 'Good samaritan-Norway')
+                            if (employee.departmentCode == AA_BRANCH_OFFICE) {
+                                const department = await getDepartmentByOrganizationByName(organizationId, 'AA BRANCH OFFICE')
                                 employee.employeeDepartment = department.id
                             }
 
@@ -574,13 +439,13 @@ const processCSV = async (organizationId: any, csvFile: any, userInfo: any) => {
 
                             if (employee.empGender == MALE_SEX) {
                                 const employeeGenderParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Sex', 'Male')
-                                const employeeTitleParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Employee Title', 'Mr.')
+                                const employeeTitleParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Employee Title', 'Mr./Ms.')
                                 employee.sex = employeeGenderParameter
                                 employee.employeeTitle = employeeTitleParameter
                             }
                             if (employee.empGender == FEMALE_SEX) {
                                 const employeeGenderParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Sex', 'Female')
-                                const employeeTitleParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Employee Title', 'Ms.')
+                                const employeeTitleParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Employee Title', 'Mr./Ms.')
                                 employee.sex = employeeGenderParameter
                                 employee.employeeTitle = employeeTitleParameter
 
@@ -611,7 +476,6 @@ const processCSV = async (organizationId: any, csvFile: any, userInfo: any) => {
                                 const employeeBankParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Bank', 'Zemen')
                                 employee.employeeBank = employeeBankParameter
                             }
-
                             if (employee.bankName == BANK_NA) {
                                 const employeeBankParameter = await getSubParameterIdByNameByOrganization(organizationId, 'Bank', 'NA')
                                 employee.employeeBank = employeeBankParameter

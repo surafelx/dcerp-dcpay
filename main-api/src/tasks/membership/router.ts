@@ -1,7 +1,8 @@
-import {Request, Response, NextFunction, Router } from 'express'
+import { Request, Response, NextFunction, Router } from 'express'
 import membershipService from './service'
 import userService from '../../settings/user-management/users/service'
 import periodService from '../../file/period/service'
+// import employeeService from '../../file/employee-master/service'
 
 const router = Router()
 
@@ -9,10 +10,14 @@ router.get('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
-            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
-            const { q = '', } = req.query ?? ''
+            const { organization_id: organizationId, } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
+            const { q = '', employee = null } = req.query ?? ''
+            const employeeId = employee
             const queryLowered = q.toString().toLowerCase()
-            const memberships = await membershipService.getAllFromOrganization(organizationId)
+            // const memberships = await membershipService.getAllFromOrganization(organizationId)
+            const memberships = await membershipService.getAllFromOrganizationByEmployeeByPeriod(organizationId, employeeId, userInfo)
             const renamedMemberships = memberships.map(({
                 id,
                 employee_id,
@@ -59,8 +64,8 @@ router.post('/',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
-            const createdMembership = await membershipService.create({ ...req.body.data }, userInfo)
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
+             const createdMembership = await membershipService.create({ ...req.body.data }, userInfo)
             res.send(createdMembership)
         } catch (err) {
             console.log(err)
@@ -76,7 +81,7 @@ router.delete('/:id',
             const userId = req.headers['x-user-id'];
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const userInfo = {userId: userId, organizationId, periodId: currentPeriod[0].id}
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
             await membershipService.deleteMembership(String(id), userInfo)
             res.send(200)
         } catch (err) {
@@ -89,7 +94,12 @@ router.delete('/:id',
 router.put('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updatedMembership = await membershipService.updateMembership(req.body.data)
+            // const { id } = req.params
+            const userId = req.headers['x-user-id'];
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
+            const currentPeriod = await periodService.getCurrentPeriod(organizationId)
+            const userInfo = { userId: userId, organizationId, periodId: currentPeriod[0].id }
+            const updatedMembership = await membershipService.updateMembership(req.body.data, userInfo)
             res.send(updatedMembership)
         } catch (err) {
             console.log(err)

@@ -93,15 +93,6 @@ const defaultTransactionCalculations = [
         rate: '0.01'
     },
     {
-        firstTransaction: 'Club',
-        secondTransaction: 'Basic Salary',
-        calculationUnit: 'Monthly',
-        firstOption: '=',
-        thirdTransaction: 'None',
-        secondOption: '=',
-        rate: '10'
-    },
-    {
         firstTransaction: 'Credit Association Forced Saving',
         secondTransaction: 'Basic Salary',
         calculationUnit: 'Monthly',

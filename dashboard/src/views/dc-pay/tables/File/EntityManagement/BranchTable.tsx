@@ -56,9 +56,13 @@ const UserList = () => {
         branchCode: 0,
         branchName: ''
     });
+    const [filterValue, setFilterValue] = useState<string>('')
+
     const handleClickOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
-
+    const handleFilter = (val: string) => {
+        setFilterValue(val)
+    }
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -70,13 +74,18 @@ const UserList = () => {
     useEffect(() => {
         dispatch(
             fetchData({
+                q: filterValue
             })
         )
-    }, [dispatch])
+    }, [dispatch, filterValue])
 
     const schema = yup.object().shape({
         branchCode: yup.number().typeError('Branch Code has to be a valid number.').required("Branch Code is required").test('not-zero', 'Branch Code cannot be 0', (value) => value !== 0),
-        branchName: yup.string().typeError('Branch Name is required').required("Branch Name is required"),
+        branchName: yup.string().typeError('Branch Name is required').required("Branch Name is required").test('custom-validation', 'Branch Name already exists.', (value) => {
+            const branchNameExists = handleBranchNameChange(value)
+
+            return !branchNameExists
+        }),
     })
 
 
@@ -84,12 +93,15 @@ const UserList = () => {
         control,
         handleSubmit,
         reset,
+        setError,
+        clearErrors,
         formState: { errors: branchErrors }
     } = useForm({
         defaultValues: formData,
         mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
+
 
 
     const DialogAlert = () => {
@@ -126,7 +138,7 @@ const UserList = () => {
             setAlertText(`${data.branchCode} ${data.branchName} has been successfully added.`)
         }
 
-        if(storeError) {
+        if (storeError) {
             setAlertText('What')
 
         }
@@ -135,6 +147,21 @@ const UserList = () => {
             reset(emptyValues)
             handleClickOpen()
         }
+    }
+
+    const handleBranchNameChange = (targetValue: any) => {
+        const branchName = targetValue
+        const doesExist = store?.data.filter((branch: any) => branch.branchName == branchName)[0] ? true : false
+        if (doesExist)  {
+            setError('branchName', {
+                type: 'manual',
+                message: 'Branch Name already exists.',
+            })
+        } else {
+            clearErrors('branchName')
+        }
+       
+        return doesExist
     }
 
 
@@ -200,7 +227,7 @@ const UserList = () => {
                                     </Grid>
                                     <Grid item sm={6}>
                                         <FormControl fullWidth>
-                                            <Button fullWidth size='small' type='submit' variant='contained'>
+                                            <Button disabled={Object.keys(branchErrors).length > 0} fullWidth size='small' type='submit' variant='contained'>
                                                 {storeProcess ? ("Loading") : ("Submit")}
                                             </Button>
                                         </FormControl>
@@ -220,6 +247,17 @@ const UserList = () => {
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
                     <Card>
+                        <Grid sx={{ mt: '20px' }} container spacing={1}>
+                            <Grid item xs={8}></Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size='small'
+                                    value={filterValue}
+                                    placeholder='Search Branch'
+                                    onChange={e => handleFilter(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
                         <CardContent>
                             <BranchTable
                                 rows={store.data}

@@ -86,7 +86,7 @@ const UserList = () => {
                 return (
                     <div style={{ width: '100%' }}>
                         <div style={{ 'textAlign': 'right' }}>
-                            {(row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount") ? parseFloat(row.transactionAmount).toFixed(2) : ''}
+                            {((row.transactionTypeName === "Deduction Amount" || row.transactionTypeName === "Earning Amount")) ? parseFloat(row.transactionAmount).toFixed(2) : ''}
                         </div>
                     </div>
                 )
@@ -123,14 +123,14 @@ const UserList = () => {
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.payrollDisplay)
     const employeeStore = useSelector((state: RootState) => state.employee)
-    const deductionStore = store.data.filter(({ transactionTypeName }) => (transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount"))
-    const earningStore = store.data.filter(({ transactionTypeName }) => (transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount"))
+    const deductionStore = store.data.filter(({ transactionTypeName, transactionAmount }) => ((transactionTypeName === "Deduction Quantity" || transactionTypeName === "Deduction Amount") && parseFloat(transactionAmount) != 0))
+    const earningStore = store.data.filter(({ transactionTypeName, transactionAmount }) => ((transactionTypeName === "Earning Quantity" || transactionTypeName === "Earning Amount") && parseFloat(transactionAmount) != 0))
     const deductionAmounts = deductionStore.filter((transaction: any) => transaction.transactionTypeName == 'Deduction Amount')
     const totalDeductions = deductionAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const earningAmounts = earningStore.filter((transaction: any) => transaction.transactionTypeName == 'Earning Amount')
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const grossTaxable: any = store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary"))
-
+    
     useEffect(() => {
         dispatch(
             fetchData({

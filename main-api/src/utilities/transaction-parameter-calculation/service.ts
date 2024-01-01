@@ -1,7 +1,7 @@
 
 import transactionParameterCalculationDao from './dao'
 
-const create = async (newTransactionParameterCalculation: any,): Promise<string> => await transactionParameterCalculationDao.create({ ...newTransactionParameterCalculation })
+const create = async (newTransactionParameterCalculation: any): Promise<string> => await transactionParameterCalculationDao.create({ ...newTransactionParameterCalculation })
 
 const getAllFromOrganization = async (organizationId: any): Promise<any[]> => await transactionParameterCalculationDao.getAllFromOrganization(organizationId)
 

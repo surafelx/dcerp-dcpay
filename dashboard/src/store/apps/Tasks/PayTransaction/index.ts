@@ -12,6 +12,13 @@ interface Redux {
 }
 
 // ** Fetch Branches
+export const fetchAll = createAsyncThunk('appPayTransactions/fetchData', async (params: any) => {
+  const response = await apiRequest.get(`tasks/pay-transaction/all`, { params })
+  
+  return response.data
+})
+
+// ** Fetch Branches
 export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async (params: any) => {
   const response = await apiRequest.get(`tasks/pay-transaction`, { params })
   
@@ -21,10 +28,11 @@ export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async 
 // ** Add User
 export const addPayTransaction = createAsyncThunk(
   'appPayTransactions/addPayTransaction',
-  async (data: { [key: string]: number | string }, {dispatch }: Redux) => {
+  async (data: { [key: string]: number | string }) => {
     const response = await apiRequest.post(`tasks/pay-transaction`, { data })
-     const employee = response.data.employee_id
-    dispatch(fetchData({employee}))
+
+    //  const employee = response.data.employee_id
+    // dispatch(fetchData({employee}))
 
     return response.data
   }

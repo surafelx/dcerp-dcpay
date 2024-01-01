@@ -1,14 +1,18 @@
 import { validateAll } from '../../../utils/validator'
 import { check } from 'express-validator'
+import subParameterService from './service'
 
 
-const newUser = [
-    check('isActive').isBoolean(),
+const deleteSubParameter = [
+    check('id').custom(async (value: string) => {
+        const doesExist = await subParameterService.checkIfParameterExistsInOtherTables(value)
+        if (doesExist)
+            throw new Error(`Parameter Name already exist.`)
+    }),
 ]
 
-
-export const usersValidations = {
-    newUser,
+export const mainParameterDefinitionValidation = {
+    deleteSubParameter
 }
 
-export default validateAll(usersValidations)
+export default validateAll(mainParameterDefinitionValidation)

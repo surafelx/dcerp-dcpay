@@ -1,5 +1,6 @@
 import {Request} from 'express'
 import mainParameterDefinitionDao from './dao'
+import subParaameterDefinitionService from '../sub-parameter-definition/service'
 
 const create = async (req: Request, organizationId: string): Promise<string> => {
     const newMenu = req.body.data
@@ -13,8 +14,17 @@ const deleteMainParameterDefinition = async (userId: string): Promise<any> => aw
 
 const updateMainParameterDefinition = async (menuLevelData: any): Promise<any> => await mainParameterDefinitionDao.updateMainParameterDefinition(menuLevelData)
 
+const nameExists = async (newParameter: any, userAuthInfo: any): Promise<any> => {
+    const { organization_id: organizationId } = userAuthInfo
+    return await mainParameterDefinitionDao.nameExists(newParameter, organizationId)
+}
+
+const parameterIsParent = async(parameterId: any) => await subParaameterDefinitionService.checkIfMainParameterExists(parameterId)
+
 export default {
     create,
+    nameExists,
+    parameterIsParent,
     deleteMainParameterDefinition,
     getAllFromOrganization,
     updateMainParameterDefinition

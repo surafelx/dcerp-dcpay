@@ -10,7 +10,6 @@ import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
-import FormHelperText from '@mui/material/FormHelperText'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -85,32 +84,7 @@ const RangeCustomInput = forwardRef((props: PickerProps, ref) => {
 })
 
 
-const schema = yup.object().shape({
-    id: yup.string(),
-    employeeCode: yup.number().typeError('Code has to be a valid number.').required("Code is required").test('not-zero', 'Code cannot be 0', (value) => value !== 0),
-    employeeTitle: yup.string().required('Required'),
-    firstName: yup.string().required('Required'),
-    middleName: yup.string().required('Required'),
-    lastName: yup.string().required('Required'),
-    sex: yup.string().required('Required'),
-    contractStartDate: yup.string(),
-    contractDate: yup.array().of(yup.date().required()),
-    contractEndDate: yup.string(),
-    employmentDate: yup.string().required('Required'),
-    employeeStatus: yup.string().required('Required'),
-    employeeType: yup.string().required('Required'),
-    monthlyWorkingHours: yup.string().required('Required'),
-    basicSalary: yup.number().typeError('Not a valid amount.').required('Required').test('not-zero', 'Cannot be 0', (value) => value !== 0),
-    pensionNumber: yup.string().nullable(),
-    pensionStatus: yup.string(),
-    tinNumber: yup.string().required('Required'),
-    workingDays: yup.number().required('Required'),
-    employeeBankAccount: yup.string().required('Required'),
-    employeeBank: yup.string().required('Required'),
-    employeeBranch: yup.string().required('Required'),
-    employeeDepartment: yup.string().required('Required'),
-    employeePosition: yup.string().required('Required'),
-})
+
 
 const emptyValues = {
     id: '',
@@ -129,7 +103,7 @@ const emptyValues = {
     monthlyWorkingHours: '',
     basicSalary: '',
     pensionNumber: '',
-    pensionStatus: '',
+    pensionStatus: false,
     tinNumber: '',
     workingDays: 0,
     employeeBank: '',
@@ -148,11 +122,12 @@ const UserList = () => {
     const [employmentTypeValue, setEmploymentTypeValue] = useState<any>('')
     const [contractStart, setContractStart] = useState<any>(null)
     const [contractEnd, setContractEnd] = useState<any>(null)
+    const [employmentDateError,] = useState(null)
 
     // ** State
     const [filterValue, setFilterValue] = useState<string>('')
     const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
-    const [branch, setBranch] = useState<string>('All')
+    const [, setBranch] = useState<string>('All')
     const [branchObject, setBranchObject] = useState<any>({ id: 'All', branchName: 'All Branches' })
     const [formBranchObject, setFormBranchObject] = useState<any>({ id: '', branchName: '' })
     const [formDepartmentObject, setFormDepartmentObject] = useState<any>({ id: '', departmentName: '' })
@@ -164,40 +139,87 @@ const UserList = () => {
         setFilterValue(val)
     }
 
-    const [formData, setFormData] = useState({
-        id: '',
-        employeeCode: 0,
-        employeeTitle: '',
-        contractStartDate: '',
-        contractEndDate: '',
-        employmentDate: '',
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        sex: '',
-        employeeStatus: '',
-        employeeType: '',
-        employeeTypeName: '',
-        monthlyWorkingHours: '',
-        basicSalary: '',
-        pensionNumber: '',
-        pensionStatus: '',
-        tinNumber: '',
-        workingDays: '',
-        employeeBank: '',
-        employeeBankAccount: '',
-        employeeBranch: '',
-        employeeDepartment: '',
-        employeePosition: '',
-    });
+
+    const [formData, setFormData] = useState(emptyValues);
 
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
     const store = useSelector((state: RootState) => state.employee)
 
-    const departmentStore = useSelector((state: RootState) => state.department)
     const branchStore = useSelector((state: RootState) => state.branches)
+    const departmentStore = useSelector((state: RootState) => state.department)
+
+    const subParameters = useSelector((state: RootState) => state.subParameterDefinition)
+    const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
+
+    const filterSubParametersByName = (parentParamName: any) => {
+        const parent: any = mainParameters.allData.find((parent: any) => parent.parameterName === parentParamName);
+        if (!parent) {
+            return [];
+        }
+
+        const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
+
+        return filteredChild
+    }
+
+
+
+    const bankOptions: any = filterSubParametersByName('Bank')
+    const sexOptions = filterSubParametersByName('Sex')
+    const employeeStatusOptions = filterSubParametersByName('Employee Status')
+    const employmentTypeOptions: any = filterSubParametersByName('Employee Type')
+    const employeePositionOptions = filterSubParametersByName('Employee Position')
+    const employeeTitleOptions = filterSubParametersByName('Employee Title')
+
+    const permanentEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Permanent')[0]?.id
+    const contractEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Contract')[0]?.id
+
+    const naBank = bankOptions.filter((parameter: any) => parameter.parameterName == 'NA')[0]?.id
+
+    const schema = yup.object().shape({
+        id: yup.string(),
+        employeeCode: yup.number().typeError('Code has to be a valid number.').required("Code is required").test('not-zero', 'Code cannot be 0', (value) => value !== 0),
+        employeeTitle: yup.string().required('Required'),
+        firstName: yup.string().required('Required'),
+        middleName: yup.string().required('Required'),
+        lastName: yup.string().required('Required'),
+        sex: yup.string().required('Required'),
+        contractStartDate: yup.string(),
+        contractDate: yup.array().of(yup.date()).default(() => [startDate, endDate]).typeError('Contract Date has to be a range of dates.').when('employeeType', {
+            is: contractEmploymentTypeValue,
+            then: yup.array().typeError('Contract Date has to be a range of dates.').required('Contract Date is required.'),
+            otherwise: yup.array().typeError('Contract Date has to be a range of dates.').of(yup.date()).default(() => [startDate, endDate]).nullable()
+        }),
+        contractEndDate: yup.string(),
+        employmentDate: yup.string().when('employeeType', {
+            is: permanentEmploymentTypeValue,
+            then: yup.string().required('Employment Date is required.'),
+            otherwise: yup.string(),
+        }),
+        employeeStatus: yup.string().required('Required'),
+        employeeType: yup.string().required('Required'),
+        monthlyWorkingHours: yup.number().typeError('Cannot be empty.').required('Required').test('not-zero', 'Cannot be 0.', (value) => value !== 0),
+        basicSalary: yup.number().typeError('Cannot be empty.').required('Required').test('not-zero', 'Cannot be 0.', (value) => value !== 0),
+        pensionStatus: yup.boolean(),
+        pensionNumber: yup.string().when('pensionStatus', {
+            is: true,
+            then: yup.string().required('Pension Number is Required.'),
+            otherwise: yup.string().nullable(),
+        }),
+        tinNumber: yup.string().matches(/^\d{10}$/, "TIN must be a 10-digit number").required('Required'),
+        workingDays: yup.number().required('Required'),
+        employeeBankAccount: yup.string().when('employeeBank', {
+            is: naBank,
+            then: yup.string(),
+            otherwise: yup.string().required('Account Number is Required').matches(/^\d+$/, 'Bank account must only contain digits').min(5, 'Bank account must be greater than 4 digits'),
+        }),
+        employeeBank: yup.string().required('Required'),
+        employeeBranch: yup.string().required('Required'),
+        employeeDepartment: yup.string().required('Required'),
+        employeePosition: yup.string().required('Required'),
+    })
 
     useEffect(() => {
         dispatch(
@@ -321,28 +343,8 @@ const UserList = () => {
         reset(emptyValues)
     }
 
-    const subParameters = useSelector((state: RootState) => state.subParameterDefinition)
-    const mainParameters = useSelector((state: RootState) => state.mainParameterDefinition)
-
-    const filterSubParametersByName = (parentParamName: any) => {
-        const parent: any = mainParameters.allData.find((parent: any) => parent.parameterName === parentParamName);
-        if (!parent) {
-            return [];
-        }
-
-        const filteredChild = subParameters.allData.filter((child: any) => child.parameterId === parent.id);
-
-        return filteredChild
-    }
 
 
-
-    const bankOptions = filterSubParametersByName('Bank')
-    const sexOptions = filterSubParametersByName('Sex')
-    const employeeStatusOptions = filterSubParametersByName('Employee Status')
-    const employmentTypeOptions = filterSubParametersByName('Employee Type')
-    const employeePositionOptions = filterSubParametersByName('Employee Position')
-    const employeeTitleOptions = filterSubParametersByName('Employee Title')
 
 
 
@@ -398,8 +400,13 @@ const UserList = () => {
                                                                 setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
                                                                 reset(selectedEmployee)
                                                             } else {
-                                                                reset(emptyValues)
-                                                                setValue('employeeCode', Number(e.target.value))
+                                                                if (!branchObject.id) {
+                                                                    setFormBranchObject({ id: '', branchName: '' })
+                                                                    setFormDepartmentObject({ id: '', departmentName: '' })
+                                                                    reset(emptyValues)
+                                                                    setValue('employeeCode', Number(e.target.value))
+                                                                }
+
                                                             }
                                                         }
                                                         }
@@ -489,6 +496,40 @@ const UserList = () => {
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth >
                                             <Controller
+                                                name='sex'
+                                                control={control}
+                                                rules={{ required: true }}
+                                                render={({ field: { value, onChange, onBlur } }) => (
+                                                    <>
+                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Sex *</InputLabel>
+                                                        <Select
+                                                            size={'small'}
+                                                            label='Sex *'
+                                                            value={value}
+                                                            id='demo-simple-select-autoWidth'
+                                                            labelId='demo-simple-select-autoWidth-label'
+                                                            onBlur={onBlur}
+                                                            onChange={onChange}
+                                                            error={Boolean(errors.sex)}
+                                                        >
+                                                            {
+                                                                sexOptions.map(({ id, parameterName }, index) => {
+                                                                    return (
+                                                                        <MenuItem key={index} value={id}>{parameterName}</MenuItem>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </Select>
+                                                    </>
+
+                                                )}
+                                            />
+                                            {errors.sex && <Alert sx={{ my: 4 }} severity='error'>{errors.sex.message}</Alert>}
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth >
+                                            <Controller
                                                 name='employeeTitle'
                                                 control={control}
                                                 rules={{ required: true }}
@@ -521,40 +562,7 @@ const UserList = () => {
                                         </FormControl>
 
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth >
-                                            <Controller
-                                                name='sex'
-                                                control={control}
-                                                rules={{ required: true }}
-                                                render={({ field: { value, onChange, onBlur } }) => (
-                                                    <>
-                                                        <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Sex *</InputLabel>
-                                                        <Select
-                                                            size={'small'}
-                                                            label='Sex *'
-                                                            value={value}
-                                                            id='demo-simple-select-autoWidth'
-                                                            labelId='demo-simple-select-autoWidth-label'
-                                                            onBlur={onBlur}
-                                                            onChange={onChange}
-                                                            error={Boolean(errors.sex)}
-                                                        >
-                                                            {
-                                                                sexOptions.map(({ id, parameterName }, index) => {
-                                                                    return (
-                                                                        <MenuItem key={index} value={id}>{parameterName}</MenuItem>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </Select>
-                                                    </>
 
-                                                )}
-                                            />
-                                            {errors.sex && <Alert sx={{ my: 4 }} severity='error'>{errors.sex.message}</Alert>}
-                                        </FormControl>
-                                    </Grid>
                                     <Grid item xs={6} >
                                         <FormControl fullWidth>
                                             <Autocomplete
@@ -577,7 +585,7 @@ const UserList = () => {
                                                 autoSelect
                                                 size={'small'}
                                                 value={formDepartmentObject}
-                                                options={departmentStore.data.filter((department: any) => department.branchId == branch)}
+                                                options={departmentStore.data.filter((department: any) => department.branchId == formBranchObject?.id)}
                                                 onChange={handleFormDepartmentChange}
                                                 isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
                                                 id='autocomplete-controlled'
@@ -685,7 +693,7 @@ const UserList = () => {
                                                             }
                                                         >
                                                             {
-                                                                employmentTypeOptions.map(({ id, parameterName }, index) => {
+                                                                employmentTypeOptions.map(({ id, parameterName }: any, index: any) => {
                                                                     return (
                                                                         <MenuItem key={index} value={id}>{parameterName}</MenuItem>
                                                                     )
@@ -735,6 +743,7 @@ const UserList = () => {
                                                         )}
                                                     />
                                                     {errors.employmentDate && <Alert sx={{ my: 4 }} severity='error'>{errors.employmentDate.message}</Alert>}
+                                                    {employmentDateError && <Alert sx={{ my: 4 }} severity='error'>{employmentDateError}</Alert>}
                                                 </>
                                             ) : (employmentTypeValue == 'Contract') ? (
                                                 <>
@@ -898,7 +907,7 @@ const UserList = () => {
                                                             error={Boolean(errors.employeeBank)}
                                                         >
                                                             {
-                                                                bankOptions.map(({ id, parameterName }, index) => {
+                                                                bankOptions.map(({ id, parameterName }: any, index: any) => {
                                                                     return (
                                                                         <MenuItem key={index} value={id}>{parameterName}</MenuItem>
                                                                     )
@@ -964,13 +973,12 @@ const UserList = () => {
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
-                                                        required
                                                         error={Boolean(errors.pensionNumber)}
                                                         placeholder='Pension Number'
                                                     />
                                                 )}
                                             />
-                                            {errors.pensionNumber && <FormHelperText sx={{ color: 'error.main' }}>{errors.pensionNumber.message}</FormHelperText>}
+                                            {errors.pensionNumber && <Alert sx={{ my: 4 }} severity='error'>{errors.pensionNumber.message}</Alert>}
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -1007,7 +1015,7 @@ const UserList = () => {
                     <Grid item xs={12} sx={{ pl: 5, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                         <TableHeader
                             branches={[...branchStore.data, { id: "All", branchName: 'All Branches' }]}
-                            departments={[...departmentStore.data.filter((department: any) => department.branchId == branch), { id: "All", departmentName: 'All Departments' }]}
+                            departments={[...departmentStore.data.filter((department: any) => department.branchId == branchObject?.id), { id: "All", departmentName: 'All Departments' }]}
                             handleBranchChange={handleBranchChange}
                             handleDepartmentChange={handleDepartmentChange}
                             departmentObject={departmentObject}

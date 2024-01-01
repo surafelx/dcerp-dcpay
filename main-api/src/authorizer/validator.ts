@@ -21,7 +21,7 @@ const login = [
     }),
 ]
 
-
+ 
 export const branchValidations = {
     login,
 }

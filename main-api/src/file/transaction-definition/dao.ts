@@ -1301,11 +1301,11 @@ const setupApp = async (organizationId: any, branchId: any) => {
                     directAccount,
                     contractGlAccount
                 } = transaction;
-    
+
                 let refactoredTransactionType;
                 let refactoredUpdateType;
                 let refactoredTransactionGroup
-    
+
                 switch (transaction.transactionType) {
                     case 'Deduction Amount':
                         refactoredTransactionType = deductionAmountTransactionType;
@@ -1325,7 +1325,7 @@ const setupApp = async (organizationId: any, branchId: any) => {
                     default:
                         refactoredTransactionType = '';
                 }
-    
+
                 switch (transaction.updateType) {
                     case 'Input':
                         refactoredUpdateType = inputUpdateType;
@@ -1339,7 +1339,7 @@ const setupApp = async (organizationId: any, branchId: any) => {
                     default:
                         refactoredUpdateType = '';
                 }
-    
+
                 switch (transaction.transactionGroup) {
                     case 'Absence':
                         refactoredTransactionGroup = absenceTransactionGroup;
@@ -1356,15 +1356,15 @@ const setupApp = async (organizationId: any, branchId: any) => {
                     default:
                         refactoredTransactionGroup = '';
                 }
-    
+
                 const query = `INSERT INTO transaction_definition (id, organization_id, branch_id, transaction_code, transaction_name, short_name, transaction_type, update_type, permanent, taxable, un_taxable_limit, affect_by_leave, leave_days, affect_back_payroll, affect_beneficiary, transaction_group, gl_entry_by, direct_account, contract_gl_account)
                              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`;
                 await pool.query(query, [uuid(), organizationId, branchId, transactionCode, transactionName, shortName, refactoredTransactionType, refactoredUpdateType, permanent, taxable, unTaxableLimit, affectByLeave, leaveDays, affectBackPayroll, affectBeneficiary, refactoredTransactionGroup, glEntryBy, directAccount, contractGlAccount]);
-            } catch(error) {
+            } catch (error) {
                 console.log(transaction)
                 console.error(error)
             }
-            
+
         }
     } catch (err) {
         console.log(err)
@@ -1375,8 +1375,8 @@ const setupApp = async (organizationId: any, branchId: any) => {
 
 
 export const getTransactionDefinitionByNameByOrganization = async (organizationId: string, transactionName: any) => {
-   try {
- const tranQuery = `
+    try {
+        const tranQuery = `
     SELECT 
     transaction_definition.id,
     transaction_definition.organization_id,
@@ -1387,23 +1387,31 @@ export const getTransactionDefinitionByNameByOrganization = async (organizationI
     transaction_definition.organization_id=$1 AND 
     transaction_definition.transaction_name=$2
    `
-    const { rows: transactions } = await pool.query(tranQuery,
-        [organizationId, transactionName])
-    return transactions[0].id
-   } catch(error) {
-    console.log(transactionName)
-    console.log(error)
-   }
-   
+        const { rows: transactions } = await pool.query(tranQuery,
+            [organizationId, transactionName])
+        return transactions[0].id
+    } catch (error) {
+        console.log(transactionName)
+        console.log(error)
+    }
+
 }
 
 
+
+export const parameterDefinitionExists = async (parameterId: any): Promise<boolean> => {
+    const { rows: res } = await pool.query(
+        'SELECT EXISTS(SELECT 1 FROM transaction_definition WHERE transaction_type = $1 OR update_type = $1 OR transaction_group = $1)',
+        [[parameterId]])
+    return res[0].exists
+}
 
 export default {
     create,
     deleteTransactionDefinition,
     getAllFromOrganization,
     getInfo,
+    parameterDefinitionExists,
     getByNameAndOrganization,
     getAllFromTransactionGroup,
     updateTransactionDefinition,

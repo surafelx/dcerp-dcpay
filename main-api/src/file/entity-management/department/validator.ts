@@ -10,7 +10,7 @@ const newDepartment = [
         const userAuthInfo = await userService.getUserAuthorizationInfo(userId)
         const doesExist = await departmentSerivce.codeExists(departmentData, userAuthInfo)
         if (doesExist)
-        	throw new Error(`Deparment Code exists for Branch.`)
+        	throw new Error(`Department Code exists for Branch.`)
         return true
     }),
     check('departmentName').custom(async (value: string, { req }: any) => {
@@ -19,7 +19,7 @@ const newDepartment = [
         const userAuthInfo = await userService.getUserAuthorizationInfo(userId)
         const doesExist = await departmentSerivce.nameExists(departmentData, userAuthInfo)
         if (doesExist)
-        	throw new Error(`Deparment Code exists for Branch.`)
+        	throw new Error(`Department Name exists for Branch.`)
         return true
     }),
 ]

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import subParameterDefinitionService from './service'
 import userService from '../../../settings/user-management/users/service'
+import subParameterDefinitionValidaation from './validator'
 
 const router = Router()
 
@@ -12,7 +13,9 @@ router.get('/',
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const { q = '', parameter = null } = req.query ?? ''
             const parameterId = parameter
+
             const queryLowered = q.toString().toLowerCase()
+            console.log(queryLowered)
             const mainParameterDefinitions = await subParameterDefinitionService.getAllFromOrganization(organizationId, parameterId)
             const renamedMainParameterDefinitions = mainParameterDefinitions.map(({ id, parameter_id, main_parameter_name, sub_parameter_name }) => ({
                 id,
@@ -53,7 +56,7 @@ router.post('/',
     })
 
 router.delete('/:id',
-    // usersValidations.newUser,
+    subParameterDefinitionValidaation.deleteSubParameter,
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params
@@ -62,6 +65,8 @@ router.delete('/:id',
         } catch (err) {
             console.log(err)
             res.status(400).send(err)
+            next(err)
+
             next(err)
         }
     })

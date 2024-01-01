@@ -114,7 +114,7 @@ const PayrollAdvice = () => {
         const workbook = utils.book_new();
         const worksheet = utils.aoa_to_sheet(tableData);
         utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        writeFile(workbook, 'your_file_name.xlsx');
+        writeFile(workbook, `Payrol Advice ${new Date()}`);
     };
 
 

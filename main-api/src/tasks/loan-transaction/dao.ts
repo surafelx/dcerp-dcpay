@@ -38,9 +38,12 @@ export const create = async (newMenu: any): Promise<any> => {
 }
 
 
-export const getAllFromOrganization = async (organizationId: string, employeeId: any): Promise<any> => {
+export const getAllFromOrganization = async (organizationId: string, employeeId: any, userInfo: any): Promise<any> => {
+    const { periodId } = userInfo
+
     let query = `
     SELECT 
+    DISTINCT
     lt.id,
     lt.employee_id,
     lt.transaction_id,
@@ -51,16 +54,19 @@ export const getAllFromOrganization = async (organizationId: string, employeeId:
     e1.last_name as employee_last_name,
     td.transaction_name,
     td.transaction_code,
-    lt.remaining_balance
+    lt.remaining_balance,
+    pd.parameter_name as transaction_group_name
     FROM loan_transaction lt
     INNER JOIN employee e1 ON lt.employee_id = e1.id
     INNER JOIN transaction_definition td ON lt.transaction_id = td.id
-    WHERE e1.organization_id=$1`;
+    INNER JOIN period_transactions pt ON pt.transaction_id = lt.transaction_id
+    INNER JOIN parameter_definition pd ON pd.id = td.transaction_group
+    WHERE pd.parameter_name = 'Loan' AND e1.organization_id=$1 AND pt.period_id = $2`;
 
-    const queryParams = [organizationId];
+    const queryParams = [organizationId, periodId];
 
     if (employeeId) {
-        query += ` AND e1.id = $2`;
+        query += ` AND e1.id = $3`;
         queryParams.push(employeeId);
     }
 
@@ -111,9 +117,16 @@ export const getById = async (loanTransactionId: string): Promise<any> => {
 
 
 
+export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
+    await pool.query('DELETE FROM loan_transaction WHERE employee_id=$1', [employeeId])
+}
+
+
+
 export default {
     create,
     deleteLoanTransaction,
+    deleteByEmployeeId,
     getAllFromOrganization,
     getById,
     updateLoanTransaction

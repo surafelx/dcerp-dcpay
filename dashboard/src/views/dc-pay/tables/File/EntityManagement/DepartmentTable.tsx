@@ -39,7 +39,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 
 const schema = yup.object().shape({
     branchId: yup.string().required('Branch is Required.'),
-    departmentCode: yup.number().typeError('Department Code is required').required("Department Code is required"),
+    departmentCode: yup.number().typeError('Department Code is required').required("Department Code is required").test('not-zero', 'Department Code cannot be 0', (value) => value !== 0),
     departmentName: yup.string().required('Department Name is Required.'),
     permanentAccount: yup.string(),
     contractAccount: yup.string()
@@ -59,9 +59,9 @@ const UserList = () => {
     // ** State
     const [page, setPage] = useState<number>(0)
     const [branch, setBranch] = useState<string>('')
-    const [branchObject, setBranchObject] = useState<any>(null)
+    const [branchObject, setBranchObject] = useState<any>({ id: 'All', branchName: 'All Branches' })
+    const [formBranchObject, setFormBranchObject] = useState<any>({ id: '', branchName: '' })
     const [alertText, setAlertText] = useState<any>('')
-    const [value] = useState<string>('')
     const [formData, setFormData] = useState({
         id: '',
         branchId: '',
@@ -73,26 +73,12 @@ const UserList = () => {
     const [open, setOpen] = useState<boolean>(false)
     const handleClickOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
+    const [departmentFilterValue, setDepartmentFilterValue] = useState<string>('')
+    const [departmentNameError, setDepartmentNameError] = useState<string | null>(null);
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
-    const store = useSelector((state: RootState) => state.department)
-    const storeProcess = useSelector((state: RootState) => state.department.isLoading)
 
-    useEffect(() => {
-
-        dispatch(
-            fetchData({
-                q: value,
-                branch
-            })
-        )
-
-    }, [dispatch, value, branch])
-
-
-
-    const branchStore = useSelector((state: RootState) => state.branches)
 
     const {
         control,
@@ -104,6 +90,34 @@ const UserList = () => {
         mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
+
+
+    const store = useSelector((state: RootState) => state.department)
+    const storeProcess = useSelector((state: RootState) => state.department.isLoading)
+
+
+
+    useEffect(() => {
+        dispatch(
+            fetchData({
+                q: departmentFilterValue,
+                branch: branchObject?.id
+            })
+        )
+
+    }, [dispatch, departmentFilterValue, branchObject?.id])
+
+
+
+
+    const handleDepartmentFilter = (val: string) => {
+        setDepartmentFilterValue(val)
+    }
+
+
+
+    const branchStore = useSelector((state: RootState) => state.branches)
+
 
 
     const DialogAlert = () => {
@@ -132,34 +146,49 @@ const UserList = () => {
 
 
 
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
         data.branchId = branch
         if (data.id) {
             dispatch(editDepartment({ ...data, }))
             setAlertText(`${data.departmentCode} ${data.departmentName} has been successfully edited.`)
         } else {
-            dispatch(addDepartment({ ...data, }))
+            dispatch(addDepartment({ ...data }))
             setAlertText(`${data.departmentCode} ${data.departmentName} has been successfully added.`)
         }
-        setBranchObject({ id: '', branchName: '' })
-        reset(emptyValues)
-
         if (!storeProcess) {
-            reset(emptyValues)
-            handleClickOpen()
+            setFormBranchObject({ id: '', branchName: '' })
+            reset(emptyValues);
+            handleClickOpen();
         }
 
     }
 
 
-    const handleBranchChange = (e: any, newValue: any) => {
+    const handleFormBranchChange = (e: any, newValue: any) => {
         if (newValue?.id) {
-            setBranchObject(newValue)
+            setFormBranchObject(newValue)
             setBranch(newValue.id)
             reset({ id: '', branchId: newValue?.id, departmentCode: 0, departmentName: '' })
             setPage(0)
         }
     }
+
+    const handleDepartmentNameBlurChange = (value: any) => {
+        const sameBranchsameDepartmentNames = store.data.filter((department: any) => (department.branchId == formBranchObject?.id) && (department.departmentName == value))
+        const sameDepartmentNameInSameBranchExists = sameBranchsameDepartmentNames[0] ? true : false
+        if (sameDepartmentNameInSameBranchExists) {
+            setDepartmentNameError('Department Name already exists in the same Branch.');
+        } else {
+            setDepartmentNameError(null);
+        }
+    }
+
+    const handleBranchChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setBranchObject(newValue)
+        }
+    }
+
 
     return (
         <>
@@ -175,9 +204,9 @@ const UserList = () => {
                                             <Autocomplete
                                                 autoSelect
                                                 size={'small'}
-                                                value={branchObject}
+                                                value={formBranchObject}
                                                 options={branchStore.data}
-                                                onChange={handleBranchChange}
+                                                onChange={handleFormBranchChange}
                                                 isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
                                                 id='autocomplete-controlled'
                                                 getOptionLabel={(option: any) => option.branchName}
@@ -209,7 +238,7 @@ const UserList = () => {
                                                             const selectedDepartment: any = store?.data?.filter(({ departmentCode }: any) => departmentCode == e.target.value)[0]
                                                             if (selectedDepartment) {
                                                                 reset(selectedDepartment)
-                                                                setBranchObject(branchStore?.data?.filter((branch: any) => branch.id == selectedDepartment?.branchId)[0])
+                                                                setFormBranchObject(branchStore?.data?.filter((branch: any) => branch.id == selectedDepartment?.branchId)[0])
                                                             }
 
                                                         }
@@ -235,7 +264,12 @@ const UserList = () => {
                                                         autoFocus
                                                         label='Department Name'
                                                         value={value}
-                                                        onBlur={onBlur}
+                                                        onBlur={(e) => {
+                                                            onBlur()
+                                                            handleDepartmentNameBlurChange(e.target.value)
+
+
+                                                        }}
                                                         onChange={onChange}
                                                         error={Boolean(departmentErrors.departmentName)}
                                                         placeholder='Enter Department Name'
@@ -244,6 +278,11 @@ const UserList = () => {
                                             />
                                         </FormControl>
                                         {departmentErrors.departmentName && <Alert sx={{ my: 4 }} severity='error'>{departmentErrors.departmentName.message}</Alert>}
+                                        {departmentNameError && (
+                                            <Alert sx={{ my: 4 }} severity='error'>
+                                                {departmentNameError}
+                                            </Alert>
+                                        )}
                                     </Grid>
                                     <Grid item xs={12} sm={12}>
                                         <FormControl fullWidth >
@@ -291,7 +330,9 @@ const UserList = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
-                                            <Button fullWidth size='small' type='submit' variant='contained'>
+                                            <Button
+                                                disabled={(Object.keys(departmentErrors).length > 0) || Boolean(departmentNameError)}
+                                                fullWidth size='small' type='submit' variant='contained'>
                                                 Submit
                                             </Button>
                                         </FormControl>
@@ -303,7 +344,8 @@ const UserList = () => {
                                                 fullWidth size='small'
                                                 onClick={() => {
                                                     reset(emptyValues)
-                                                    setBranchObject({ id: '', branchName: '' })
+                                                    setDepartmentNameError(null)
+                                                    setFormBranchObject({ id: '', branchName: '' })
                                                     setBranch('')
                                                 }} type='reset' variant='contained'>
                                                 Reset
@@ -317,6 +359,31 @@ const UserList = () => {
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
                     <Card>
+                        <Grid sx={{ mt: '20px' }} container spacing={1}>
+                            <Grid item xs={4}></Grid>
+                            <Grid item xs={4}>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={branchObject}
+                                    options={[...branchStore.data, { id: "All", branchName: 'All Branches' }]}
+                                    onChange={handleBranchChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.branchName}
+                                    renderInput={params => <TextField  {...params} label='Select Branch' />}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size='small'
+                                    value={departmentFilterValue}
+                                    placeholder='Search Department'
+                                    onChange={e => handleDepartmentFilter(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+
                         <CardContent>
                             <DepartmentTable
                                 rows={store.data}
@@ -325,10 +392,12 @@ const UserList = () => {
                                 deleteDepartment={deleteDepartment}
                                 setAlertText={setAlertText}
                                 reset={reset}
+                                storeProcess={storeProcess}
                                 branches={branchStore.data}
-                                setBranchObject={setBranchObject}
+                                setBranchObject={setFormBranchObject}
                                 page={page}
                                 setPage={setPage}
+                                handleClickOpen={handleClickOpen}
                             />
                         </CardContent>
                     </Card >

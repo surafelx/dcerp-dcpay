@@ -102,6 +102,25 @@ const AddMenuLevelOne = ({ formData }: any) => {
                         />
                         {/* {errors.menuTitle && <FormHelperText sx={{ color: 'error.main' }}>{errors.menuTitle.message}</FormHelperText>} */}
                     </FormControl>
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+                        <Controller
+                            name='menuIcon'
+                            control={control}
+                            rules={{ required: true }}
+                            render={({ field: { value, onChange, onBlur } }) => (
+                                <TextField
+                                    autoFocus
+                                    label='Menu Level One Icon'
+                                    value={value}
+                                    onBlur={onBlur}
+                                    onChange={onChange}
+                                    error={Boolean(errors.menuTitle)}
+                                    placeholder='Menu Level One Title'
+                                />
+                            )}
+                        />
+                        {/* {errors.menuTitle && <FormHelperText sx={{ color: 'error.main' }}>{errors.menuTitle.message}</FormHelperText>} */}
+                    </FormControl>
                     <FormControl fullWidth>
                         <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
                             Submit

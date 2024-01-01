@@ -44,6 +44,7 @@ const emptyValues = {
 const UserList = () => {
     // ** State
     const [, setLoading] = useState<boolean>(true)
+    const [parameterDefinitionFilterValue, setParameterDefinitionValue] = useState<string>('')
 
     const [formData, setFormData] = useState({
         id: '',
@@ -55,6 +56,8 @@ const UserList = () => {
         control,
         handleSubmit,
         reset,
+        setError,
+        clearErrors,
         formState: { errors }
     } = useForm({
         defaultValues: formData,
@@ -87,21 +90,25 @@ const UserList = () => {
 
     useEffect(() => {
         setLoading(true)
-        setTimeout(() => {
-            dispatch(
-                fetchData({
-                })
-            )
-            setLoading(false)
-        }, 3000)
 
-    }, [dispatch])
+        dispatch(
+            fetchData({
+                q: parameterDefinitionFilterValue
+            })
+        )
+        setLoading(false)
+
+    }, [dispatch, parameterDefinitionFilterValue])
+
+    const handleParameterDefinitionValue = (val: string) => {
+        setParameterDefinitionValue(val)
+    }
+
 
     return (
         <>
             <Grid container spacing={6}>
                 <Grid item xs={12} md={12} lg={4}>
-                    {/* <AddMainParameterDefinition loading={loading} setLoading={setLoading} formData={formData} /> */}
                     <Card>
                         <CardHeader title='Add Main Parameter' titleTypographyProps={{ variant: 'h6' }} />
                         <CardContent>
@@ -124,12 +131,30 @@ const UserList = () => {
                                                             onBlur()
                                                             const selectedParameter: any = store?.data?.filter(({ parameterName }: any) => parameterName == e.target.value)[0]
                                                             if (selectedParameter) {
-                                                                reset(selectedParameter)
+                                                                setError('parameterName', {
+                                                                    type: 'manual',
+                                                                    message: 'Parameter Name already exists.',
+                                                                })
+                                                            } else {
+                                                                clearErrors('parameterName')
                                                             }
 
                                                         }
                                                         }
-                                                        onChange={onChange}
+                                                        onChange={(e) => {
+                                                            onChange(e)
+                                                            const selectedParameter: any = store?.data?.filter(({ parameterName }: any) => parameterName == e.target.value)[0]
+                                                            if (selectedParameter) {
+                                                                setError('parameterName', {
+                                                                    type: 'manual',
+                                                                    message: 'Parameter Name already exists.',
+                                                                })
+                                                            } else {
+                                                                clearErrors('parameterName')
+                                                            }
+
+                                                        }
+                                                        }
                                                         error={Boolean(errors.parameterName)}
                                                         placeholder='Enter Parameter Name'
                                                     />
@@ -140,7 +165,7 @@ const UserList = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
-                                            <Button fullWidth size='small' type='submit' variant='contained'>
+                                            <Button fullWidth size='small' disabled={Object.keys(errors).length > 0} type='submit' variant='contained'>
                                                 Submit
                                             </Button>
                                         </FormControl>
@@ -160,7 +185,21 @@ const UserList = () => {
                     </Card >
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
+
                     <Card>
+                        <CardHeader title={'Main Parameter Definition'} />
+                        <Grid container spacing={3}>
+                            <Grid item xs={8}></Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size='small'
+                                    value={parameterDefinitionFilterValue}
+                                    placeholder='Search'
+                                    onChange={e => handleParameterDefinitionValue(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+
                         <CardContent>
                             <MainParameterDefinitionTable
                                 rows={store.data}

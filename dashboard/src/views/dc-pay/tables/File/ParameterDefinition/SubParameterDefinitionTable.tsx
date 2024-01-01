@@ -45,8 +45,10 @@ const emptyValues = {
 const UserList = () => {
     // ** State
     const [mainParameterDefinition, setMainParameterDefinition] = useState<string>('')
-    const [mainParameterDefinitionObject, setMainParameterDefinitionObject] = useState<any>(null)
+    const [, setMainParameterDefinitionObject] = useState<any>(null)
+    const [formMainParameterDefinitionObject, setFormMainParameterDefinitionObject] = useState<any>(null)
     const [parameter, setParameter] = useState<string>('')
+    const [parameterDefinitionFilterValue, setParameterDefinitionValue] = useState<string>('')
 
 
     const [formData, setFormData] = useState({
@@ -65,7 +67,11 @@ const UserList = () => {
         control,
         handleSubmit,
         reset,
-        formState: { errors }
+        formState: { errors },
+        setValue,
+        setError,
+        clearErrors,
+        trigger
     } = useForm({
         defaultValues: emptyValues,
         mode: 'onSubmit',
@@ -76,11 +82,12 @@ const UserList = () => {
     useEffect(() => {
         dispatch(
             fetchData({
-                parameter: mainParameterDefinition
+                parameter: mainParameterDefinition,
+                q: parameterDefinitionFilterValue
             })
         )
 
-    }, [dispatch, mainParameterDefinition])
+    }, [dispatch, mainParameterDefinition, parameterDefinitionFilterValue])
 
 
     const onSubmit = (data: any) => {
@@ -91,7 +98,9 @@ const UserList = () => {
             dispatch(addSubParameterDefinition({ ...data, }))
         }
         reset(emptyValues)
-
+        setFormMainParameterDefinitionObject({ id: "", parameterName: '' })
+        setMainParameterDefinitionObject({ id: "", parameterName: '' })
+        setMainParameterDefinition('')
     }
 
 
@@ -106,12 +115,24 @@ const UserList = () => {
     }
 
 
+    const handleFormMainParameterDefinitionChange = (e: any, newValue: any) => {
+        if (newValue?.id) {
+            setFormMainParameterDefinitionObject(newValue)
+            setValue('parameterId', newValue.id)
+            trigger('parameterId')
+            setMainParameterDefinition(newValue.id)
+        }
+    }
+
+
+    const handleParameterDefinitionValue = (val: string) => {
+        setParameterDefinitionValue(val)
+    }
 
     return (
         <>
             <Grid container spacing={6}>
                 <Grid item xs={12} md={12} lg={4}>
-                    {/* <AddSubParameterDefinition formData={formData} mainParameterDefinition={mainParameterDefinition} setMainParameterDefinition={setMainParameterDefinition}/> */}
                     <Card>
                         <CardHeader title='Add Sub Parameter' titleTypographyProps={{ variant: 'h6' }} />
                         <CardContent>
@@ -122,9 +143,9 @@ const UserList = () => {
                                             <Autocomplete
                                                 autoSelect
                                                 size={'small'}
-                                                value={mainParameterDefinitionObject}
+                                                value={formMainParameterDefinitionObject}
                                                 options={mainParameterDefinitions.data}
-                                                onChange={handleMainParameterDefinitionChange}
+                                                onChange={handleFormMainParameterDefinitionChange}
                                                 isOptionEqualToValue={(option: any, value: any) => option.parameterName == value.parameterName}
                                                 id='autocomplete-controlled'
                                                 getOptionLabel={(option: any) => option.parameterName}
@@ -145,8 +166,34 @@ const UserList = () => {
                                                         autoFocus
                                                         label='Sub Parameter Name'
                                                         value={value}
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
+                                                        onBlur={(e) => {
+                                                            onBlur()
+                                                            const selectedParameter: any = store?.data?.filter(({ parameterName }: any) => parameterName == e.target.value)[0]
+                                                            if (selectedParameter) {
+                                                                setError('parameterName', {
+                                                                    type: 'manual',
+                                                                    message: 'Parameter Name already exists.',
+                                                                })
+                                                            } else {
+                                                                clearErrors('parameterName')
+                                                            }
+
+                                                        }
+                                                        }
+                                                        onChange={(e) => {
+                                                            onChange(e)
+                                                            const selectedParameter: any = store?.data?.filter(({ parameterName }: any) => parameterName == e.target.value)[0]
+                                                            if (selectedParameter) {
+                                                                setError('parameterName', {
+                                                                    type: 'manual',
+                                                                    message: 'Parameter Name already exists.',
+                                                                })
+                                                            } else {
+                                                                clearErrors('parameterName')
+                                                            }
+
+                                                        }
+                                                        }
                                                         error={Boolean(errors.parameterName)}
                                                         placeholder='Sub Parameter Name'
                                                     />
@@ -157,7 +204,7 @@ const UserList = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
-                                            <Button fullWidth size='small' type='submit' variant='contained' sx={{ mb: 7 }}>
+                                            <Button disabled={Object.keys(errors).length > 0} fullWidth size='small' type='submit' variant='contained' sx={{ mb: 7 }}>
                                                 Submit
                                             </Button>
                                         </FormControl>
@@ -165,8 +212,8 @@ const UserList = () => {
                                     <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
                                             <Button fullWidth size='small' color='secondary' onClick={() => {
-                                                reset()
-                                                setMainParameterDefinitionObject({ id: "", parameterName: '' })
+                                                reset(emptyValues)
+                                                setFormMainParameterDefinitionObject({ id: "", parameterName: '' })
                                                 setMainParameterDefinition('')
                                             }} type='reset' variant='contained' sx={{ mb: 7 }}>
                                                 Reset
@@ -181,10 +228,37 @@ const UserList = () => {
                 </Grid>
                 <Grid item xs={12} md={12} lg={8}>
                     <Card>
+                        <CardHeader title={'Sub Parameter Definition'} />
+                        <Grid container spacing={3}>
+                            <Grid item xs={4}></Grid>
+                            <Grid item xs={4}>
+                                <Autocomplete
+                                    autoSelect
+                                    size={'small'}
+                                    value={formMainParameterDefinitionObject}
+                                    options={mainParameterDefinitions.data}
+                                    onChange={handleMainParameterDefinitionChange}
+                                    isOptionEqualToValue={(option: any, value: any) => option.parameterName == value.parameterName}
+                                    id='autocomplete-controlled'
+                                    getOptionLabel={(option: any) => option.parameterName}
+                                    renderInput={params => <TextField  {...params} label='Search Parameter' />}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    size='small'
+                                    value={parameterDefinitionFilterValue}
+                                    placeholder='Search'
+                                    onChange={e => handleParameterDefinitionValue(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
                         <CardContent>
                             <SubParameterDefinitionTable
                                 rows={store.data}
                                 formData={formData}
+                                mainParameters={mainParameterDefinitions.data}
+                                setFormMainParameterDefinitionObject={setFormMainParameterDefinitionObject}
                                 setFormData={setFormData}
                                 deleteSubParameterDefinition={deleteSubParameterDefinition}
                                 parameter={parameter}
