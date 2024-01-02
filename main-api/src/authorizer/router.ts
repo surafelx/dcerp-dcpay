@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Router } from 'express'
 import jwt from 'jsonwebtoken'
 import authorizerDao from './dao'
+import authorizerService from './service'
 import userService from '../settings/user-management/users/service'
 import periodService from '../file/period/service'
 import organizationService from '../settings/general-setup/company/service'
@@ -26,51 +27,53 @@ router.post('/company-setup', async (req: Request, res: Response, next: NextFunc
     }
 })
 
-router.post('/login', 
-authorizerValidator.login,
-async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { isMatch, user } = await authorizerDao.comparePassword(
-            req.body?.email,
-            req.body?.password
-        )
-        if (!isMatch) {
-            throw createError.Unauthorized('Invalid Username and/or Password')
-        }
-        const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION  || 34000})
-        const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
-
-        const nextPeriod = await periodService.getNextPeriod(user.organization_id)
-        const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
- console.log(`const organizationId = '${user.organization_id}'`)
-    console.log(`const userId = '${user.id}'`)
-    console.log(`const periodId = '${currentPeriod[0].id}'`)
-        res.send({
-            accessToken,
-            userData: {
-                ...user,
-                password: undefined,
-                currentPeriod: currentPeriod[0],
-                nextPeriod: nextPeriod[0],
-                organizationName
+router.post('/login',
+    authorizerValidator.login,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { isMatch, user } = await authorizerDao.comparePassword(
+                req.body?.email,
+                req.body?.password
+            )
+            if (!isMatch) {
+                throw createError.Unauthorized('Invalid Username and/or Password')
             }
-        })
-    } catch (err) {
-        console.log(err)
-        res.status(400).send(err)
-        next(err)
-    }
-})
+            const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION || 34000 })
+            const authorizeUser = await authorizerService.authorizeUser(user.id)
+            const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
+
+            const nextPeriod = await periodService.getNextPeriod(user.organization_id)
+            const { organization_name: organizationName } = await organizationService.getInfo(user.organization_id)
+            console.log(`const organizationId = '${user.organization_id}'`)
+            console.log(`const userId = '${user.id}'`)
+            console.log(`const periodId = '${currentPeriod[0].id}'`)
+            res.send({
+                accessToken,
+                userData: {
+                    ...user,
+                    password: undefined,
+                    currentPeriod: currentPeriod[0],
+                    nextPeriod: nextPeriod[0],
+                    organizationName
+                }
+            })
+        } catch (err) {
+            console.log(err)
+            res.status(400).send(err)
+            next(err)
+        }
+    })
 
 
 router.get('/me', async (req: Request, res, next) => {
     try {
         const requestUser = req.user as any
         const user = await userService.getInfo(requestUser.id)
-        const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION })
+        // Check if user logged in has surpassed expiration
+        const isUserAuthorized = await authorizerService.checkIfUserStillAuthorized(user.id, process.env.NEXT_PUBLIC_JWT_EXPIRATION);
+        const accessToken = isUserAuthorized ? jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION }) : null
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
-        const {organization_name: organizationName} = await organizationService.getInfo(user.organization_id)
-        
+        const { organization_name: organizationName } = await organizationService.getInfo(user.organization_id)
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
