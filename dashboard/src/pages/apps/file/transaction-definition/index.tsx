@@ -201,8 +201,8 @@ const UserList = () => {
     }
 
     return (
-        <Grid container spacing={6}>
-            <Grid item xs={12} md={12} lg={5}>
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={4}>
                 <Card>
                     <CardHeader title='Add Transaction Definition' titleTypographyProps={{ variant: 'h6' }} />
                     <CardContent>
@@ -582,7 +582,7 @@ const UserList = () => {
                     </CardContent>
                 </Card >
             </Grid>
-            <Grid item xs={12} md={12} lg={7}>
+            <Grid item xs={12} md={12} lg={8}>
                 <Card>
                     <CardHeader title='Transaction Definition' />
                     <Grid container spacing={3}>

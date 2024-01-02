@@ -243,9 +243,9 @@ const EnhancedTable = ({ rows, formData, setFormData, deleteMembership, }: any) 
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{`${row.employeeFirstName} ${row.employeeLastName}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{`${row.transactionName}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{`${row.employeeFirstName} ${row.employeeLastName}`}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{`${row.transactionName}`}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeId={row.employeeId}

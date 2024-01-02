@@ -251,9 +251,9 @@ const EnhancedTable = ({ rows, formData, setFormData, mainParameters, setFormMai
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.mainParameterName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.parameterName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.mainParameterName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.parameterName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 parameterName={row.parameterName}

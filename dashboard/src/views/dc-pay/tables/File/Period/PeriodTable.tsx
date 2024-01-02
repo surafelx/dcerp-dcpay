@@ -266,13 +266,13 @@ const EnhancedTable = ({ rows }: any) => {
                                             height: 5,
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 11 }}>{row.periodCount}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.periodName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.periodYear}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.monthName}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {`${moment(row.startDate).format("YYYY/MM/DD")}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}> {`${moment(row.endDate).format("YYYY/MM/DD")}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 11 }}>{row.periodPaid ? (
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.periodCount}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.periodName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.periodYear}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.monthName}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {`${moment(row.startDate).format("YYYY/MM/DD")}`}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {`${moment(row.endDate).format("YYYY/MM/DD")}`}</TableCell>
+                                       <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.periodPaid ? (
 
                                             <Icon icon='mdi:check-bold' fontSize={11} color={'green'} />
                                         ) : (
