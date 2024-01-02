@@ -89,16 +89,17 @@ const AuthProvider = ({ children }: Props) => {
                 Authorization: storedToken
               }
             })
-            .then(async response => {
-              setLoading(false)
+            .then(async (response: any) => {
               window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
               setUser({ ...response.data.userData })
+              setLoading(false)
+
             })
             .catch(() => {
               setUser(null)
               window.localStorage.removeItem('userData')
               window.localStorage.removeItem(authConfig.storageTokenKeyName)
-              router.push('/login')
+              router.replace('/login')
               window.localStorage.removeItem('refreshToken')
               window.localStorage.removeItem('accessToken')
               setUser(null)

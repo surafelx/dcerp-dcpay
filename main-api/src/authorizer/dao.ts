@@ -1,5 +1,7 @@
 import pool from '../config/pool'
 import { compare } from '../utils/encrypt'
+import { v4 as uuid } from 'uuid'
+
 
 export const comparePassword = async (email: string, password: string): Promise<any> => {
     const result = await pool.query('SELECT * FROM user_accounts WHERE email=$1', [email])
@@ -50,7 +52,48 @@ ORDER BY CAST(parent.menu_code AS NUMERIC) ASC;
     return rawNavigationMenu
 }
 
+
+export const getUserToken = async (userId: string) => {
+    // const roleId = '78623c3a-d5f7-4e60-90dd-e9fec1154353'
+    const userTokenQueryResponse = await pool.query(`
+    SELECT
+    *
+    FROM user_token where user_id = $1;
+    `, [userId])
+    const userTokenData = userTokenQueryResponse.rows
+    return userTokenData[0]
+}
+
+export const createUserToken = async (userId: string, date: any) => {
+    const id = uuid()
+    const userTokenQueryResponse = await pool.query(`
+    INSERT INTO user_token
+    (
+        id, 
+        user_id,
+        token_date
+    )
+    VALUES ($1, $2, $3)
+    RETURNING *;
+    `, [id, userId, date])
+    const userTokenData = userTokenQueryResponse.rows
+    return userTokenData[0]
+}
+
+export const deleteUserToken = async (userId: string) => {
+    const userTokenQueryResponse = await pool.query(`
+    DELETE FROM user_token
+    WHERE user_id = $1;
+    `, [userId])
+    const userTokenData = userTokenQueryResponse.rows
+    return userTokenData[0]
+}
+
+
 export default {
+    getUserToken,
+    deleteUserToken,
     comparePassword,
     getNavigationMenu,
+    createUserToken
 }

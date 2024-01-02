@@ -276,3 +276,9 @@ CREATE TABLE processed_transactions (
 	transaction_date DATE NOT NULL
 );
 
+
+CREATE TABLE user_token (
+   id VARCHAR(40) NOT NULL UNIQUE,
+    token_date DATE,
+    user_id varchar(40) REFERENCES user_accounts(id)
+);
