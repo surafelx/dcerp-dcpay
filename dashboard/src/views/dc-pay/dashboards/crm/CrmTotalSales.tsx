@@ -1,3 +1,6 @@
+// ** React Imports
+import { useEffect } from 'react'
+
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import { useTheme } from '@mui/material/styles'
@@ -11,9 +14,82 @@ import { ApexOptions } from 'apexcharts'
 import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
+// ** Types
+import { AppDispatch } from 'src/store'
+
+// ** Store Imports
+import { useDispatch } from 'react-redux'
+
+// ** Actions Imports
+import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
+
 const CrmTotalSales = () => {
+
+  const dispatch = useDispatch<AppDispatch>()
+
   // ** Hook
   const theme = useTheme()
+
+
+  useEffect(() => {
+    dispatch(
+      fetchData({
+      })
+    )
+  }, [dispatch,])
+
+  // const payrollSheet = useSelector((state: RootState) => state.payrollSheet)
+
+  // const activeEmployee = payrollSheet.data.filter(({ employeeStatusName }) => employeeStatusName == 'Active')
+
+  // const calculateSalaryComponents = (employeesData: any, validTransactionCodes: any) => {
+  //   const totalSums: any = {};
+
+  //   employeesData.forEach((employeeData: any) => {
+  //     const transactions = employeeData.transactions || [];
+
+  //     transactions.forEach((transaction: any) => {
+  //       const { transaction_code, transaction_amount } = transaction;
+
+  //       if (validTransactionCodes.totalSalary.includes(transaction_code)) {
+  //         totalSums.totalSalary = (totalSums.totalSalary || 0) + (parseFloat(transaction_amount) || 0);
+  //       } else if (validTransactionCodes.allowance.includes(transaction_code)) {
+  //         totalSums.allowance = (totalSums.allowance || 0) + (parseFloat(transaction_amount) || 0);
+  //       } else if (validTransactionCodes.netPay.includes(transaction_code)) {
+  //         totalSums.netPay = (totalSums.netPay || 0) + (parseFloat(transaction_amount) || 0);
+  //       } else if (validTransactionCodes.overtime.includes(transaction_code)) {
+  //         totalSums.overtime = (totalSums.overtime || 0) + (parseFloat(transaction_amount) || 0);
+  //       } else if (validTransactionCodes.other.includes(transaction_code)) {
+  //         totalSums.other = (totalSums.other || 0) + (parseFloat(transaction_amount) || 0);
+  //       }
+  //     });
+  //   });
+
+  //   return totalSums;
+  // };
+
+  // const validTransactionCodes = {
+  //   incomeTax: ["21"],
+  //   totalSalary: ["5"],
+  //   allowance: ["6", "7", "8", "9", "18", "19", "20", "28", "29", "102", "103"],
+  //   netPay: ["99"],
+  //   overtime: ["11", "13", "15", "17"],
+  //   other: ["26"],
+  // };
+
+  // const totalSums = calculateSalaryComponents(activeEmployee, validTransactionCodes);
+
+  // const taxAmount = totalSums.incomeTax || 0;
+
+  // const employeesWithTotalSalary = totalSums.totalSalary || 0;
+
+  // const employeesWithTotalAllowance = totalSums.allowance || 0;
+
+  // const employeesWithTotalNetPay = totalSums.netPay || 0;
+
+  // const employeesOvertime = totalSums.overtime || 0;
+
+  // const employeesOther = totalSums.other || 0;
 
   const options: ApexOptions = {
     chart: {

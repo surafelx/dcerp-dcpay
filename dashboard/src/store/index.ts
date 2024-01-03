@@ -75,7 +75,7 @@ import menuRight from 'src/store/apps/Settings/RightsManagement/Menu'
 
 // ** Utilities - Tax Rate  
 import taxRate from 'src/store/apps/Utilities/TaxRate'
-
+import closing from 'src/store/apps/Utilities/Closing'
 
 // ** Utilities - Transaction Parameter Calculation
 import transactionParameterCalculation from 'src/store/apps/Utilities/TransactionParameterCalculation'
@@ -145,6 +145,7 @@ export const store = configureStore({
 
     // ** Utilites - Tax Rate 
     taxRate,
+    closing,
 
     // ** Utilities - Transaction Parameter Calculation
     transactionParameterCalculation

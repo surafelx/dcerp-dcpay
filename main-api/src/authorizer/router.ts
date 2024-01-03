@@ -39,7 +39,7 @@ router.post('/login',
                 throw createError.Unauthorized('Invalid Username and/or Password')
             }
             const accessToken = jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION || 34000 })
-            const authorizeUser = await authorizerService.authorizeUser(user.id)
+            await authorizerService.authorizeUser(user.id)
             const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
 
             const nextPeriod = await periodService.getNextPeriod(user.organization_id)

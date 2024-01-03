@@ -63,8 +63,6 @@ const schema = yup.object().shape({
 })
 
 
-import { utils, writeFile } from 'xlsx';
-
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 
@@ -97,25 +95,33 @@ const PayrollAdvice = () => {
                 q: ''
             })
         )
-    }, [dispatch])
+        dispatch(
+            fetchData({
+                branch,
+                department,
+                q: value,
+                currentPlan: ''
+            })
+        )
+    }, [dispatch, branch, department, value])
 
 
-    const generateExcelFile = () => {
-        const tableData = [
-            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'],
-            ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
-                employeeCode,
-                employeeName,
-                parseFloat(totalDeductions).toFixed(2),
-                parseFloat(totalEarnings).toFixed(2),
-                parseFloat(netPay).toFixed(2),
-            ]),
-        ]
-        const workbook = utils.book_new();
-        const worksheet = utils.aoa_to_sheet(tableData);
-        utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        writeFile(workbook, `Payrol Advice ${new Date()}`);
-    };
+    // const generateExcelFile = () => {
+    //     const tableData = [
+    //         ['Code', 'Name', 'Deductions', 'Earnings', 'Net'],
+    //         ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
+    //             employeeCode,
+    //             employeeName,
+    //             parseFloat(totalDeductions).toFixed(2),
+    //             parseFloat(totalEarnings).toFixed(2),
+    //             parseFloat(netPay).toFixed(2),
+    //         ]),
+    //     ]
+    //     const workbook = utils.book_new();
+    //     const worksheet = utils.aoa_to_sheet(tableData);
+    //     utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    //     writeFile(workbook, `Payrol Advice ${new Date()}`);
+    // };
 
 
 
@@ -211,6 +217,8 @@ const PayrollAdvice = () => {
                                         size={'small'}
                                         target='_blank'
                                         component={Link}
+                                        
+                                        disabled={store.data.length > 0 ? false : true}
                                         color='primary'
                                         variant='outlined'
                                         href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
@@ -218,17 +226,18 @@ const PayrollAdvice = () => {
                                         Print
                                     </Button>
                                 </Grid>
-                                <Grid item sm={3} xs={12}>
+                                {/* <Grid item sm={3} xs={12}>
                                     <Button
                                         size='small'
                                         fullWidth
                                         color='primary'
+                                        disabled={store.data.length > 0 ? false : true}
                                         variant='outlined'
                                         onClick={generateExcelFile}
                                     >
                                         Download
                                     </Button>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
 
                         </CardContent>
@@ -239,7 +248,7 @@ const PayrollAdvice = () => {
                 <Card>
                     <TableContainer>
                         <Table sx={{ minWidth: 650 }} size='small' >
-                        <TableHead>
+                            <TableHead>
                                 <TableRow>
                                     <TableCell>Code</TableCell>
                                     <TableCell>Name</TableCell>

@@ -11,6 +11,9 @@ import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
+
+import { CountUp } from 'use-count-up'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -56,9 +59,9 @@ const CrmTransactions = () => {
     const discontinuationStore = useSelector((state: RootState) => state.discontinuation)
 
     // const totalTransacations = payTransactionStore.data.length +  loanTransactionStore.data.length + membershipStore.data.length + discontinuationStore.data.length
-    
+
     return (
-        <Card sx={{ width: '100%', mt:"20px"}}>
+        <Card sx={{ width: '100%', mt: "20px" }}>
             <CardHeader
                 title='Transactions'
                 action={
@@ -88,7 +91,11 @@ const CrmTransactions = () => {
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Pay</Typography>
-                                <Typography variant='h6'>{String(payTransactionStore.data.length)}</Typography>
+                                <Typography variant='h6'>
+                                    {payTransactionStore.data.length ? (<CountUp isCounting end={payTransactionStore.data.length} />) : (
+                                        '...'
+                                    )}
+                                </Typography>
                             </Box>
                         </Box>
                     </Grid>
@@ -99,7 +106,11 @@ const CrmTransactions = () => {
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Loan</Typography>
-                                <Typography variant='h6'>{String(loanTransactionStore.data.length)}</Typography>
+                                <Typography variant='h6'>
+                                    {loanTransactionStore.data.length ? (<CountUp isCounting end={loanTransactionStore.data.length} />) : (
+                                        '...'
+                                    )}
+                                </Typography>
                             </Box>
                         </Box>
                     </Grid>
@@ -110,7 +121,11 @@ const CrmTransactions = () => {
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Memberships</Typography>
-                                <Typography variant='h6'>{String(membershipStore.data.length)}</Typography>
+                                <Typography variant='h6'>
+                                    {membershipStore.data.length ? (<CountUp isCounting end={membershipStore.data.length} />) : (
+                                        '...'
+                                    )}
+                                </Typography>
                             </Box>
                         </Box>
                     </Grid>
@@ -121,12 +136,16 @@ const CrmTransactions = () => {
                             </CustomAvatar>
                             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                 <Typography variant='caption'>Discontinuations</Typography>
-                                <Typography variant='h6'>{String(discontinuationStore.data.length)}</Typography>
+                                <Typography variant='h6'>
+                                    {discontinuationStore.data.length ? (<CountUp isCounting end={discontinuationStore.data.length} />) : (
+                                        '...'
+                                    )}
+                                </Typography>
                             </Box>
                         </Box>
                     </Grid>
                 </Grid>
-                
+
             </CardContent>
         </Card>
     )

@@ -38,7 +38,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
   // ** Vars for server side navigation
 
   const verticalMenuItems = ServerSideVerticalNavItems()
-  
+
   const { menuItems: horizontalMenuItems } = ServerSideHorizontalNavItems()
 
   /**
@@ -66,7 +66,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
           // navItems: VerticalNavItems()
 
           // Uncomment the below line when using server-side menu in vertical layout and comment the above line
-          
+
           navItems: verticalMenuItems
         },
         appBar: {
@@ -97,7 +97,7 @@ const UserLayout = ({ children, contentHeightFixed }: Props) => {
       })}
     >
       {children}
-      
+
     </Layout>
   )
 }

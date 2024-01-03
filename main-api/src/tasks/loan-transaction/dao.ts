@@ -8,7 +8,8 @@ export const create = async (newMenu: any): Promise<any> => {
         organizationId,
         transactionId,
         totalLoan,
-        transactionAmount
+        transactionAmount,
+        remainingBalance
     } = newMenu
     const query = `
 	INSERT INTO 
@@ -32,7 +33,7 @@ export const create = async (newMenu: any): Promise<any> => {
         transactionId,
         totalLoan,
         transactionAmount,
-        totalLoan
+        remainingBalance
     ])
     return res.rows[0]
 }
@@ -85,19 +86,22 @@ export const updateLoanTransaction = async (updatedLoanTransaction: any): Promis
     const {
         id,
         totalLoan,
-        transactionAmount
+        transactionAmount,
+        remainingBalance
     } = updatedLoanTransaction
     const query = `
     UPDATE loan_transaction
     SET 
     total_loan = $1,
-    transaction_amount = $2 
-    WHERE id = $3
+    transaction_amount = $2,
+    remaining_balance = $3
+    WHERE id = $4
     RETURNING *;
     `
     const res = await pool.query(query, [
         totalLoan,
         transactionAmount,
+        remainingBalance,
         id])
     const branchId = res.rows[0]
     return branchId
@@ -111,7 +115,7 @@ export const getById = async (loanTransactionId: string): Promise<any> => {
     WHERE
     id = $1
     `,
-    [loanTransactionId])
+        [loanTransactionId])
     return payTransactions[0]
 }
 

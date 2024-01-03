@@ -348,7 +348,24 @@ const getProcessedTransactions = async (employeeId: any, periodId: any) => {
     return periodTransactions
 }
 
-const getAllFromOrganization = async (organizationId: string, branchId: string, departmentId: string, bankId: string, userInfo: any): Promise<any[]> => {
+const getAllFromOrganization = async (organizationId: string, branchId: string, departmentId: string, bankId: string, userInfo: any, report: any): Promise<any[]> => {
+
+    if (!organizationId || !branchId || !departmentId && (!bankId && report !== 'sheet'))
+        return []
+
+    let fixedBranchId: string | null = branchId
+    let fixedDepartmentId: string | null = departmentId
+    let fixedBankId: string | null = bankId
+
+    if (branchId === 'All')
+        fixedBranchId = null
+
+    if (departmentId === 'All')
+        fixedDepartmentId = null
+
+    if (bankId === 'All')
+        fixedBankId = null
+
 
     const { rows: processedTransactions } = await pool.query(`
         WITH EmployeeTransactionData AS (
@@ -387,7 +404,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
             INNER JOIN parameter_definition pd4 ON pd4.id = e1.employee_bank
             INNER JOIN parameter_definition pd5 ON pd5.id = e1.employee_status
             INNER JOIN department dep ON dep.id = e1.department_id
-            WHERE pt.period_id = $1
+            WHERE pt.period_id = $1 AND e1.branch_id = COALESCE($2, e1.branch_id) AND e1.department_id = COALESCE($3, e1.department_id) AND e1.employee_bank =  COALESCE($4, e1.employee_bank)
           )
           SELECT
             employee_id AS id,
@@ -417,12 +434,11 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               )
             ) AS transactions
           FROM EmployeeTransactionData
-
           GROUP BY employee_id, branch_id, department_id, bank_id, employee_code, first_name, middle_name, last_name, employee_account_number, bank_name, employee_department, department_code, monthly_working_hours, employee_status_name
           ORDER BY CAST(department_code AS NUMERIC) ASC, CAST(employee_code AS NUMERIC) ASC
          ;
           `,
-        [userInfo.periodId])
+        [userInfo.periodId, fixedBranchId, fixedDepartmentId, fixedBankId])
 
     return processedTransactions
 }

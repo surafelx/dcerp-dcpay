@@ -1,3 +1,6 @@
+// ** React Imports
+import { useEffect } from 'react'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -22,9 +25,79 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
+// ** Types
+import { AppDispatch, RootState } from 'src/store'
+
+// ** Store Imports
+import { useDispatch, useSelector } from 'react-redux'
+
+// ** Actions Imports
+import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
+
 const CrmSalesOverview = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
   // ** Hook
   const theme = useTheme()
+
+
+  useEffect(() => {
+    dispatch(
+      fetchData({
+      })
+    )
+  }, [dispatch,])
+
+  const payrollSheet = useSelector((state: RootState) => state.payrollSheet)
+
+  const activeEmployee = payrollSheet.data.filter(({ employeeStatusName }) => employeeStatusName == 'Active')
+
+  console.log(activeEmployee)
+  const calculateSalaryComponents = (employeesData: any, validTransactionCodes: any) => {
+    const totalSums: any = {};
+
+    employeesData.forEach((employeeData: any) => {
+      const transactions = employeeData.transactions || [];
+
+      transactions.forEach((transaction: any) => {
+        const { transaction_code, transaction_type_name, transaction_amount } = transaction;
+
+        if (validTransactionCodes.incomeTax.includes(transaction_code)) {
+          totalSums.incomeTax = (totalSums.incomeTax || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.pension.includes(transaction_code)) {
+          totalSums.pension = (totalSums.pension || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.absence.includes(transaction_code)) {
+          totalSums.absence = (totalSums.absence || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.otherDeductions.includes(transaction_code)) {
+          totalSums.otherDeductions = (totalSums.otherDeductions || 0) + (parseFloat(transaction_amount) || 0);
+        }
+
+        if (transaction_type_name == "Deduction Amount") {
+          totalSums.totalDeductions = (totalSums.totalDeductions || 0) + (parseFloat(transaction_amount) || 0);
+        }
+
+      });
+    });
+
+    return totalSums;
+  };
+
+  const validTransactionCodes = {
+    incomeTax: ["21"],
+    pension: ["23"],
+    absence: ["3"],
+    otherDeductions: ["99"],
+  };
+
+  const totalSums = calculateSalaryComponents(activeEmployee, validTransactionCodes);
+
+  const totalDeductionsAmount = totalSums.totalDeductions || 0;
+  const taxAmount = totalSums.incomeTax || 0;
+  const pensionAmount = totalSums.pension || 0;
+  const absenceAmount = totalSums.absence || 0;
+  
+  // const otherDeductionsAmount = totalSums.otherDeductions || 0;
+
 
   const options: ApexOptions = {
     chart: {
@@ -105,7 +178,7 @@ const CrmSalesOverview = () => {
               </CustomAvatar>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='body2'>Total Deduction</Typography>
-                <Typography variant='h6'>86,400</Typography>
+                <Typography variant={'h6'}>{`${Number(totalDeductionsAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</Typography>
               </Box>
             </Box>
             <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
@@ -120,9 +193,9 @@ const CrmSalesOverview = () => {
                   }}
                 >
                   <Icon icon='mdi:circle' />
-                  <Typography variant='body2'>Tax</Typography>
+                  <Typography variant='body2'>Income Tax</Typography>
                 </Box>
-                <Typography sx={{ fontWeight: 600 }}>12,150</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{`${Number(taxAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</Typography>
               </Grid>
               <Grid item xs={6} sx={{ mb: 4 }}>
                 <Box
@@ -136,7 +209,7 @@ const CrmSalesOverview = () => {
                   <Icon icon='mdi:circle' />
                   <Typography variant='body2'>Pension</Typography>
                 </Box>
-                <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{`${Number(pensionAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Box
@@ -150,7 +223,7 @@ const CrmSalesOverview = () => {
                   <Icon icon='mdi:circle' />
                   <Typography variant='body2'>Absence</Typography>
                 </Box>
-                <Typography sx={{ fontWeight: 600 }}>12,750</Typography>
+                <Typography sx={{ fontWeight: 600 }}>{`${Number(absenceAmount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Box
@@ -171,67 +244,67 @@ const CrmSalesOverview = () => {
         </Grid>
         <Divider sx={{ my: theme => `${theme.spacing(4)} !important` }} />
         <Grid item xs={12} sm={12} sx={{ my: 'auto' }}>
-           
-            <Grid container>
-              <Grid item xs={3} sx={{mb: 2}}>
-                <Box
-                  sx={{
-                    mb: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
-                  }}
-                >
-                  <Icon icon='mdi:circle' />
-                  <Typography variant='body2'>Absence</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>12,150</Typography>
-              </Grid>
-              <Grid item xs={3} sx={{mb: 2}}>
-                <Box
-                  sx={{
-                    mb: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
-                  }}
-                >
-                  <Icon icon='mdi:circle' />
-                  <Typography variant='body2'>Loan</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
-              </Grid>
-              <Grid item xs={3} sx={{mb: 2}}>
-                <Box
-                  sx={{
-                    mb: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
-                  }}
-                >
-                  <Icon icon='mdi:circle' />
-                  <Typography variant='body2'>Expense</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
-              </Grid>
-              <Grid item xs={3} sx={{mb: 2}}>
-                <Box
-                  sx={{
-                    mb: 1.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
-                  }}
-                >
-                  <Icon icon='mdi:circle' />
-                  <Typography variant='body2'>Other</Typography>
-                </Box>
-                <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
-              </Grid>
-             
+
+          <Grid container>
+            <Grid item xs={3} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  mb: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '& svg': { mr: 1.5, fontSize: '0.75rem', color: 'primary.main' }
+                }}
+              >
+                <Icon icon='mdi:circle' />
+                <Typography variant='body2'>Absence</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 600 }}>12,150</Typography>
             </Grid>
+            <Grid item xs={3} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  mb: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                }}
+              >
+                <Icon icon='mdi:circle' />
+                <Typography variant='body2'>Loan</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
+            </Grid>
+            <Grid item xs={3} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  mb: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                }}
+              >
+                <Icon icon='mdi:circle' />
+                <Typography variant='body2'>Expense</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
+            </Grid>
+            <Grid item xs={3} sx={{ mb: 2 }}>
+              <Box
+                sx={{
+                  mb: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  '& svg': { mr: 1.5, fontSize: '0.75rem', color: hexToRGBA(theme.palette.primary.main, 0.7) }
+                }}
+              >
+                <Icon icon='mdi:circle' />
+                <Typography variant='body2'>Other</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 600 }}>24,900</Typography>
+            </Grid>
+
           </Grid>
+        </Grid>
       </CardContent>
     </Card>
   )

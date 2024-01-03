@@ -13,12 +13,12 @@ router.get('/',
             const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
             const userInfo = { periodId: currentPeriod[0].id, userId, }
-            const { q = '', bank = null, branch = null, department = null } = req.query ?? ''
+            const { q = '', bank = null, branch = null, department = null, report = null } = req.query ?? ''
             const branchId = branch
             const departmentId = department
             const bankId = bank
             const queryLowered = q.toString().toLowerCase()
-            const processedTransactions = await payrollSheetService.getAllFromOrganization(organizationId, branchId, departmentId, bankId, userInfo)
+            const processedTransactions = await payrollSheetService.getAllFromOrganization(organizationId, branchId, departmentId, bankId, userInfo, report)
             const renamedProcessedTransactions = processedTransactions.map(({
                 id,
                 employee_code,

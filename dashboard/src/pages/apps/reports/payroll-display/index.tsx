@@ -18,8 +18,6 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { useDispatch, useSelector } from 'react-redux'
 
 
-import Button from '@mui/material/Button'
-import { utils, writeFile } from 'xlsx';
 
 // ** Actions Imports
 import { fetchData } from 'src/store/apps/Reports/PayrollDisplay'
@@ -95,29 +93,29 @@ const UserList = () => {
     ]
 
 
-    const generateExcelFile = () => {
+    // const generateExcelFile = () => {
 
-        // Your data should be structured as an array of arrays
+    //     // Your data should be structured as an array of arrays
 
 
-        const tableData = [
-            ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
-            ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
-                employeeCode,
-                employeeName,
-                parseFloat(totalDeductions).toFixed(2),
-                parseFloat(totalEarnings).toFixed(2),
-                parseFloat(netPay).toFixed(2),
-            ]),
-        ]
+    //     const tableData = [
+    //         ['Code', 'Name', 'Deductions', 'Earnings', 'Net'], // Table headers
+    //         ...store.data.map(({ employeeCode, employeeName, totalDeductions, totalEarnings, netPay }) => [
+    //             employeeCode,
+    //             employeeName,
+    //             parseFloat(totalDeductions).toFixed(2),
+    //             parseFloat(totalEarnings).toFixed(2),
+    //             parseFloat(netPay).toFixed(2),
+    //         ]),
+    //     ]
 
-        const workbook = utils.book_new();
-        const worksheet = utils.aoa_to_sheet(tableData);
+    //     const workbook = utils.book_new();
+    //     const worksheet = utils.aoa_to_sheet(tableData);
 
-        utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    //     utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-        writeFile(workbook, 'your_file_name.xlsx');
-    };
+    //     writeFile(workbook, 'your_file_name.xlsx');
+    // };
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
@@ -129,8 +127,8 @@ const UserList = () => {
     const totalDeductions = deductionAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const earningAmounts = earningStore.filter((transaction: any) => transaction.transactionTypeName == 'Earning Amount')
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
-    const grossTaxable: any = store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary"))
-    
+    const grossTaxable: any = store.data.length > 0 ? store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary")) : [{ transactionAmount: 0 }]
+
     useEffect(() => {
         dispatch(
             fetchData({
@@ -192,7 +190,7 @@ const UserList = () => {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={6}></Grid>
-                            <Grid item xs={4}>
+                            {/* <Grid item xs={4}>
                                 <Button
                                     size='small'
                                     fullWidth
@@ -224,7 +222,7 @@ const UserList = () => {
                                 >
                                     Download
                                 </Button>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
 
                     </CardContent>
@@ -278,6 +276,7 @@ const UserList = () => {
                                         label='Gross Taxable'
                                         value={`${Number(grossTaxable[0]?.transactionAmount).toFixed(2)}`}
                                         placeholder='Gross Taxable'
+                                        InputProps={{ sx: { fontWeight: 'bold', color: 'primary' } }}
                                     />
                                 </FormControl>
                             </Grid>
@@ -290,6 +289,7 @@ const UserList = () => {
                                         label='Total Earning'
                                         value={`${Number(totalEarnings).toFixed(2)}`}
                                         placeholder='Total Earning'
+                                        InputProps={{ sx: { fontWeight: 'bold' } }}
                                     />
                                 </FormControl>
                             </Grid>
@@ -301,6 +301,7 @@ const UserList = () => {
                                         label='Total Deductions'
                                         value={`${Number(totalDeductions).toFixed(2)}`}
                                         placeholder='Total Deductions'
+                                        InputProps={{ sx: { fontWeight: 'bold' } }}
                                     />
                                 </FormControl>
                             </Grid>
@@ -312,6 +313,7 @@ const UserList = () => {
                                         label='Net Pay'
                                         value={`${Number(totalEarnings - totalDeductions).toFixed(2)}`}
                                         placeholder='Net Pay'
+                                        InputProps={{ sx: { fontWeight: 'bold' } }}
                                     />
                                 </FormControl>
                             </Grid>

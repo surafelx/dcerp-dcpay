@@ -2,23 +2,18 @@
 import { useState, useEffect } from 'react'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import FormControl from '@mui/material/FormControl'
 import CardContent from '@mui/material/CardContent'
 import TableContainer from '@mui/material/TableContainer'
-import Link from 'next/link'
 import Table from '@mui/material/Table'
-import Divider from '@mui/material/Divider'
 import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import { styled } from '@mui/material/styles'
-import { BoxProps } from '@mui/material/Box'
+
 
 // import LinearProgress from '@mui/material/LinearProgress'
 
@@ -38,15 +33,6 @@ import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-
-const CalcWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    '&:not(:last-of-type)': {
-        marginBottom: theme.spacing(2)
-    }
-}))
 
 const emptyValues = {
     branch: 'All',
@@ -881,19 +867,37 @@ const PayrollAdvice = () => {
                 q: ''
             })
         )
-    }, [dispatch])
+        dispatch(
+            fetchData({
+                branch,
+                department,
+                q: value,
+                currentPlan: ''
+            })
+        )
+    }, [dispatch, branch, department, value])
 
-
-
-
-
+    const {
+        reset,
+        setValue,
+        handleSubmit,
+        trigger,
+    } = useForm({
+        defaultValues: emptyValues,
+        mode: 'onSubmit',
+        resolver: yupResolver(schema)
+    })
 
 
     const handleBranchChange = (e: any, newValue: any) => {
         if (newValue?.id) {
             setBranchObject(newValue)
             setBranch(newValue.id)
+            setValue('branch', newValue.id)
+            trigger('branch')
             setDepartmentObject({ departmentName: '', id: '' })
+            setDepartment('')
+            setValue('department', '')
         }
     }
 
@@ -902,16 +906,11 @@ const PayrollAdvice = () => {
         if (newValue?.id) {
             setDepartmentObject(newValue)
             setDepartment(newValue.id)
+            setValue('department', newValue.id)
+            trigger('department')
         }
     }
 
-    const {
-        handleSubmit,
-    } = useForm({
-        defaultValues: emptyValues,
-        mode: 'onBlur',
-        resolver: yupResolver(schema)
-    })
 
     const onSubmit = (data: any) => {
         data.branch = branch
@@ -925,6 +924,17 @@ const PayrollAdvice = () => {
             })
         )
     }
+
+    const clearAllFields = () => {
+        reset(emptyValues)
+        setBranchObject({ id: '', branchName: '' })
+        setDepartmentObject({ id: '', departmentName: '' })
+        setBranch('')
+        setDepartment('')
+        setValue('branch', '')
+        setValue('department', '')
+    }
+
 
     return (
         <Grid container spacing={3}>
@@ -940,7 +950,7 @@ const PayrollAdvice = () => {
                                             autoSelect
                                             size={'small'}
                                             value={branchObject}
-                                            options={[...branchStore.data, { id: "All", branchName: 'All Branches' }]}
+                                            options={[{ id: "All", branchName: 'All Branches' }, ...branchStore.data,]}
                                             onChange={handleBranchChange}
                                             isOptionEqualToValue={(option: any, value: any) => option.branchName == value.branchName}
                                             id='autocomplete-controlled'
@@ -955,7 +965,7 @@ const PayrollAdvice = () => {
                                             autoSelect
                                             size={'small'}
                                             value={departmentObject}
-                                            options={[...departmentStore.data.filter((dep: any) => dep.branchId == branch || branchObject.branchName == 'All' || dep.departmentName == 'All'), { id: 'All', departmentName: 'All Departments' }]}
+                                            options={[{ id: 'All', departmentName: 'All Departments' }, ...departmentStore.data.filter((dep: any) => dep.branchId == branch || branchObject.branchName == 'All' || dep.departmentName == 'All'),]}
                                             onChange={handleDepartmentChange}
                                             isOptionEqualToValue={(option: any, value: any) => option.departmentName == value.departmentName}
                                             id='autocomplete-controlled'
@@ -975,22 +985,16 @@ const PayrollAdvice = () => {
                                     </Button>
                                 </Grid>
                                 <Grid item sm={3} xs={12}>
-                                    <Button
-                                        fullWidth
-                                        size={'small'}
-                                        target='_blank'
-                                        component={Link}
-                                        color='primary'
-                                        variant='outlined'
-                                        href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
-                                    >
-                                        Print
+                                    <Button color='secondary' fullWidth size='small' onClick={() => clearAllFields()} type='reset' variant='contained'>
+                                        Reset
                                     </Button>
                                 </Grid>
+
                                 <Grid item sm={3} xs={12}>
                                     <Button
                                         size='small'
                                         fullWidth
+                                        disabled={store.data.length > 0 ? false : true}
                                         color='primary'
                                         variant='outlined'
                                         onClick={() => generateExcelFile(store)}
@@ -1076,21 +1080,6 @@ const PayrollAdvice = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <CardContent>
-                        <Grid container>
-                            <Grid item xs={12} sm={4} lg={9} sx={{ order: { sm: 1, xs: 2 } }}>
-                            </Grid>
-                            <Grid item xs={12} sm={5} lg={3} sx={{ mb: { sm: 0, xs: 4 }, order: { sm: 2, xs: 1 } }}>
-                                <Divider />
-                                <CalcWrapper>
-                                    <Typography variant='body2'>Total:</Typography>
-                                    <Typography variant='body2' sx={{ fontWeight: 600 }}>
-                                        {Number(store.data.reduce((sum, { netPay }) => sum + netPay, 0)).toFixed(2)}
-                                    </Typography>
-                                </CalcWrapper>
-                            </Grid>
-                        </Grid>
-                    </CardContent>
                 </Card>
             </Grid>
         </Grid>
