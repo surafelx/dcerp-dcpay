@@ -33,7 +33,7 @@ type Props = {
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
-  const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hooks
   const router = useRouter()
@@ -82,7 +82,6 @@ const AuthProvider = ({ children }: Props) => {
       try {
         const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
         if (storedToken) {
-          setLoading(true)
           await axios
             .get(authConfig.meEndpoint, {
               headers: {
@@ -92,8 +91,6 @@ const AuthProvider = ({ children }: Props) => {
             .then(async (response: any) => {
               window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
               setUser({ ...response.data.userData })
-              setLoading(false)
-
             })
             .catch(() => {
               setUser(null)
@@ -103,7 +100,6 @@ const AuthProvider = ({ children }: Props) => {
               window.localStorage.removeItem('refreshToken')
               window.localStorage.removeItem('accessToken')
               setUser(null)
-              setLoading(false)
               if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
                 router.replace('/login')
               }

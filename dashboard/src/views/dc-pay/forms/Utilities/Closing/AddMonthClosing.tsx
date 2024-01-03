@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 
 // ** MUI Imports
@@ -31,18 +31,26 @@ import { yupResolver } from '@hookform/resolvers/yup'
 
 
 
-
 // ** Store Imports
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { addMonthClosing } from 'src/store/apps/Utilities/Closing'
+import { fetchData } from 'src/store/apps/Utilities/Closing'
 
 // ** Types Imports
-import { AppDispatch } from 'src/store'
+import { AppDispatch, RootState } from 'src/store'
 
 import moment from 'moment'
 
+// ** MUI Imports
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContentText from '@mui/material/DialogContentText'
+
+// ** Context
+import { useAuth } from 'src/hooks/useAuth'
 
 const schema = yup.object().shape({
     branchCode: yup.string(),
@@ -57,15 +65,51 @@ const emptyValues = {
 
 const AddMonthClosing = ({ formData }: any) => {
 
+    const { logout } = useAuth()
 
     // ** Hooks
     const dispatch = useDispatch<AppDispatch>()
 
     // @ts-ignore
     const userData = JSON.parse(window.localStorage.getItem('userData'))
-    const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
-    const { start_date: nextStartDate, end_date: nextEndDate } = userData.nextPeriod || { start_date: '', end_date: '' }
+    const { start_date: startDate, end_date: endDate } = userData?.currentPeriod || { start_date: '', end_date: '' }
+    const { start_date: nextStartDate, end_date: nextEndDate } = userData?.nextPeriod || { start_date: '', end_date: '' }
 
+
+    const [open, setOpen] = useState<boolean>(false)
+    const handleClickOpen = () => setOpen(true)
+    const handleClose = () => {
+        setOpen(false)
+        logout()
+    }
+
+    const DialogAlert = () => {
+        // ** State
+
+
+        return (
+            <Fragment>
+                <Dialog
+                    open={storeProcess ? false : open}
+                    onClose={handleClose}
+                    aria-labelledby='alert-dialog-title'
+                    aria-describedby='alert-dialog-description'
+                >
+                    <DialogTitle id='alert-dialog-title'>Closing Complete</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id='alert-dialog-description'>
+                            Closing has completed. You will be logged out now.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions className='dialog-actions-dense'>
+                        <Button onClick={handleClose}>Ok</Button>
+                    </DialogActions>
+                </Dialog>
+            </Fragment>
+        )
+    }
+
+    const storeProcess = useSelector((state: RootState) => state.closing.isLoading)
 
 
     const {
@@ -84,7 +128,10 @@ const AddMonthClosing = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        dispatch(addMonthClosing({ ...data, }))
+        dispatch(fetchData({ ...data, }))
+        if (!storeProcess) {
+            handleClickOpen()
+        }
         reset(emptyValues)
     }
 
@@ -144,14 +191,15 @@ const AddMonthClosing = ({ formData }: any) => {
                         <Grid item xs={8}></Grid>
                         <Grid item xs={4}>
                             <FormControl fullWidth>
-                                <Button fullWidth size='small' type='submit' variant='contained'>
-                                    Continue
+                                <Button disabled={storeProcess} fullWidth size='small' type='submit' variant='contained'>
+                                    {storeProcess ? ("Loading") : ("Process")}
                                 </Button>
                             </FormControl>
                         </Grid>
                     </Grid>
                 </form>
             </CardContent>
+            <DialogAlert />
         </Card >
     )
 }

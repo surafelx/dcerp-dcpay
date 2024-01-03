@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState, useEffect, } from 'react'
+import { Fragment, useState, useEffect, useRef } from 'react'
 
 
 // ** MUI Imports
@@ -44,25 +44,28 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 
 
-
 const emptyValues = {
     id: '',
     employeeId: '',
     transactionId: '',
-    transactionAmount: 0,
-    totalLoan: 0,
+    transactionAmount: '',
+    totalLoan: '',
     remainingBalance: ''
 }
 
 
 const schema = yup.object().shape({
-    employeeId: yup.string().required('Required'),
-    transactionId: yup.string().required('Required'),
-    transactionAmount: yup.number().typeError('Amount has to be a valid amount.').required("Amount is required").test('not-zero', 'Amount cannot be 0', (value) => value !== 0),
-    remainingBalance: yup.string(),
-    totalLoan: yup.number().typeError('Total Loan has to be a valid number.').required("Total Loan is required").test('not-zero', 'Loan cannot be 0', (value) => value !== 0),
+    employeeId: yup.string().required('Employee ID is required'),
+    transactionId: yup.string().required('Transaction ID is required'),
+    transactionAmount: yup.number().typeError('Amount must be a valid number').required("Amount is required").test('not-zero', 'Amount cannot be 0', (value) => value !== 0),
+    remainingBalance: yup.number().typeError('Amount must be a valid number').required("Amount is required").test('not-zero', 'Amount cannot be 0', (value) => value !== 0).test('valid-balance', 'Remaining Balance cannot be greater than Total Loan', (value: any, { parent }: any) => {
+        const totalLoan = parent?.totalLoan || 0;
 
-})
+        return value <= totalLoan;
+    }),
+    totalLoan: yup.number().typeError('Total Loan must be a valid number').required("Total Loan is required").test('not-zero', 'Loan cannot be 0', (value) => value !== 0),
+});
+
 
 
 const UserList = () => {
@@ -77,12 +80,14 @@ const UserList = () => {
     const handleClickOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
+    const transactionAmountRef: any = useRef()
+
     const [formData, setFormData] = useState({
         id: '',
         employeeId: '',
         transactionId: '',
-        totalLoan: 0,
-        transactionAmount: 0,
+        totalLoan: '',
+        transactionAmount: '',
         remainingBalance: ''
     });
 
@@ -192,8 +197,8 @@ const UserList = () => {
                 id: '',
                 employeeId: employee,
                 transactionId: selectedTransactionId,
-                transactionAmount: 0,
-                totalLoan: 0
+                transactionAmount: '',
+                totalLoan: ''
             })
         }
 
@@ -223,7 +228,7 @@ const UserList = () => {
             setValue('employeeId', newValue.id)
             trigger('employeeId')
             setTransactionObject({ id: '', transactionName: '' })
-            reset({ employeeId: newValue?.id, transactionId: '', totalLoan: 0, remainingBalance: '', transactionAmount: 0 })
+            reset({ employeeId: newValue?.id, transactionId: '', totalLoan: '', remainingBalance: '', transactionAmount: '' })
         }
     }
 
@@ -301,21 +306,23 @@ const UserList = () => {
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
-                                                    required
                                                     size={'small'}
                                                     autoFocus
-                                                    type={'number'}
-                                                    dir={'rtl'}
                                                     label='Transaction Amount'
                                                     value={value}
                                                     onBlur={onBlur}
                                                     onChange={onChange}
                                                     error={Boolean(errors.transactionAmount)}
                                                     placeholder='Enter Transaction Amount'
+                                                    inputRef={transactionAmountRef}
+                                                    type='number'
+                                                    inputProps={{
+                                                        style: { textAlign: 'right' },
+                                                    }}
                                                 />
                                             )}
                                         />
-                                        {errors.transactionAmount && <Alert sx={{ my: 4 }} severity='error'>{errors.transactionAmount.message}</Alert>}
+                                        {errors.transactionAmount && <FormHelperText sx={{ color: 'error.main' }}>{errors.transactionAmount.message}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
@@ -326,20 +333,22 @@ const UserList = () => {
                                             rules={{ required: true }}
                                             render={({ field: { value, onChange, onBlur } }) => (
                                                 <TextField
-                                                    required
                                                     size={'small'}
                                                     autoFocus
-                                                    dir={'rtl'}
                                                     label='Total Loan'
                                                     value={value}
                                                     onBlur={onBlur}
                                                     onChange={onChange}
                                                     error={Boolean(errors.totalLoan)}
                                                     placeholder='Enter Total Loan'
+                                                    type='number'
+                                                    inputProps={{
+                                                        style: { textAlign: 'right' },
+                                                    }}
                                                 />
                                             )}
                                         />
-                                        {errors.totalLoan && <Alert sx={{ my: 4 }} severity='error'>{errors.totalLoan.message}</Alert>}
+                                        {errors.totalLoan && <FormHelperText sx={{ color: 'error.main' }}>{errors.totalLoan.message}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
 
@@ -353,15 +362,16 @@ const UserList = () => {
                                                 <TextField
                                                     size={'small'}
                                                     autoFocus
-                                                    type={'number'}
                                                     label='Remaining Balance'
-                                                    dir={'rtl'}
                                                     value={value}
                                                     onBlur={onBlur}
-                                                    disabled={true}
                                                     onChange={onChange}
                                                     error={Boolean(errors.remainingBalance)}
                                                     placeholder='Enter Remaining Balance'
+                                                    type='number'
+                                                    inputProps={{
+                                                        style: { textAlign: 'right' },
+                                                    }}
                                                 />
                                             )}
                                         />

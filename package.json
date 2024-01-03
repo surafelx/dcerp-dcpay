@@ -25,6 +25,7 @@
         "main-api:up-dev": "cd main-api && docker-compose -f ./docker-compose.yml up"
     },
     "dependencies": {
-        "npm-run-all": "^4.1.5"
+        "npm-run-all": "^4.1.5",
+        "react-countup": "^6.5.0"
     }
 }

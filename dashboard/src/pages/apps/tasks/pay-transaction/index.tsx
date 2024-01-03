@@ -79,7 +79,7 @@ const UserList = () => {
         formState: { errors }
     } = useForm({
         defaultValues: emptyValues,
-        mode: 'onBlur',
+        mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
 

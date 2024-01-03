@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect,  } from 'react'
+import { useState, useEffect, } from 'react'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,20 +12,31 @@ import { fetchData as fetchEmployee } from 'src/store/apps/File/EmployeeMaster'
 import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/Branches'
 import { fetchData as fetchDepartments } from 'src/store/apps/File/EntityManagement/Department'
 
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import Typography from '@mui/material/Typography'
+import CardContent from '@mui/material/CardContent'
+import CustomChip from 'src/@core/components/mui/chip'
+
+import { CountUp } from 'use-count-up'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 
-// ** Custom Components Imports
-import CardStatisticsCharacter from 'src/@core/components/card-statistics/card-stats-with-image'
+
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
 // ** Demo Components Imports
 import CrmTransactions from 'src/views/dc-pay/dashboards/crm/CrmTransactions'
-import CrmSalesOverview from 'src/views/dc-pay/dashboards/crm/CrmSalesOverview'
-import CrmTotalProfit from 'src/views/dc-pay/dashboards/crm/CrmTotalProfit'
+
+// import CrmSalesOverview from 'src/views/dc-pay/dashboards/crm/CrmSalesOverview'
+
+// import CrmTotalProfit from 'src/views/dc-pay/dashboards/crm/CrmTotalProfit'
+
+
+
 
 const CRMDashboard = () => {
   const [role] = useState<string>('')
@@ -61,63 +72,160 @@ const CRMDashboard = () => {
     )
   }, [dispatch, role, status, value])
 
-
+  console.log("Hello")
 
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} sm={4} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
-          <CardStatisticsCharacter
-            data={{
-              stats: String(branchStore.data.length),
-
-              // trend: 'negative',
-              title: 'Branches',
-              trendNumber: '',
-              chipText: 'Total',
-              chipColor: 'primary',
-              src: '/images/avatars/branches.png'
-            }}
-          />
+          <Card sx={{ overflow: 'visible', position: 'relative' }}>
+            <CardContent>
+              <div style={{ display: 'flex', justifyContent: "space-around", height: '120px' }}>
+                <div>
+                  <Typography sx={{ mb: 6.5, fontWeight: 600, justifyContent: 'center' }}>{'Branches'}</Typography>
+                  <div>
+                    <Box sx={{ mb: 1.5, rowGap: 1, width: '55%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                      <Typography variant='h5' sx={{ mr: 1.5, textAlign: 'center' }}>
+                        {branchStore.data.length ? (<CountUp isCounting end={branchStore.data.length} />) : (
+                          '...'
+                        )}
+                      </Typography>
+                      <Typography
+                        component='sup'
+                        variant='caption'
+                        sx={{ color: 'success.main' }}
+                      >
+                        {''}
+                      </Typography>
+                    </Box>
+                    <CustomChip
+                      size='small'
+                      skin='light'
+                      label={'Total'}
+                      color={'primary'}
+                      sx={{ height: 20, fontWeight: 500, fontSize: '0.75rem', '& .MuiChip-label': { lineHeight: '1.25rem' } }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <img height={"120px"} src={'/images/avatars/employees.png'} alt={'Employees'} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={4} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
-          <CardStatisticsCharacter
-            data={{
-              stats: String(departmentStore.data.length),
-              
-              // trend: 'negative',
-              title: 'Departments',
-              trendNumber: '',
-              chipText: 'Total',
-              chipColor: 'primary',
-              src: '/images/avatars/departments.png'
-            }}
-          />
+          <Card sx={{ overflow: 'visible', position: 'relative' }}>
+            <CardContent>
+              <div style={{ display: 'flex', justifyContent: "space-around", height: '120px' }}>
+                <div>
+                  <Typography sx={{ mb: 6.5, fontWeight: 600, justifyContent: 'center' }}>{'Departments'}</Typography>
+                  <div>
+                    <Box sx={{ mb: 1.5, rowGap: 1, width: '55%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                      <Typography variant='h5' sx={{ mr: 1.5, textAlign: 'center' }}>
+                        {departmentStore.data.length ? (<CountUp isCounting end={departmentStore.data.length} />) : (
+                          '...'
+                        )}
+                      </Typography>
+                      <Typography
+                        component='sup'
+                        variant='caption'
+                        sx={{ color: 'success.main' }}
+                      >
+                        {''}
+                      </Typography>
+                    </Box>
+                    <CustomChip
+                      size='small'
+                      skin='light'
+                      label={'Total'}
+                      color={'primary'}
+                      sx={{ height: 20, fontWeight: 500, fontSize: '0.75rem', '& .MuiChip-label': { lineHeight: '1.25rem' } }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <img height={"120px"} src={'/images/avatars/employees.png'} alt={'Employees'} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={2} sx={{ pt: theme => `${theme.spacing(12.25)} !important` }}>
-          <CardStatisticsCharacter
-            data={{
-              stats: String(employeeStore.data.length),
+          <Card sx={{ overflow: 'visible', position: 'relative' }}>
+            <CardContent>
+              <div style={{ display: 'flex', justifyContent: "space-around", height: '120px' }}>
+                <div>
+                  <Typography sx={{ mb: 6.5, fontWeight: 600, justifyContent: 'center' }}>{'Employees'}</Typography>
+                  <div style={{ display: 'flex', justifyContent: "space-around", height: '120px', gap: '20px' }}>
+                    <div>
+                      <Box sx={{ mb: 1.5, rowGap: 1, width: '55%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                        <Typography variant='h5' sx={{ mr: 1.5, textAlign: 'center' }}>
+                          {employeeStore.data.length ? (<CountUp isCounting end={employeeStore.data.length} />) : (
+                            '...'
+                          )}
+                        </Typography>
+                        <Typography
+                          component='sup'
+                          variant='caption'
+                          sx={{ color: 'success.main' }}
+                        >
+                          {''}
+                        </Typography>
+                      </Box>
+                      <CustomChip
+                        size='small'
+                        skin='light'
+                        label={'Total'}
+                        color={'primary'}
+                        sx={{ height: 20, fontWeight: 500, fontSize: '0.75rem', '& .MuiChip-label': { lineHeight: '1.25rem' } }}
+                      />
+                    </div>
+                    <div>
+                      <Box sx={{ mb: 1.5, rowGap: 1, width: '55%', display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                        <Typography variant='h5' sx={{ mr: 1.5, textAlign: 'center' }}>
+                          {employeeStore.data.length ? (<CountUp isCounting end={employeeStore.data.filter(({ employeeStatusName }) => employeeStatusName == 'Active').length} />) : (
+                            '...'
+                          )}
+                        </Typography>
+                        <Typography
+                          component='sup'
+                          variant='caption'
+                          sx={{ color: 'success.main' }}
+                        >
+                          {''}
+                        </Typography>
+                      </Box>
+                      <CustomChip
+                        size='small'
+                        skin='light'
+                        label={'Active'}
+                        color={'primary'}
+                        sx={{ height: 20, fontWeight: 500, fontSize: '0.75rem', '& .MuiChip-label': { lineHeight: '1.25rem' } }}
+                      />
+                    </div>
+                  </div>
 
-              // trend: 'negative',
-              title: 'Employees',
-              trendNumber: '',
-              chipText: 'Total',
-              chipColor: 'primary',
-              src: '/images/avatars/employees.png'
-            }} />
+                </div>
+                <div>
+                  <img height={"120px"} src={'/images/avatars/employees.png'} alt={'Employees'} />
+                </div>
+              </div>
+
+            </CardContent>
+          </Card>
         </Grid>
-        <Grid sx={{display: 'flex', width: '100%', my: 'auto' }} item xs={12} md={6}>
+        <Grid sx={{ display: 'flex', width: '100%', my: 'auto' }} item xs={12} md={6}>
           <CrmTransactions />
         </Grid>
-         <Grid item xs={12} md={7}>
+        {/* <Grid item xs={12} md={7}>
           <CrmTotalProfit />
-        </Grid> 
+        </Grid>
         <Grid item xs={12} md={5}>
           <CrmSalesOverview />
-        </Grid> 
+        </Grid> */}
       </Grid>
-    </ApexChartWrapper>
+    </ApexChartWrapper >
   )
 }
 

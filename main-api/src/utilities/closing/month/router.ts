@@ -37,15 +37,21 @@ const router = Router()
 //         }
 //     })
 
-router.post('/',
+router.get('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = req.headers['x-user-id'];
-            const { organization_id: organizationId} = await userService.getUserAuthorizationInfo(userId)
+            const { organization_id: organizationId } = await userService.getUserAuthorizationInfo(userId)
             const currentPeriod = await periodService.getCurrentPeriod(organizationId)
-            const {id: periodId} = currentPeriod[0]
+            const { id: periodId } = currentPeriod[0]
             const closedMonth = await monthClosingService.closeMonth(organizationId, userId, periodId)
-            res.send(closedMonth)
+            res.send({
+                allData: [closedMonth],
+                closing: [closedMonth],
+                query: req.query,
+                total: 0,
+                isLoading: false
+            })
         } catch (err) {
             console.log(err)
             res.status(400).send(err)

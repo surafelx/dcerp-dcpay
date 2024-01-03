@@ -117,11 +117,11 @@ const App = (props: ExtendedAppProps) => {
                   <ThemeComponent settings={settings}>
                     <DatePickerWrapper>
                       <WindowWrapper>
-                        {/* <Guard authGuard={authGuard} guestGuard={guestGuard}> */}
+                        {/* <AuthGuard authGuard={authGuard} guestGuard={guestGuard}> */}
                           <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
                             {getLayout(<Component {...pageProps} />)}
                           </AclGuard>
-                        {/* </Guard> */}
+                        {/* </AuthGuard> */}
                       </WindowWrapper>
                       <ReactHotToast>
                         <Toaster position={settings.toastPosition} toastOptions={{ className: 'react-hot-toast' }} />

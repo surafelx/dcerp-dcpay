@@ -1,35 +1,39 @@
 import pool from '../../../config/pool'
-import { v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
 
 
 
 const createPayTransaction = async (newMenu: any) => {
     const id = uuid()
-    const { employeeId, transactionId, transactionAmount } = newMenu;
+    const { organizationId, periodId, employeeId, transactionId, transactionAmount } = newMenu;
     const query = `
 	INSERT INTO 
         pay_transaction 
         (
             id,
+            organization_id,
+            period_id,
             employee_id,
             transaction_id,
             transaction_amount 
             ) 
-    VALUES ($1, $2, $3, $4)
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *;
     `;
     const res = await pool.query(query, [
         id,
+        organizationId,
+        periodId,
         employeeId,
         transactionId,
         transactionAmount
     ]);
     return res.rows[0];
-}; 
+};
 
-const createPeriodTransaction = async (newPeriodTransaction: any) => {
+const createPeriodTransaction = async (organizationId: any, userId: any, newPeriodTransaction: any) => {
     const id = uuid()
-    const { organizationId, periodId, employeeId, transactionId, transactionAmount, userId } = newPeriodTransaction;
+    const { periodId, employeeId, transactionId, transactionAmount } = newPeriodTransaction;
     const query = `
 	INSERT INTO 
         period_transactions 
@@ -104,16 +108,14 @@ const closeMonth = async (organizationId: any, userId: any, periodId: any,) => {
     for (const pt of periodTransactions) {
         try {
             if (pt.permanent) {
-                const createdPayTransaction = await createPayTransaction({ organizationId, employeeId: pt.employee_id, transactionId: pt.transaction_id, transactionAmount: pt.transaction_amount });
+                const createdPayTransaction = await createPayTransaction({ organizationId, periodId, employeeId: pt.employee_id, transactionId: pt.transaction_id, transactionAmount: pt.transaction_amount });
                 const newPeriodTransaction = {
                     employeeId: createdPayTransaction.employee_id,
                     transactionId: createdPayTransaction.transaction_id,
-                    organizationId,
                     transactionAmount: createdPayTransaction.transaction_amount,
-                    userId,
                     periodId: openedPeriod[0].id
                 };
-                await createPeriodTransaction(newPeriodTransaction);
+                await createPeriodTransaction(organizationId, userId, newPeriodTransaction);
             }
         }
         catch (error) {

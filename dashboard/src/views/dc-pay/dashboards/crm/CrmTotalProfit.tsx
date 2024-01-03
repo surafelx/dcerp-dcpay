@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -16,6 +16,9 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Imports
 import { ApexOptions } from 'apexcharts'
 
+// ** Store Imports
+import { useDispatch, useSelector } from 'react-redux'
+
 // ** Types
 import { ThemeColor } from 'src/@core/layouts/types'
 
@@ -24,6 +27,12 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import OptionsMenu from 'src/@core/components/option-menu'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
+// ** Types
+import { AppDispatch, RootState } from 'src/store'
+
+// ** Actions Imports
+import { fetchData } from 'src/store/apps/Reports/PayrollSheet'
+
 interface DataType {
   title: string
   icon: ReactNode
@@ -31,38 +40,6 @@ interface DataType {
   avatarColor: ThemeColor
 }
 
-const data: DataType[] = [
-  {
-    title: '48,568.20',
-    avatarColor: 'success',
-    subtitle: 'Salary',
-    icon: <Icon icon='mdi:cash-multiple' fontSize='1.875rem' />
-  },
-  {
-    title: '38,453.25',
-    avatarColor: 'primary',
-    subtitle: 'Allowance',
-    icon: <Icon icon='mdi:hard-hat' fontSize='1.875rem' />
-  },
-  {
-    title: '38,453.25',
-    avatarColor: 'primary',
-    subtitle: 'Overtime',
-    icon: <Icon icon='mdi:clock-plus' fontSize='1.875rem' />
-  },
-  {
-    title: '2,453.45',
-    avatarColor: 'secondary',
-    subtitle: 'Benefit',
-    icon: <Icon icon='mdi:plus-box-multiple' />
-  },
-  {
-    title: '2,453.45',
-    avatarColor: 'secondary',
-    subtitle: 'Others',
-    icon: <Icon icon='mdi:dots-horizontal' />
-  }
-]
 
 const series = [
   {
@@ -90,8 +67,63 @@ const StyledGrid = styled(Grid)<GridProps>(({ theme }) => ({
 }))
 
 const EcommerceTotalProfit = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
   // ** Hook
   const theme = useTheme()
+
+  useEffect(() => {
+    dispatch(
+      fetchData({
+      })
+    )
+  }, [dispatch,])
+
+  const payrollSheet = useSelector((state: RootState) => state.payrollSheet)
+
+  const activeEmployee = payrollSheet.data.filter(({ employeeStatusName }) => employeeStatusName == 'Active')
+
+  const calculateSalaryComponents = (employeesData: any, validTransactionCodes: any) => {
+    const totalSums: any = {};
+
+    employeesData.forEach((employeeData: any) => {
+      const transactions = employeeData.transactions || [];
+
+      transactions.forEach((transaction: any) => {
+        const { transaction_code, transaction_amount } = transaction;
+
+        if (validTransactionCodes.totalSalary.includes(transaction_code)) {
+          totalSums.totalSalary = (totalSums.totalSalary || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.allowance.includes(transaction_code)) {
+          totalSums.allowance = (totalSums.allowance || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.netPay.includes(transaction_code)) {
+          totalSums.netPay = (totalSums.netPay || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.overtime.includes(transaction_code)) {
+          totalSums.overtime = (totalSums.overtime || 0) + (parseFloat(transaction_amount) || 0);
+        } else if (validTransactionCodes.other.includes(transaction_code)) {
+          totalSums.other = (totalSums.other || 0) + (parseFloat(transaction_amount) || 0);
+        }
+      });
+    });
+
+    return totalSums;
+  };
+
+  const validTransactionCodes = {
+    totalSalary: ["5"],
+    allowance: ["6", "7", "8", "9", "18", "19", "20", "28", "29", "102", "103"],
+    netPay: ["99"],
+    overtime: ["11", "13", "15", "17"],
+    other: ["26"],
+  };
+
+  const totalSums = calculateSalaryComponents(activeEmployee, validTransactionCodes);
+
+  const employeesWithTotalSalary = totalSums.totalSalary || 0;
+  const employeesWithTotalAllowance = totalSums.allowance || 0;
+  const employeesWithTotalNetPay = totalSums.netPay || 0;
+  const employeesOvertime = totalSums.overtime || 0;
+  const employeesOther = totalSums.other || 0;
 
   const options: ApexOptions = {
     chart: {
@@ -192,6 +224,34 @@ const EcommerceTotalProfit = () => {
     ]
   }
 
+  const data: DataType[] = [
+    {
+      title: `${Number(employeesWithTotalSalary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      avatarColor: 'success',
+      subtitle: 'Salary',
+      icon: <Icon icon='mdi:cash-multiple' fontSize='1.875rem' />
+    },
+    {
+      title: `${Number(employeesWithTotalAllowance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      avatarColor: 'primary',
+      subtitle: 'Allowance',
+      icon: <Icon icon='mdi:hard-hat' fontSize='1.875rem' />
+    },
+    {
+      title: `${Number(employeesOvertime).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      avatarColor: 'primary',
+      subtitle: 'Overtime',
+      icon: <Icon icon='mdi:clock-plus' fontSize='1.875rem' />
+    },
+    {
+      title: `${Number(employeesOther).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      avatarColor: 'secondary',
+      subtitle: 'Others',
+      icon: <Icon icon='mdi:dots-horizontal' />
+    }
+  ]
+
+
   return (
     <Card>
       <Grid container>
@@ -203,7 +263,7 @@ const EcommerceTotalProfit = () => {
         </StyledGrid>
         <Grid item xs={12} sm={5}>
           <CardHeader
-            title='482.85k'
+            title={`${Number(employeesWithTotalNetPay).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             subheader='Last month compensation 234.40k'
             subheaderTypographyProps={{ sx: { lineHeight: '1.25rem', fontSize: '0.875rem !important' } }}
             titleTypographyProps={{
@@ -241,7 +301,7 @@ const EcommerceTotalProfit = () => {
                 </Box>
               )
             })}
-          
+
           </CardContent>
         </Grid>
       </Grid>
