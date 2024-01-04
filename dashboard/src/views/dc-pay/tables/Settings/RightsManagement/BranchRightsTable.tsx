@@ -54,8 +54,8 @@ const BranchRightsTable = () => {
             headerName: 'Branch Name',
             renderCell: ({ row }: CellType) => {
                 const { id, branchName } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Link href={`/apps/user/view/${id}`} passHref>
@@ -103,6 +103,7 @@ return (
                     checked={allowedState}
                     onChange={(e) => {
                         handleAllowedChecked(e, id)
+                        setRole('')
                     }}
                     size='small'
                 />
@@ -143,7 +144,7 @@ return (
         setRole(e.target.value)
     }, [])
 
-  
+
 
     return (
         <Grid container spacing={6}>
@@ -177,11 +178,11 @@ return (
                         </Grid>
                         <Grid item xs={12}>
                             <DataGrid
-                             rowHeight={30}
+                                rowHeight={30}
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                               pageSize={pageSize}
+                                pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />

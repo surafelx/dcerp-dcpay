@@ -72,7 +72,6 @@ const CRMDashboard = () => {
     )
   }, [dispatch, role, status, value])
 
-  console.log("Hello")
 
   return (
     <ApexChartWrapper>
@@ -108,7 +107,7 @@ const CRMDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <img height={"120px"} src={'/images/avatars/employees.png'} alt={'Employees'} />
+                  <img height={"120px"} src={'/images/avatars/branches.png'} alt={'Branches'} />
                 </div>
               </div>
             </CardContent>
@@ -145,7 +144,7 @@ const CRMDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <img height={"120px"} src={'/images/avatars/employees.png'} alt={'Employees'} />
+                  <img height={"120px"} src={'/images/avatars/departments.png'} alt={'Departments'} />
                 </div>
               </div>
             </CardContent>

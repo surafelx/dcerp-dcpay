@@ -246,7 +246,6 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
                 .filter((pt: any) => !pt.taxable)
                 .reduce((total: any, fpt: any) => total + parseFloat(fpt.transaction_amount), 0);
             grossTaxableSalary = grossSalary - nonTaxableTransactionAmount
-            console.log(grossSalary, grossTaxableSalary)
             totalDeductions -= absenceAmountReductions
             tax = await taxRateService.calculateTaxRate(organizationId, grossTaxableSalary)
             await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: tax, userId, periodId, organizationId })

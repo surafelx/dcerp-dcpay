@@ -225,7 +225,6 @@
 //       updatedSelectedItems.push(item);
 //     }
 //     setSelectedItems(updatedSelectedItems);
-//     console.log(selectedItems)
 
 //   };
 
@@ -369,7 +368,6 @@
 //       data.contractStartDate = data.contractDate[0]
 //       data.contractEndDate = data.contractDate[1]
 //     }
-//     console.log(data)
 //     if (data.id) {
 //       dispatch(editEmployee({ ...data }))
 //     } else {

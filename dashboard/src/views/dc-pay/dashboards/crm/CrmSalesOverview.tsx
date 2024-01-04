@@ -52,7 +52,6 @@ const CrmSalesOverview = () => {
 
   const activeEmployee = payrollSheet.data.filter(({ employeeStatusName }) => employeeStatusName == 'Active')
 
-  console.log(activeEmployee)
   const calculateSalaryComponents = (employeesData: any, validTransactionCodes: any) => {
     const totalSums: any = {};
 
@@ -95,7 +94,7 @@ const CrmSalesOverview = () => {
   const taxAmount = totalSums.incomeTax || 0;
   const pensionAmount = totalSums.pension || 0;
   const absenceAmount = totalSums.absence || 0;
-  
+
   // const otherDeductionsAmount = totalSums.otherDeductions || 0;
 
 

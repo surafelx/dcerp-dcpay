@@ -32,7 +32,6 @@ const getAllFromOrganizationByPeriod = async (organizationId: any, userInfo: any
 const deletePayTransaction = async (payTransactionId: string, userInfo: any): Promise<any> => {
     const payTransaction = await getPeriodTransactionById(payTransactionId)
     const { userId, organizationId, periodId } = userInfo
-    console.log(payTransaction)
     await payTransactionDao.deletePayTransaction(payTransactionId)
     const deletedPayTransaction = {
         employeeId: payTransaction.employee_id,

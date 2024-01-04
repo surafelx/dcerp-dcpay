@@ -103,7 +103,6 @@ router.delete('/:id',
 router.put('/',
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            console.log(req.body)
             const updatedEmployee = await employeeService.updateEmployee(req.body.data)
             res.send(updatedEmployee)
         } catch (err) {
