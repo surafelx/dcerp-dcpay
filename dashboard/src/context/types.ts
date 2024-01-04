@@ -23,6 +23,7 @@ export type UserDataType = {
 }
 
 export type AuthValuesType = {
+  navigation: any
   loading: boolean
   logout: () => void
   user: UserDataType | null

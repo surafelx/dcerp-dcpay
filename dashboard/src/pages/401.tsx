@@ -19,6 +19,8 @@ import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
 // ** Spinner Import
 import Spinner from 'src/@core/components/spinner'
 
+import { useAuth } from 'src/hooks/useAuth'
+
 // ** Styled Components
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
@@ -44,6 +46,8 @@ const Img = styled('img')(({ theme }) => ({
 const Error404 = () => {
   const [isLoading, setIsLoading] = useState(true);
 
+  // ** Hooks
+  const auth = useAuth()
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -72,8 +76,8 @@ const Error404 = () => {
                   <Typography variant='body2'>You don&prime;t have permission to access this page. Go Home!</Typography>
                 </BoxWrapper>
                 <Img height='487' alt='error-illustration' src='/images/pages/401.png' />
-                <Button href='/login' component={Link} variant='contained' sx={{ px: 5.5 }}>
-                  Back to Home
+                <Button onClick={() => auth.logout()} href='/apps/dashboard/overview/' component={Link} variant='contained' sx={{ px: 5.5 }}>
+                  Back to Login
                 </Button>
               </Box>
               <FooterIllustrations />

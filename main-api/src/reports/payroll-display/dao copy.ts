@@ -1,5 +1,4 @@
 import pool from '../../config/pool'
-import taxRateService from '../../utilities/tax-rate/service'
 import { v4 as uuid } from 'uuid'
 
 
@@ -110,27 +109,27 @@ export const createProcessedTransactions = async (newMenu: any): Promise<any> =>
     return res.rows[0]
 }
 
-const calculateNetPay = async (organizationId: any, transactions: any) => {
-    let grossSalary = 0
-    let taxableTransactionsAmount = 0
-    let totalDeductions = 0
-    transactions.map((tran: any) => {
-        if (tran.transaction_type_name === 'Earning Amount')
-            grossSalary += parseFloat(tran.transaction_amount)
-        if (tran.transaction_type_name === 'Deduction Amount')
-            totalDeductions += parseFloat(tran.transaction_amount)
-        if (tran.taxable)
-            taxableTransactionsAmount += parseFloat(tran.transaction_amount)
-    })
+// const calculateNetPay = async (organizationId: any, transactions: any) => {
+//     let grossSalary = 0
+//     let taxableTransactionsAmount = 0
+//     let totalDeductions = 0
+//     transactions.map((tran: any) => {
+//         if (tran.transaction_type_name === 'Earning Amount')
+//             grossSalary += parseFloat(tran.transaction_amount)
+//         if (tran.transaction_type_name === 'Deduction Amount')
+//             totalDeductions += parseFloat(tran.transaction_amount)
+//         if (tran.taxable)
+//             taxableTransactionsAmount += parseFloat(tran.transaction_amount)
+//     })
 
 
-    const grossTaxableSalary = grossSalary - taxableTransactionsAmount
-    const tax = await taxRateService.calculateTaxRate(organizationId, grossTaxableSalary)
-    totalDeductions += tax
-    const netPay = grossSalary - totalDeductions
+//     const grossTaxableSalary = grossSalary - taxableTransactionsAmount
+//     const tax = await taxRateService.calculateTaxRate(organizationId, grossTaxableSalary)
+//     totalDeductions += tax
+//     const netPay = grossSalary - totalDeductions
 
-    return { grossTaxableSalary, netPay, tax, grossSalary, totalDeductions, taxableTransactionsAmount }
-}
+//     return { grossTaxableSalary, netPay, tax, grossSalary, totalDeductions, taxableTransactionsAmount }
+// }
 
 
 const processPayTransactions = async (employee: any, organizationId: any, userInfo: any) => {
@@ -315,13 +314,13 @@ const getAllFromOrganization = async (organizationId: string, employeeId: string
         allTransactions.push(...calculatedTrans)
     }
 
-    const { grossSalary, grossTaxableSalary, netPay, tax, totalDeductions, taxableTransactionsAmount } = await calculateNetPay(organizationId, allTransactions)
+    // const { grossSalary, grossTaxableSalary, netPay, tax, totalDeductions, taxableTransactionsAmount } = await calculateNetPay(organizationId, allTransactions)
 
     // const grossSalaryTransaction = await pool.query('SELECT * FROM transaction_definition ')
     // await createProcessedTransactions({ employeeId: employee.id, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
 
 
-    console.log(grossTaxableSalary, netPay, tax, grossSalary,totalDeductions, taxableTransactionsAmount)
+    // console.log(grossTaxableSalary, netPay, tax, grossSalary,totalDeductions, taxableTransactionsAmount)
 
     return [...allTransactions]
 

@@ -1361,7 +1361,6 @@ const setupApp = async (organizationId: any, branchId: any) => {
                              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)`;
                 await pool.query(query, [uuid(), organizationId, branchId, transactionCode, transactionName, shortName, refactoredTransactionType, refactoredUpdateType, permanent, taxable, unTaxableLimit, affectByLeave, leaveDays, affectBackPayroll, affectBeneficiary, refactoredTransactionGroup, glEntryBy, directAccount, contractGlAccount]);
             } catch (error) {
-                console.log(transaction)
                 console.error(error)
             }
 
@@ -1391,7 +1390,6 @@ export const getTransactionDefinitionByNameByOrganization = async (organizationI
             [organizationId, transactionName])
         return transactions[0].id
     } catch (error) {
-        console.log(transactionName)
         console.log(error)
     }
 

@@ -15,6 +15,7 @@ import { AuthValuesType, RegisterParams, LoginParams, ErrCallbackType, UserDataT
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
+  navigation: null,
   user: null,
   loading: true,
   setUser: () => null,
@@ -33,6 +34,7 @@ type Props = {
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
+  const [navigation, setNavigation] = useState<UserDataType | null>(defaultProvider.navigation)
   const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hooks
@@ -91,6 +93,7 @@ const AuthProvider = ({ children }: Props) => {
             .then(async (response: any) => {
               window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
               setUser({ ...response.data.userData })
+              setNavigation(response.data.navigation)
             })
             .catch(() => {
               setUser(null)
@@ -120,6 +123,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const values = {
     user,
+    navigation,
     loading,
     setUser,
     setLoading,

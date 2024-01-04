@@ -20,6 +20,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
+// ** Component Import
+import Error401 from 'src/pages/401'
+
 interface AclGuardProps {
   children: ReactNode
   guestGuard: boolean
@@ -39,6 +42,21 @@ const AclGuard = (props: AclGuardProps) => {
   // If guestGuard is true and user is not logged in or its an error page, render the page without checking access
   if (guestGuard || router.route === '/404' || router.route === '/500' || router.route === '/') {
     return <>{children}</>
+  }
+
+  let matchFound = false;
+
+  if (auth.navigation) {
+    for (const menuItem of auth.navigation) {
+      if (`${menuItem.menu_path}/` === router.asPath) {
+        matchFound = true;
+        break;
+      }
+    }
+  }
+
+  if (!matchFound) {
+    return <Error401 />
   }
 
   // User is logged in, build ability for the user based on his role

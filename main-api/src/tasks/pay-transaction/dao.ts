@@ -37,24 +37,23 @@ export const create = async (newMenu: any, periodId: any): Promise<any> => {
 
 export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
     const { periodId } = userInfo
-    const { rows: periodTransactions } = await pool.query(`
-    SELECT 
-    pts.id, 
-    pts.employee_id,
-    pts.transaction_id, 
-    td.permanent,
-    td.transaction_name,
-    pd1.parameter_name as transaction_group_name,
-    lt1.remaining_balance,
-    lt1.total_loan,
-    lt1.transaction_amount as loan_transaction_amount
-    FROM period_transactions pts
-    INNER JOIN transaction_definition td ON td.id = pts.transaction_id 
-    INNER JOIN parameter_definition pd1 ON pd1.id = td.transaction_group
-    LEFT JOIN loan_transaction lt1 ON lt1.transaction_id = td.id
-    WHERE pts.organization_id=$1 AND pts.period_id=$2 AND pts.employee_id = lt1.employee_id`, [organizationId, periodId])
+    // const { rows: periodTransactions } = await pool.query(`
+    // SELECT 
+    // pts.id, 
+    // pts.employee_id,
+    // pts.transaction_id, 
+    // td.permanent,
+    // td.transaction_name,
+    // pd1.parameter_name as transaction_group_name,
+    // lt1.remaining_balance,
+    // lt1.total_loan,
+    // lt1.transaction_amount as loan_transaction_amount
+    // FROM period_transactions pts
+    // INNER JOIN transaction_definition td ON td.id = pts.transaction_id 
+    // INNER JOIN parameter_definition pd1 ON pd1.id = td.transaction_group
+    // LEFT JOIN loan_transaction lt1 ON lt1.transaction_id = td.id
+    // WHERE pts.organization_id=$1 AND pts.period_id=$2 AND pts.employee_id = lt1.employee_id`, [organizationId, periodId])
 
-    console.log(periodTransactions.filter(({ transaction_group_name }: any) => transaction_group_name == 'Loan'))
 
     const { rows: payTransactions } = await pool.query(`
     SELECT *

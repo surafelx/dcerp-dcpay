@@ -381,7 +381,6 @@ export const generateExcelFile = (store: any) => {
         departmentTotalDeductions += Number(Number(totalDeductions).toFixed(2))
         departmentNetPay += Number(Number(netPay).toFixed(2))
 
-        console.log(totalDepartmentNetPay, departmentNetPay)
         tableData.push([
             Number(index + 1),
             employeeCode,

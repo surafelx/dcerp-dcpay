@@ -86,10 +86,7 @@ const AddBranch = ({ formData }: any) => {
     }, [formData, reset])
 
     const onSubmit = (data: any) => {
-        if (errors.branchCode) {
-            console.log("Hello")
-        }
-
+       
         if (data.id) {
             dispatch(editBranch({ ...data, }))
         } else {

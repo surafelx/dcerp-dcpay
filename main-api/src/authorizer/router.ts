@@ -44,9 +44,6 @@ router.post('/login',
 
             const nextPeriod = await periodService.getNextPeriod(user.organization_id)
             const { organization_name: organizationName } = await organizationService.getInfo(user.organization_id)
-            console.log(`const organizationId = '${user.organization_id}'`)
-            console.log(`const userId = '${user.id}'`)
-            console.log(`const periodId = '${currentPeriod[0].id}'`)
             res.send({
                 accessToken,
                 userData: {
@@ -74,13 +71,15 @@ router.get('/me', async (req: Request, res, next) => {
         const accessToken = isUserAuthorized ? jwt.sign({ id: user.id }, process.env.NEXT_PUBLIC_JWT_SECRET as string, { expiresIn: process.env.NEXT_PUBLIC_JWT_EXPIRATION }) : null
         const currentPeriod = await periodService.getCurrentPeriod(user.organization_id)
         const { organization_name: organizationName } = await organizationService.getInfo(user.organization_id)
+        const { role_id: roleId } = await userService.getUserAuthorizationInfo(String(user.id))
+        const navigation = await authorizerDao.getNavigationPath(roleId)
         const userData = {
             ...user,
             role: user.role_name.toLowerCase(),
             currentPeriod,
             organizationName
         }
-        res.send({ accessToken, userData })
+        res.send({ accessToken, userData, navigation })
     } catch (err) {
         res.status(400).send(err)
         next(err)

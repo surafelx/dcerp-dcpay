@@ -75,20 +75,20 @@ const UserDropdown = (props: Props) => {
     setAnchorEl(null)
   }
 
-  const styles = {
-    py: 2,
-    px: 4,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    color: 'text.primary',
-    textDecoration: 'none',
-    '& svg': {
-      mr: 2,
-      fontSize: '1.375rem',
-      color: 'text.primary'
-    }
-  }
+  // const styles = {
+  //   py: 2,
+  //   px: 4,
+  //   width: '100%',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   color: 'text.primary',
+  //   textDecoration: 'none',
+  //   '& svg': {
+  //     mr: 2,
+  //     fontSize: '1.375rem',
+  //     color: 'text.primary'
+  //   }
+  // }
 
   const handleLogout = () => {
     logout()
@@ -135,7 +135,9 @@ const UserDropdown = (props: Props) => {
               <Avatar alt='John Doe' src='/images/avatars/profile.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600, textTransform: 'capitalize' }}>{`${firstName} ${lastName}`}</Typography>
+              <Typography sx={{ fontWeight: 600, textTransform: 'capitalize' }}>
+                {`${firstName} ${lastName}`}
+              </Typography>
               <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled', textTransform: 'capitalize' }}>
                 {`${role}`}
               </Typography>
@@ -167,12 +169,12 @@ const UserDropdown = (props: Props) => {
 
         {/* <Divider /> */}
 
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/apps/settings/user-management')}>
+        {/* <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/apps/settings/user-management')}>
           <Box sx={styles}>
             <Icon icon='mdi:cog-outline' />
             Settings
           </Box>
-        </MenuItem>
+        </MenuItem> */}
 
         {/* <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/pricing')}>
           <Box sx={styles}>
@@ -187,7 +189,7 @@ const UserDropdown = (props: Props) => {
           </Box>
         </MenuItem> */}
 
-        <Divider />
+        {/* <Divider /> */}
         <MenuItem
           onClick={handleLogout}
           sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}

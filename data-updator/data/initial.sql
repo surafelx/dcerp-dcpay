@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS user_token;
+
 -- Drop table 'tax_rate'
 DROP TABLE IF EXISTS processed_transactions;
 

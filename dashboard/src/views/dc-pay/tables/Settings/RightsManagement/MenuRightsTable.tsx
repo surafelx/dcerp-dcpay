@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect,  useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -32,7 +32,6 @@ import { fetchData as fetchRole } from 'src/store/apps/Settings/UserManagement/R
 import { RootState, AppDispatch } from 'src/store'
 
 // ** Custom Components Imports
-import TableHeader from 'src/views/apps/user/list/TableHeader'
 import { MenuRightsType } from 'src/types/apps/Settings/RightsManagement/menuRightsType'
 
 
@@ -45,9 +44,8 @@ interface CellType {
 const MenuRightsTable = () => {
     // ** State
     const [role, setRole] = useState<string>('')
-    const [value, setValue] = useState<string>('')
+    const [value,] = useState<string>('')
     const [pageSize, setPageSize] = useState<number>(10)
-    const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
 
 
     const columns = [
@@ -58,8 +56,8 @@ const MenuRightsTable = () => {
             headerName: 'Menu Title',
             renderCell: ({ row }: CellType) => {
                 const { id, menuTitle } = row
-                
-return (
+
+                return (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
                             <Link href={`/apps/user/view/${id}`} passHref>
@@ -119,6 +117,7 @@ return (
                     checked={readAllowedState}
                     onChange={(e) => {
                         handleReadChecked(e, id)
+                        setRole('')
                     }}
                     size='small'
                 />
@@ -140,6 +139,7 @@ return (
                     checked={editAllowedState}
                     onChange={(e) => {
                         handleEditChecked(e, id)
+                        setRole('')
                     }}
                     size='small'
                 />
@@ -175,16 +175,11 @@ return (
     const store = useSelector((state: RootState) => state.menuRight)
 
 
-    const handleFilter = useCallback((val: string) => {
-        setValue(val)
-    }, [])
 
     const handleRoleChange = useCallback((e: SelectChangeEvent) => {
         setRole(e.target.value)
     }, [])
 
-
-    const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
     return (
         <Grid container spacing={6}>
@@ -217,13 +212,12 @@ return (
 
                         </Grid>
                         <Grid item xs={12}>
-                            <TableHeader value={value} handleFilter={handleFilter} toggle={toggleAddUserDrawer} />
                             <DataGrid
-                             rowHeight={30}
+                                rowHeight={30}
                                 autoHeight
                                 rows={store.data}
                                 columns={columns}
-                               pageSize={pageSize}
+                                pageSize={pageSize}
                                 rowsPerPageOptions={[10, 25, 50]}
                                 onPageSizeChange={(newPageSize: number) => setPageSize(newPageSize)}
                             />
