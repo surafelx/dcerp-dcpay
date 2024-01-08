@@ -25,7 +25,7 @@ const ServerSideNavItems = () => {
         const finalMenuArray = (items: VerticalNavItemsType) => {
           return items.map((item: any) => {
             if (item.icon) {
-              
+
               // @ts-ignore
               // item.icon = Icons[item.icon]
               if (item.children) {
@@ -41,7 +41,7 @@ const ServerSideNavItems = () => {
 
         setMenuItems(finalMenuArray(menuArray));
       } catch (error) {
-        
+
         // Handle the error appropriately, e.g., log it or show a user-friendly message
         console.error('Error while processing menu items:', error);
       }
@@ -51,7 +51,7 @@ const ServerSideNavItems = () => {
       auth.logout()
     });
 
-  }, [])
+  }, [auth])
 
   return menuItems
 }
