@@ -10,11 +10,11 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+// import ExcelJS from 'exceljs'
 
 import { utils, writeFile } from 'sheetjs-style';
 
 // ** MUI Imports
-import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -31,13 +31,9 @@ import { fetchData as fetchBranch } from 'src/store/apps/File/EntityManagement/B
 import { fetchData as fetchDepartment } from 'src/store/apps/File/EntityManagement/Department'
 
 
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-
 // ** Third Party Imports
 import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 
@@ -46,10 +42,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
 
-import AddUserDrawer from 'src/views/apps/user/list/AddUserDrawer'
 
 import Autocomplete from '@mui/material/Autocomplete'
 
+import moment from 'moment'
 
 // import format from 'date-fns/format'
 import TextField from '@mui/material/TextField'
@@ -57,9 +53,6 @@ import TextField from '@mui/material/TextField'
 const emptyValues = {
     branch: '',
     department: '',
-    format: '',
-    layout: '',
-
 }
 
 
@@ -146,9 +139,8 @@ const otherList = [
     'Contribution',
     'Medical Contribution'
 ]
-const EarningAmountList = ({ transactionList, employeeList, earningQuantityList, onCheckboxChange, }: any) => {
-    const [expanded, setExpanded] = useState<string | false>(false)
-    const [subExpanded, setSubExpanded] = useState<string | false>(false)
+const EarningAmountList = ({ expanded, subExpanded, setSubExpanded, setExpanded, onCheckboxChange, checkboxStates, setCheckboxStates }: any) => {
+
 
     const handleChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false)
@@ -159,13 +151,7 @@ const EarningAmountList = ({ transactionList, employeeList, earningQuantityList,
         setSubExpanded(isExpanded ? panel : false)
     }
 
-    const [checkboxStates, setCheckboxStates] = useState(
-        transactionList.reduce((acc: any, allowance: any) => {
-            acc[allowance] = false;
 
-            return acc;
-        }, {})
-    );
     const handleItemChecked = (selectedItem: any) => {
         setCheckboxStates((prevCheckboxStates: any) => {
             const updatedCheckboxStates = {
@@ -179,6 +165,8 @@ const EarningAmountList = ({ transactionList, employeeList, earningQuantityList,
             return updatedCheckboxStates;
         });
     };
+
+
 
     return (
         <div>
@@ -410,15 +398,40 @@ const EarningAmountList = ({ transactionList, employeeList, earningQuantityList,
 };
 
 const UserList = () => {
+    const [expanded, setExpanded] = useState<string | false>(false)
+    const [subExpanded, setSubExpanded] = useState<string | false>(false)
+
+    const transactionList = [...employeeList, ...earningQuantityList, ...earningAmountList, ...deductionQuantityList, ...deductionAmountList, ...otherList]
 
     const [selectedItems, setSelectedItems] = useState<any>([]);
+    const [checkboxStates, setCheckboxStates] = useState(
+        transactionList.reduce((acc: any, allowance: any) => {
+            acc[allowance] = false;
+
+            return acc;
+        }, {})
+    );
+
+    const resetAll = () => {
+        // Reset checkbox states
+        setCheckboxStates(
+            transactionList.reduce((acc: any, allowance: any) => {
+                acc[allowance] = false;
+
+                return acc;
+            }, {})
+        );
+
+        // Collapse all accordion panels
+        setExpanded(false);
+        setSubExpanded(false);
+    };
 
     // Rest of your component code...
 
     const handleCheckboxChange = (item: any) => {
         const selectedChecks: any = Object.keys(item).filter(key => item[key]);
         const updateSelectedItems = [...selectedChecks]
-        console.log(updateSelectedItems)
         setSelectedItems(updateSelectedItems);
 
     };
@@ -426,19 +439,50 @@ const UserList = () => {
 
     const generateExcelFile = (store: any) => {
         const headers = [...selectedItems]
+        const merges = [];
+
+        merges.push({ s: { r: 0, c: 0 }, e: { r: 2, c: 6 } }, { s: { r: 3, c: 2 }, e: { r: 3, c: 3 } }, { s: { r: 3, c: 5 }, e: { r: 3, c: 6 } }, { s: { r: 4, c: 2 }, e: { r: 4, c: 3 } }, { s: { r: 4, c: 5 }, e: { r: 4, c: 6 } }, { s: { r: 5, c: 2 }, e: { r: 5, c: 3 } }, { s: { r: 5, c: 5 }, e: { r: 5, c: 6 } });
 
         const uppercaseHeaders = headers.map(header => header.toUpperCase());
 
-        const tableData: any = [['NO.', ...uppercaseHeaders], [], []]
+        // @ts-ignore
+        const userData = JSON.parse(window.localStorage.getItem('userData'))
 
-        store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, transactions, }: any, index: any) => {
+        const { start_date: startDate, end_date: endDate } = userData.currentPeriod || { start_date: '', end_date: '' }
+        let firstName = 'Default'
+        let lastName = 'User'
+
+
+        if (userData) {
+            firstName = userData.first_name
+            lastName = userData.last_name
+        }
+
+        const capitalizeFirstLetter = (str: any) => {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+
+        const tableData: any = [['DIREDAWA FOOD COMPLEX S.C.', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', 'OPERATOR', `${capitalizeFirstLetter(firstName)} ${capitalizeFirstLetter(lastName)}`, '', 'BRANCH', `${branchObject.branchName}`, ''], ['', 'DATE', `${moment().format("LL")} `, '', 'DEPARTMENT', `${departmentObject.departmentName}`, ''], ['', 'PERIOD', `${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`, '', 'POWERED BY', 'ASUN SOLUTIONS', ''], [], [], ['NO.', ...uppercaseHeaders]]
+
+        store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
             const employeeDetails = []
             if (selectedItems.includes('Code'))
                 employeeDetails.push(employeeCode)
             if (selectedItems.includes('Name'))
                 employeeDetails.push(employeeName)
-            console.log(transactions.filter(({ transaction_name }: any) => transaction_name == 'Overtime Amount 150%'))
-            const selectedTransactionsAmountsFormatted = selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name').map((itemName: any) => {
+            if (selectedItems.includes('TIN'))
+                employeeDetails.push(tinNumber)
+            if (selectedItems.includes('Bank'))
+                employeeDetails.push(bankName)
+            if (selectedItems.includes('Account'))
+                employeeDetails.push(employeeAccountNumber)
+            if (selectedItems.includes('Pension'))
+                employeeDetails.push(pensionStatus)
+            if (selectedItems.includes('Pension No.'))
+                employeeDetails.push(pensionNumber)
+
+            const selectedTransactionsAmountsFormatted = selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account').map((itemName: any) => {
                 const matchingTransaction = transactions.find(({ transaction_name }: any) => transaction_name === itemName);
 
                 return {
@@ -450,17 +494,13 @@ const UserList = () => {
                         : '0.00',
                     transaction_name: itemName,
                 };
-            })
-                .sort((a: any, b: any) => {
-                    const indexA = selectedItems.indexOf(a.transaction_name);
-                    const indexB = selectedItems.indexOf(b.transaction_name);
+            }).sort((a: any, b: any) => {
+                const indexA = selectedItems.indexOf(a.transaction_name);
+                const indexB = selectedItems.indexOf(b.transaction_name);
 
-                    return indexA - indexB;
-                })
-                .map(({ transaction_amount }: any) => transaction_amount);
+                return indexA - indexB;
+            }).map(({ transaction_amount }: any) => transaction_amount);
 
-
-            console.log(selectedTransactionsAmountsFormatted, selectedItems)
 
             tableData.push([
                 index + 1,
@@ -469,13 +509,16 @@ const UserList = () => {
             ])
         })
 
+
+
         const workbook = utils.book_new();
         const worksheet = utils.aoa_to_sheet(tableData);
 
+
         worksheet['!cols'] = [
-            { wpx: 30 }, // No.
-            { wpx: 50 }, // Code
-            { wpx: 150 }, // Name
+            { wpx: 50 }, // No.
+            { wpx: 100 }, // Code
+            { wpx: 100 }, // Name
             { wpx: 100 }, // Deductions
             { wpx: 100 }, // Earnings
             { wpx: 100 }, // Net
@@ -549,12 +592,11 @@ const UserList = () => {
         }
 
         tableData.forEach((row: any, rowIndex: any) => {
-            const isTotalRow = row[0] === 'TOTAL';
 
             if (rowIndex !== 0) { // Skip the header row
                 row.forEach((_: any, colIndex: any) => {
                     const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
-                    if (isTotalRow || rowIndex === tableData.length - 1) {
+                    if (rowIndex === tableData.length - 1) {
 
                         // Apply totalStyle for total rows and the last row
                         worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: dataRowStyle });
@@ -583,18 +625,66 @@ const UserList = () => {
 
         });
 
+        if (merges.length > 0) {
+            worksheet['!merges'] = merges;
+        }
 
 
         utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        writeFile(workbook, `Payroll Detail Styled.xlsx`);
+        writeFile(workbook, `Report ${moment().format("LL")}.xlsx`);
     };
 
+    // const exportToExcel = (store: any) => {
+    //     const workbook = new ExcelJS.Workbook();
+    //     const sheet = workbook.addWorksheet("Hello", {
+    //         headerFooter: { firstHeader: "Hello Exceljs", firstFooter: "Hello World" },
+    //     });
+    //     sheet.properties.defaultRowHeight = 20;
+
+    //     // Add 4 empty rows at the beginning
+    //     selectedItems.map((item: any, index: any) => {
+    //         sheet.addRow([])
+    //     });
+
+    //     // Apply styling to the empty rows
+
+    //     // Define columns based on selected items starting from the 5th row
+    //     selectedItems.map((item: any, index: any) => {
+    //         return {
+    //             header: item,
+    //             key: item.toLowerCase(),
+    //         };
+    //     });
+
+    //     // Add data rows starting from the 5th row
+    //     store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(
+    //         ({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
+    //             const employeeDetails = {
+    //                 code: employeeCode,
+    //                 name: employeeName,
+    //             };
+    //             sheet.addRow(employeeDetails);
+    //         }
+    //     );
+
+    //     // Export the workbook to Excel
+    //     workbook.xlsx.writeBuffer().then(function (data) {
+    //         const blob = new Blob([data], {
+    //             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    //         });
+    //         const url = window.URL.createObjectURL(blob);
+    //         const anchor = document.createElement("a");
+    //         anchor.href = url;
+    //         anchor.download = "download.xlsx";
+    //         anchor.click();
+    //         window.URL.revokeObjectURL(url);
+    //     });
+    // };
 
     // @ts-ignore
 
     // ** State
 
-    const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
     const [branch, setBranch] = useState<string>('All')
     const [branchObject, setBranchObject] = useState<any>({ id: 'All', branchName: 'All Branches' })
     const [department, setDepartment] = useState<string>('All')
@@ -611,9 +701,6 @@ const UserList = () => {
     const schema = yup.object().shape({
         branch: yup.string().required('Required'),
         department: yup.string().required('Required'),
-        layout: yup.string().required('Required'),
-        format: yup.string().required('Required'),
-
     })
 
     useEffect(() => {
@@ -637,20 +724,13 @@ const UserList = () => {
     }, [dispatch, branch, department])
 
     const {
-        control,
         handleSubmit,
         reset,
-        formState: { errors }
     } = useForm({
         defaultValues: emptyValues,
         mode: 'onSubmit',
         resolver: yupResolver(schema)
     })
-
-
-
-
-    const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
 
 
@@ -724,80 +804,23 @@ const UserList = () => {
                                         />
                                     </FormControl>
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <FormControl fullWidth >
-                                        <Controller
-                                            name='layout'
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field: { value, onChange, onBlur } }) => (
-                                                <>
-                                                    <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Layout *</InputLabel>
-                                                    <Select
-                                                        size={'small'}
-                                                        label='Layout *'
-                                                        value={value}
-                                                        id='demo-simple-select-autoWidth'
-                                                        labelId='demo-simple-select-autoWidth-label'
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
-                                                        error={Boolean(errors.layout)}
-                                                    >
-                                                        <MenuItem value={'portrait'}>Portrait</MenuItem>
-                                                        <MenuItem value={'landscape'}>Landscape</MenuItem>
-                                                    </Select>
-                                                </>
-
-                                            )}
-                                        />
-                                        {errors.layout && <Alert sx={{ my: 4 }} severity='error'>{errors.layout.message}</Alert>}
-                                    </FormControl>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <FormControl fullWidth >
-                                        <Controller
-                                            name='format'
-                                            control={control}
-                                            rules={{ required: true }}
-                                            render={({ field: { value, onChange, onBlur } }) => (
-                                                <>
-                                                    <InputLabel size={'small'} id='demo-simple-select-autoWidth-label'>Format *</InputLabel>
-                                                    <Select
-                                                        size={'small'}
-                                                        label='Format *'
-                                                        value={value}
-                                                        id='demo-simple-select-autoWidth'
-                                                        labelId='demo-simple-select-autoWidth-label'
-                                                        onBlur={onBlur}
-                                                        onChange={onChange}
-                                                        error={Boolean(errors.format)}
-                                                    >
-                                                        <MenuItem value={'XlSX'}>XLSX</MenuItem>
-                                                        <MenuItem value={'PDF'}>PDF</MenuItem>
-                                                    </Select>
-                                                </>
-
-                                            )}
-                                        />
-                                        {errors.format && <Alert sx={{ my: 4 }} severity='error'>{errors.format.message}</Alert>}
-                                    </FormControl>
-                                </Grid>
-
                                 <Grid item sm={12}>
-                                    <EarningAmountList employeeList={employeeList} earningQuantityList={earningQuantityList} deductionQuantityList={deductionQuantityList} earningAmountList={earningAmountList} deductionAmountList={deductionAmountList} transactionList={[...employeeList, ...earningQuantityList, ...earningAmountList, ...deductionQuantityList, ...deductionAmountList, ...otherList]} onCheckboxChange={(item: any) => handleCheckboxChange(item)} />
+                                    <EarningAmountList subExpanded={subExpanded} setSubExpanded={setSubExpanded} expanded={expanded} setExpanded={setExpanded} checkboxStates={checkboxStates} setCheckboxStates={setCheckboxStates} resetAll={resetAll} onCheckboxChange={(item: any) => handleCheckboxChange(item)} />
                                 </Grid>
-                                <Grid item xs={12} sm={4}>
+
+                                {/* <Grid item xs={12} sm={4}>
                                     <FormControl fullWidth>
                                         <Button size='small' color='primary' fullWidth type='submit' variant='contained' sx={{ mb: 7 }}>
                                             Preview
                                         </Button>
                                     </FormControl>
-                                </Grid>
+                                </Grid> */}
+
                                 <Grid item xs={12} sm={4}>
                                     <Button
                                         size='small'
                                         fullWidth
-                                        disabled={store.data.length > 0 ? false : true}
+                                        disabled={(store.data.length > 0 && selectedItems.length > 0) ? false : true}
                                         color='primary'
                                         variant='outlined'
                                         onClick={() => generateExcelFile(store)}
@@ -809,6 +832,7 @@ const UserList = () => {
                                     <FormControl fullWidth>
                                         <Button size='small' color='secondary' fullWidth onClick={() => {
                                             reset(emptyValues)
+                                            resetAll()
                                         }} type='reset' variant='contained' sx={{ mb: 7 }}>
                                             Reset
                                         </Button>
@@ -819,7 +843,8 @@ const UserList = () => {
                     </CardContent   >
                 </Card>
             </Grid>
-            <Grid item xs={12} md={12} lg={7}>
+
+            {/* <Grid item xs={12} md={12} lg={7}>
                 <Card>
                     <CardHeader title='Report View' />
 
@@ -855,7 +880,8 @@ const UserList = () => {
                     </CardContent>
                 </Card>
             </Grid>
-            <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} />
+            <AddUserDrawer open={addUserOpen} toggle={toggleAddUserDrawer} /> */}
+
         </Grid>
     )
 }

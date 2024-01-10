@@ -378,6 +378,9 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               e1.employee_code,
               e1.employee_account_number,
               e1.employee_bank,
+              e1.tin_number,
+              e1.pension_status, 
+              e1.pension_number,
               e1.department_id,
               e1.monthly_working_hours,
               e1.employee_status,
@@ -417,6 +420,9 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
             bank_name,
             employee_department,
             branch_id,
+            tin_number,
+            pension_status, 
+            pension_number,
             department_id,
             employee_status_name,
             monthly_working_hours,
@@ -434,7 +440,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               )
             ) AS transactions
           FROM EmployeeTransactionData
-          GROUP BY employee_id, branch_id, department_id, bank_id, employee_code, first_name, middle_name, last_name, employee_account_number, bank_name, employee_department, department_code, monthly_working_hours, employee_status_name
+          GROUP BY employee_id, branch_id, department_id, bank_id, employee_code, first_name, middle_name, tin_number, pension_status, pension_number, last_name, employee_account_number, bank_name, employee_department, department_code, monthly_working_hours, employee_status_name
           ORDER BY CAST(department_code AS NUMERIC) ASC, CAST(employee_code AS NUMERIC) ASC
          ;
           `,

@@ -28,6 +28,9 @@ router.get('/',
                 first_name,
                 middle_name,
                 last_name,
+                pension_status,
+                pension_number,
+                tin_number,
                 monthly_working_hours,
                 employee_status_name,
                 transactions
@@ -40,6 +43,9 @@ router.get('/',
                 monthlyWorkingHours: monthly_working_hours,
                 employeeStatusName: employee_status_name,
                 bankName: bank_name,
+                tinNumber: tin_number,
+                pensionStatus: pension_status,
+                pensionNumber: pension_number,
                 transactions
             }));
             const filteredData = renamedProcessedTransactions.filter(
