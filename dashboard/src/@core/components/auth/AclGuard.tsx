@@ -48,7 +48,8 @@ const AclGuard = (props: AclGuardProps) => {
 
   if (auth.navigation) {
     for (const menuItem of auth.navigation) {
-      if (`${menuItem.menu_path}/` === router.asPath) {
+      console.log(router.asPath)
+      if (`${menuItem.menu_path}/` === router.asPath || router.asPath.startsWith('/apps/reports/payroll-sheet/print/')) {
         matchFound = true;
         break;
       }

@@ -42,6 +42,7 @@
     "clsx": "1.2.1",
     "date-fns": "2.29.3",
     "draft-js": "0.11.7",
+    "exceljs": "^4.4.0",
     "firebase": "9.13.0",
     "html2canvas": "^1.4.1",
     "i18next": "22.0.4",
