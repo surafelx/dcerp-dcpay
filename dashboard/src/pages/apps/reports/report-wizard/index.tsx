@@ -467,6 +467,7 @@ const UserList = () => {
         const totalRow = ['TOTAL', '', ''];
 
         const transactionTotals: { [key: string]: number } = {};
+        let employeeDetailsLength = 0
 
         store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
             const employeeDetails = []
@@ -484,6 +485,8 @@ const UserList = () => {
                 employeeDetails.push(pensionStatus)
             if (selectedItems.includes('Pension No.'))
                 employeeDetails.push(pensionNumber)
+
+            employeeDetailsLength = employeeDetails.length;
 
             const selectedTransactionsAmountsFormatted = selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account').map((itemName: any) => {
                 const matchingTransaction = transactions.find(({ transaction_name }: any) => transaction_name === itemName);
@@ -538,7 +541,15 @@ const UserList = () => {
         });
 
         // Push the total row to the tableData array
-        tableData.push([]);
+
+        // Assuming employeeDetails is an array
+
+        // Pushing empty strings based on the length of employeeDetails
+
+        for (let i = 0; i < employeeDetailsLength; ++i) {
+            tableData.push("");
+        }
+
         tableData.push(totalRow);
 
         const workbook = utils.book_new();
