@@ -221,7 +221,7 @@ const PayrollAdvice = () => {
                                         disabled={store.data.length > 0 ? false : true}
                                         color='primary'
                                         variant='outlined'
-                                        href={`/apps/reports/payroll-advice/print?branch=${branch}&department=${department}`}
+                                        href={`/apps/reports/payroll-advice/print?branchn=${branchObject.branchName}&branch=${branch}&department=${department}&departmentn=${departmentObject.departmentName}`}
                                     >
                                         Print
                                     </Button>
