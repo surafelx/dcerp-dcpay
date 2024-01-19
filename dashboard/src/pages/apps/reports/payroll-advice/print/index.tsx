@@ -8,10 +8,8 @@ import { useSelector } from 'react-redux'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
 import moment from 'moment'
 
 // ** Icon Imports
@@ -71,8 +69,6 @@ const InvoicePrint = () => {
     lastName = userData.last_name
   }
 
-  // ** Hooks
-  const theme = useTheme()
 
   useEffect(() => {
     setTimeout(() => {
