@@ -49,7 +49,7 @@ const AclGuard = (props: AclGuardProps) => {
   if (auth.navigation) {
     for (const menuItem of auth.navigation) {
       console.log(router.asPath)
-      if (`${menuItem.menu_path}/` === router.asPath || router.asPath.startsWith('/apps/reports/payroll-sheet/print/')) {
+      if (`${menuItem.menu_path}/` === router.asPath || router.asPath.startsWith('/apps/reports/payroll-sheet/print/') || router.asPath.startsWith('/apps/reports/payroll-advice/print/')) {
         matchFound = true;
         break;
       }

@@ -464,6 +464,9 @@ const UserList = () => {
 
 
         const tableData: any = [['DIREDAWA FOOD COMPLEX S.C.', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', 'OPERATOR', `${capitalizeFirstLetter(firstName)} ${capitalizeFirstLetter(lastName)}`, '', 'BRANCH', `${branchObject.branchName}`, ''], ['', 'DATE', `${moment().format("LL")} `, '', 'DEPARTMENT', `${departmentObject.departmentName}`, ''], ['', 'PERIOD', `${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`, '', 'POWERED BY', 'ASUN SOLUTIONS', ''], [], [], ['NO.', ...uppercaseHeaders]]
+        const totalRow = ['TOTAL', '', ''];
+
+        const transactionTotals: { [key: string]: number } = {};
 
         store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
             const employeeDetails = []
@@ -484,6 +487,20 @@ const UserList = () => {
 
             const selectedTransactionsAmountsFormatted = selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account').map((itemName: any) => {
                 const matchingTransaction = transactions.find(({ transaction_name }: any) => transaction_name === itemName);
+                const transactionAmount = matchingTransaction ? Number(matchingTransaction.transaction_amount) : '0'
+
+                // Update the running total for each transaction
+
+                // @ts-ignore
+                if (transactionTotals[itemName]) {
+
+                    // @ts-ignore
+                    transactionTotals[itemName] += transactionAmount;
+                } else {
+
+                    // @ts-ignore
+                    transactionTotals[itemName] = transactionAmount;
+                }
 
                 return {
                     transaction_amount: matchingTransaction
@@ -502,14 +519,27 @@ const UserList = () => {
             }).map(({ transaction_amount }: any) => transaction_amount);
 
 
+
             tableData.push([
                 index + 1,
                 ...employeeDetails,
-                ...selectedTransactionsAmountsFormatted
+                ...selectedTransactionsAmountsFormatted,
+
             ])
         })
 
 
+        // Populate the totalRow with the transaction totals
+        selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account').forEach((itemName: any) => {
+            totalRow.push(transactionTotals[itemName].toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }));
+        });
+
+        // Push the total row to the tableData array
+        tableData.push([]);
+        tableData.push(totalRow);
 
         const workbook = utils.book_new();
         const worksheet = utils.aoa_to_sheet(tableData);
