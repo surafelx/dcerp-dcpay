@@ -129,6 +129,8 @@ const UserList = () => {
     const totalEarnings = earningAmounts.reduce((sum, transaction: any) => { return (sum + parseFloat(transaction.transactionAmount)) }, 0)
     const grossTaxable: any = store.data.length > 0 ? store.data.filter(({ transactionName }: any) => (transactionName === "Gross Taxable Salary")) : [{ transactionAmount: 0 }]
 
+    const activeEmployees = employeeStore.data.filter(({ employeeStatusName }: any) => (employeeStatusName === "Active"))
+    
     useEffect(() => {
         dispatch(
             fetchData({
@@ -165,7 +167,7 @@ const UserList = () => {
                                         autoSelect
                                         size={'small'}
                                         value={employeeObject}
-                                        options={employeeStore.data}
+                                        options={activeEmployees}
                                         onChange={handleEmployeeChange}
                                         isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                         id='autocomplete-controlled'
@@ -180,7 +182,7 @@ const UserList = () => {
                                         autoSelect
                                         size={'small'}
                                         value={employeeObject}
-                                        options={employeeStore.data}
+                                        options={activeEmployees}
                                         onChange={handleEmployeeChange}
                                         id='autocomplete-controlled'
                                         isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}

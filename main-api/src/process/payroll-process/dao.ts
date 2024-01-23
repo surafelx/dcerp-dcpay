@@ -210,7 +210,7 @@ ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
                 }
                 if (td.transaction_code != '23' && (membershipTasked || td.transaction_group_name != 'Membership'))
                     await createProcessedTransactions({ employeeId, transactionId: td.id, transactionAmount: calculatedTransaction.transaction_amount, userId, periodId, organizationId })
-                if (calculatedTransaction.transaction_type_name == 'Deduction Amount' && (membershipTasked || td.transaction_group_name != 'Membership') && (pensionStatus || td.transaction_code !== '23')) {
+                if (calculatedTransaction.transaction_type_name == 'Deduction Amount' && (pensionStatus || td.transaction_code !== '22') && (membershipTasked || td.transaction_group_name != 'Membership') && (pensionStatus || td.transaction_code !== '23')) {
                     totalDeductions += parseFloat(calculatedTransaction.transaction_amount) || 0
                 }
             }

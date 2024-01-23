@@ -147,7 +147,7 @@ const UserList = () => {
 
     const clearAllFields = () => {
         setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
-        setTransactionObject({ id: '', transactionName: '' })
+        setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
         setEmployee('')
         setTransaction('')
         reset(
@@ -165,7 +165,7 @@ const UserList = () => {
         if (newValue?.id) {
             setEmployeeObject(newValue)
             setEmployee(newValue.id)
-            setTransactionObject({ id: '', transactionName: '' })
+            setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
             reset({ transactionAmount: '' })
         }
     }
@@ -234,6 +234,25 @@ const UserList = () => {
                                             isOptionEqualToValue={(option: any, value: any) => option.firstName == value.firstName}
                                             getOptionLabel={(option: any) => option.firstName}
                                             renderInput={params => <TextField {...params} label='Select Employee' />}
+                                        />
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={transactionObject}
+                                            options={transactionDefinitionStore.data.filter((tran: any) => tran.updateTypeName === 'Input' && tran.transactionGroupName !== 'Loan' && tran.transactionName !== 'None')}
+                                            onChange={(e, v) => {
+                                                handleTransactionChange(e, v)
+                                                transactionAmountRef.current.focus()
+                                            }
+                                            }
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.transactionCode == value.transactionCode}
+                                            getOptionLabel={option => option.transactionCode}
+                                            renderInput={params => <TextField {...params} inputRef={transactionRef} label='Select Transaction' />}
                                         />
                                     </FormControl>
                                 </Grid>

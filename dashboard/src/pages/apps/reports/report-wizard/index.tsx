@@ -463,7 +463,15 @@ const UserList = () => {
         }
 
 
-        const tableData: any = [['DIREDAWA FOOD COMPLEX S.C.', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', '', '', '', '', '', ''], ['', 'OPERATOR', `${capitalizeFirstLetter(firstName)} ${capitalizeFirstLetter(lastName)}`, '', 'BRANCH', `${branchObject.branchName}`, ''], ['', 'DATE', `${moment().format("LL")} `, '', 'DEPARTMENT', `${departmentObject.departmentName}`, ''], ['', 'PERIOD', `${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`, '', 'POWERED BY', 'ASUN SOLUTIONS', ''], [], [], ['NO.', ...uppercaseHeaders]]
+        const tableData: any = [
+            ['DIREDAWA FOOD COMPLEX S.C.', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', ''],
+            ['', 'OPERATOR', `${capitalizeFirstLetter(firstName)} ${capitalizeFirstLetter(lastName)}`, '', 'BRANCH', `${branchObject.branchName}`, ''], ['', 'DATE', `${moment().format("LL")} `, '', 'DEPARTMENT', `${departmentObject.departmentName}`, ''],
+            ['', 'PERIOD', `${moment(startDate).format("YYYY/MM/DD") || ""} - ${moment(endDate).format("YYYY/MM/DD") || ""}`, '', 'POWERED BY', 'ASUN SOLUTIONS', ''],
+            [],
+            [],
+            ['NO.', ...uppercaseHeaders]]
         const totalRow = ['TOTAL', '', ''];
 
         const transactionTotals: { [key: string]: number } = {};
@@ -632,37 +640,44 @@ const UserList = () => {
             },
         }
 
+        console.log(tableData)
         tableData.forEach((row: any, rowIndex: any) => {
+            try {
+                if (rowIndex !== 0 || rowIndex !== 0) { // Skip the header row
+                    row?.forEach((_: any, colIndex: any) => {
+                        const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
+                        if (rowIndex === tableData.length - 1) {
 
-            if (rowIndex !== 0) { // Skip the header row
-                row.forEach((_: any, colIndex: any) => {
-                    const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
-                    if (rowIndex === tableData.length - 1) {
+                            // Apply totalStyle for total rows and the last row
+                            worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: dataRowStyle });
+                        } else if (colIndex >= 3) { // Apply numberStyle for data rows
+                            worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: numberStyle });
+                        } else {
+                            worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: dataRowStyle });
+                        }
+                    });
+                }
 
-                        // Apply totalStyle for total rows and the last row
-                        worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: dataRowStyle });
-                    } else if (colIndex >= 3) { // Apply numberStyle for data rows
-                        worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: numberStyle });
-                    } else {
-                        worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: dataRowStyle });
-                    }
-                });
+                if (rowIndex >= 0 && rowIndex <= 2) { // Rows 1 to 3
+                    row?.forEach((_: any, colIndex: any) => {
+                        const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
+                        worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: headerStyle });
+                    });
+                }
+
+                if (rowIndex == 0) { // Skip the header row
+                    row?.forEach((_: any, colIndex: any) => {
+                        const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
+                        worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: headerStyle });
+
+                    });
+                }
+
+            } catch (e) {
+                console.log(row)
+
             }
 
-            if (rowIndex >= 0 && rowIndex <= 2) { // Rows 1 to 3
-                row.forEach((_: any, colIndex: any) => {
-                    const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
-                    worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: headerStyle });
-                });
-            }
-
-            if (rowIndex == 0) { // Skip the header row
-                row.forEach((_: any, colIndex: any) => {
-                    const cellAddress = utils.encode_cell({ c: colIndex, r: rowIndex });
-                    worksheet[cellAddress] = Object.assign({}, worksheet[cellAddress], { s: headerStyle });
-
-                });
-            }
 
         });
 
