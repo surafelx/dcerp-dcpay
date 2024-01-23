@@ -190,7 +190,7 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, empl
             setEmployee('')
             setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
             setTransaction('')
-            setTransactionObject({ id: '', transactionName: '' })
+            setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
             reset(
                 {
                     id: '',

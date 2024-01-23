@@ -370,6 +370,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
     const { rows: processedTransactions } = await pool.query(`
         WITH EmployeeTransactionData AS (
             SELECT
+            DISTINCT
               e1.id AS employee_id,
               e1.first_name,
               e1.middle_name,
@@ -390,6 +391,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
               td.transaction_code,
               td.transaction_name,
               td.taxable,
+              lt1.remaining_balance,
               pt.transaction_amount,
               pd1.parameter_name AS update_type_name,
               pd2.parameter_name AS transaction_group_name,
@@ -407,6 +409,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
             INNER JOIN parameter_definition pd4 ON pd4.id = e1.employee_bank
             INNER JOIN parameter_definition pd5 ON pd5.id = e1.employee_status
             INNER JOIN department dep ON dep.id = e1.department_id
+            LEFT JOIN loan_transaction lt1 ON lt1.employee_id = e1.id AND pd2.parameter_name = 'Loan'
             WHERE pt.period_id = $1 AND e1.branch_id = COALESCE($2, e1.branch_id) AND e1.department_id = COALESCE($3, e1.department_id) AND e1.employee_bank =  COALESCE($4, e1.employee_bank)
           )
           SELECT
@@ -436,7 +439,8 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
                 'transaction_amount', transaction_amount,
                 'update_type_name', update_type_name,
                 'transaction_group_name', transaction_group_name,
-                'transaction_type_name', transaction_type_name
+                'transaction_type_name', transaction_type_name,
+                'remaining_balance', remaining_balance
               )
             ) AS transactions
           FROM EmployeeTransactionData

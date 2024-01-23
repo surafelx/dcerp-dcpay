@@ -95,7 +95,7 @@ const UserList = () => {
     const clearAllFields = () => {
         reset(emptyValues)
         setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
-        setTransactionObject({ id: '', transactionName: '' })
+        setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
         setEmployee('')
         setTransaction('')
     }
@@ -227,7 +227,7 @@ const UserList = () => {
             setEmployee(newValue.id)
             setValue('employeeId', newValue.id)
             trigger('employeeId')
-            setTransactionObject({ id: '', transactionName: '' })
+            setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
             reset({ employeeId: newValue?.id, transactionId: '', totalLoan: '', remainingBalance: '', transactionAmount: '' })
         }
     }
@@ -261,7 +261,7 @@ const UserList = () => {
                                             isOptionEqualToValue={(option: any, value: any) => option.employeeCode == value.employeeCode}
                                             id='autocomplete-controlled'
                                             getOptionLabel={(option: any) => option.employeeCode}
-                                            renderInput={params => <TextField name={'branchId'} required type={'number'} error={Boolean(errors.employeeId)}  {...params} label='Select Employee' />}
+                                            renderInput={params => <TextField name={'employeeCode'} required type={'number'} error={Boolean(errors.employeeId)}  {...params} label='Select Employee' />}
                                         />
                                     </FormControl>
                                     {errors.employeeId && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeId.message}</Alert>}
@@ -281,6 +281,22 @@ const UserList = () => {
                                         />
                                         {errors.employeeId && <Alert sx={{ my: 4 }} severity='error'>{errors.employeeId.message}</Alert>}
                                     </FormControl>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <FormControl fullWidth>
+                                        <Autocomplete
+                                            autoSelect
+                                            size={'small'}
+                                            value={transactionObject}
+                                            options={transactionDefinitionStore.data.filter((tran: any) => tran.transactionGroupName == 'Loan')}
+                                            onChange={handleTransactionChange}
+                                            id='autocomplete-controlled'
+                                            isOptionEqualToValue={(option: any, value: any) => option.transactionCode == value.transactionCode}
+                                            getOptionLabel={(option: any) => option.transactionCode}
+                                            renderInput={params => <TextField required error={Boolean(errors.transactionId)}  {...params} label='Select Transaction' />}
+                                        />
+                                    </FormControl>
+                                    {errors.transactionId && <Alert sx={{ my: 4 }} severity='error'>{errors.transactionId.message}</Alert>}
                                 </Grid>
                                 <Grid item xs={3}>
                                     <FormControl fullWidth>
