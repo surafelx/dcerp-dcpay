@@ -450,6 +450,7 @@ const getAllFromOrganization = async (organizationId: string, branchId: string, 
           `,
         [userInfo.periodId, fixedBranchId, fixedDepartmentId, fixedBankId])
 
+        console.log(userInfo.periodId)
     return processedTransactions
 }
 

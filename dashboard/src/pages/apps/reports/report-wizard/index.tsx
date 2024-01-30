@@ -477,7 +477,10 @@ const UserList = () => {
         const transactionTotals: { [key: string]: number } = {};
         let employeeDetailsLength = 0
 
-        store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
+        const selectedTransactions = selectedItems
+        .filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account');
+
+        store.data.filter(({ employeeStatusName, transactions }: any) => employeeStatusName === 'Active' && transactions.some((transaction: any) => selectedTransactions.includes(transaction.transaction_name) && Number(transaction.transaction_amount) > 0)).forEach(({ employeeCode, employeeName, tinNumber, bankName, employeeAccountNumber, pensionStatus, pensionNumber, transactions, }: any, index: any) => {
             const employeeDetails = []
             if (selectedItems.includes('Code'))
                 employeeDetails.push(employeeCode)
@@ -541,13 +544,20 @@ const UserList = () => {
 
 
         // Populate the totalRow with the transaction totals
-        selectedItems.filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account').forEach((itemName: any) => {
-            totalRow.push(transactionTotals[itemName].toLocaleString(undefined, {
+       selectedItems
+    .filter((item: any) => item !== 'Code' && item !== 'Name' && item !== 'TIN' && item !== 'Pension' && item !== 'Bank' && item !== 'Pension No.' && item !== 'Account')
+    .forEach((itemName: any) => {
+        const totalAmount = transactionTotals[itemName];
+        const formattedTotal = typeof totalAmount === 'number' && !isNaN(totalAmount)
+            ? totalAmount.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
-            }));
-        });
+            })
+            : '0.00';
 
+        totalRow.push(formattedTotal);
+    });
+    
         // Push the total row to the tableData array
 
         // Assuming employeeDetails is an array

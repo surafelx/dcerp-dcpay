@@ -175,12 +175,12 @@ INNER JOIN parameter_definition pd3 ON pd3.id = td.transaction_group
 LEFT JOIN (
     SELECT DISTINCT ON (pt.transaction_id) pt.id, pt.transaction_id, pt.transaction_amount
     FROM period_transactions pt
-    WHERE pt.employee_id = $2
+    WHERE pt.employee_id = $2 AND pt.period_id = $3
 ) AS pert ON pert.transaction_id = td.id
 WHERE td.organization_id = $1
 ORDER BY CAST(td.transaction_code AS NUMERIC) ASC;
 `,
-        [organizationId, employeeId])
+        [organizationId, employeeId, userInfo.periodId])
 
     for (const td of transactionDefinitions) {
         if (td.update_type_name == 'Input' || td.transaction_name == 'None') {
