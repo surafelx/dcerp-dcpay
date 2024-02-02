@@ -134,6 +134,7 @@ const UserList = () => {
     const [, setDepartment] = useState<string>('All')
     const [departmentObject, setDepartmentObject] = useState<any>({ id: 'All', departmentName: 'All Departments' })
     const [workingDaysPeriod, setWorkingDaysPeriod] = useState<any>('')
+    const [tempValidation, setTempValidation] = useState<boolean>(false)
 
     const handleFilter = (val: string) => {
         setFilterValue(val)
@@ -174,7 +175,6 @@ const UserList = () => {
     const employeeTitleOptions = filterSubParametersByName('Employee Title')
 
     const permanentEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Permanent')[0]?.id
-    const contractEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Contract')[0]?.id
 
     const naBank = bankOptions.filter((parameter: any) => parameter.parameterName == 'CASH')[0]?.id
 
@@ -187,11 +187,7 @@ const UserList = () => {
         lastName: yup.string().required('Required'),
         sex: yup.string().required('Required'),
         contractStartDate: yup.string(),
-        contractDate: yup.array().of(yup.date()).default(() => [startDate, endDate]).typeError('Contract Date has to be a range of dates.').when('employeeType', {
-            is: contractEmploymentTypeValue,
-            then: yup.array().typeError('Contract Date has to be a range of dates.').required('Contract Date is required.'),
-            otherwise: yup.array().typeError('Contract Date has to be a range of dates.').of(yup.date()).default(() => [startDate, endDate]).nullable()
-        }),
+        contractDate: yup.mixed(),
         contractEndDate: yup.string(),
         employmentDate: yup.string().when('employeeType', {
             is: permanentEmploymentTypeValue,
@@ -216,6 +212,8 @@ const UserList = () => {
         employeeDepartment: yup.string().required('Required'),
         employeePosition: yup.string().required('Required'),
     })
+
+    const emptySchema = yup.object({});
 
     useEffect(() => {
         dispatch(
@@ -270,7 +268,7 @@ const UserList = () => {
     } = useForm({
         defaultValues: emptyValues,
         mode: 'onSubmit',
-        resolver: yupResolver(schema)
+        resolver: yupResolver(tempValidation ? emptySchema : schema)
     })
 
     useEffect(() => {
@@ -385,23 +383,34 @@ const UserList = () => {
                                                         label='Code'
                                                         type={'number'}
                                                         value={value}
+                                                        disabled={store.data ? false : true}
                                                         error={Boolean(errors.employeeCode)}
                                                         onBlur={(e) => {
                                                             onBlur()
                                                             const selectedEmployee: any = store?.data?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
                                                             if (selectedEmployee) {
+                                                                setTempValidation(true)
+                                                              
+                                                                reset(selectedEmployee)
+                                                                if(selectedEmployee.employeeTypeName == 'Contract') {
+                                                                    const contSD = new Date(selectedEmployee.contractStartDate) || new Date()
+                                                                    const contED = new Date(selectedEmployee.contractEndDate) || new Date()
+                                                                    setContractStart(contSD)
+                                                                    setContractEnd(contED)
+                                                                } 
+                                                                if(selectedEmployee.employeeTypeName == 'Permanent') {
+                                                                    setValue('employmentDate', selectedEmployee.employmentDate)
+                                                                } 
                                                                 setWorkingDaysPeriod(selectedEmployee?.workingDays)
                                                                 setFormBranchObject(branchStore?.data.filter((branch: any) => branch.id == selectedEmployee?.employeeBranch)[0])
                                                                 setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
-                                                                reset(selectedEmployee)
+                                                                setEmploymentTypeValue(selectedEmployee.employeeTypeName)
+                                                                setTempValidation(false)
                                                             } else {
-                                                                if (!branchObject.id) {
                                                                     setFormBranchObject({ id: '', branchName: '' })
                                                                     setFormDepartmentObject({ id: '', departmentName: '' })
                                                                     reset(emptyValues)
                                                                     setValue('employeeCode', Number(e.target.value))
-                                                                }
-
                                                             }
                                                         }
                                                         }
