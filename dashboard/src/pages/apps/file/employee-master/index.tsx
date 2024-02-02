@@ -334,6 +334,7 @@ const UserList = () => {
         setFormBranchObject(null)
         setFormDepartmentObject(null)
         reset(emptyValues)
+        setTempValidation(false)
     }
 
 
@@ -405,7 +406,7 @@ const UserList = () => {
                                                                 setFormBranchObject(branchStore?.data.filter((branch: any) => branch.id == selectedEmployee?.employeeBranch)[0])
                                                                 setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
                                                                 setEmploymentTypeValue(selectedEmployee.employeeTypeName)
-                                                                setTempValidation(false)
+                                                               
                                                             } else {
                                                                     setFormBranchObject({ id: '', branchName: '' })
                                                                     setFormDepartmentObject({ id: '', departmentName: '' })
