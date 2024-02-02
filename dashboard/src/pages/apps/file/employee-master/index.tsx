@@ -176,7 +176,7 @@ const UserList = () => {
     const permanentEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Permanent')[0]?.id
     const contractEmploymentTypeValue = employmentTypeOptions.filter((parameter: any) => parameter.parameterName == 'Contract')[0]?.id
 
-    const naBank = bankOptions.filter((parameter: any) => parameter.parameterName == 'NA')[0]?.id
+    const naBank = bankOptions.filter((parameter: any) => parameter.parameterName == 'CASH')[0]?.id
 
     const schema = yup.object().shape({
         id: yup.string(),
@@ -203,12 +203,8 @@ const UserList = () => {
         monthlyWorkingHours: yup.number().typeError('Cannot be empty.').required('Required').test('not-zero', 'Cannot be 0.', (value) => value !== 0),
         basicSalary: yup.number().typeError('Cannot be empty.').required('Required').test('not-zero', 'Cannot be 0.', (value) => value !== 0),
         pensionStatus: yup.boolean(),
-        pensionNumber: yup.string().when('pensionStatus', {
-            is: true,
-            then: yup.string().required('Pension Number is Required.'),
-            otherwise: yup.string().nullable(),
-        }),
-        tinNumber: yup.string().matches(/^\d{10}$/, "TIN must be a 10-digit number").required('Required'),
+        pensionNumber: yup.string().nullable(),
+        tinNumber: yup.string(),
         workingDays: yup.number().required('Required'),
         employeeBankAccount: yup.string().when('employeeBank', {
             is: naBank,
@@ -873,7 +869,6 @@ const UserList = () => {
                                                         size={'small'}
                                                         autoFocus
                                                         label='TIN'
-                                                        required
                                                         value={value}
                                                         onBlur={onBlur}
                                                         onChange={onChange}
@@ -1032,6 +1027,9 @@ const UserList = () => {
                             setBranchObject={setFormBranchObject}
                             setEmploymentTypeValue={setEmploymentTypeValue}
                             employmentTypeOptions={employmentTypeOptions}
+                            setValue={setValue}
+                            setContractStart={setContractStart}
+                            setContractEnd={setContractEnd}
                             rows={store.data}
                             reset={reset}
                             formData={formData}

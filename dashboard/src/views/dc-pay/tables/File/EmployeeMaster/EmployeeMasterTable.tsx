@@ -119,7 +119,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDepartment, setEmploymentTypeValue, setWorkingDaysPeriod, reset, setFormData, deleteEmployee, setBranchObject, branches, setDepartmentObject, departments }: any) => {
+const EnhancedTable = ({ rows, setContractStart, setContractEnd,setValue, formData, employmentTypeOptions, setBranch, setDepartment, setEmploymentTypeValue, setWorkingDaysPeriod, reset, setFormData, deleteEmployee, setBranchObject, branches, setDepartmentObject, departments }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -146,6 +146,54 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
+    const handleEdit = (editData: any) => {
+        console.log(editData)
+        reset(
+            {
+                id: editData.id,
+                employeeCode: editData.employeeCode,
+                employeeTitle: editData.employeeTitle,
+                contractStartDate:editData.contractStartDate,
+                contractEndDate:editData.contractEndDate,
+                employmentDate: editData.employmentDate,
+                firstName: editData.firstName,
+                middleName:editData.middleName,
+                lastName: editData.lastName,
+                sex: editData.sex,
+                employeeStatus: editData.employeeStatus,
+                employeeType: editData.employeeType,
+                monthlyWorkingHours: editData.monthlyWorkingHours,
+                basicSalary: editData.basicSalary,
+                pensionNumber: editData.pensionNumber,
+                pensionStatus: editData.pensionStatus,
+                tinNumber: editData.tinNumber,
+                workingDays: editData.workingDays,
+                employeeBank: editData.employeeBank,
+                employeeBankAccount: editData.employeeBankAccount,
+                employeeTypeName: editData.employeeTypeName,
+                employeePosition: editData.employeePosition,
+                employeeBranch: editData.employeeBranch,
+                employeeDepartment: editData.employeeDepartment
+            }
+        )
+        if(editData.employeeTypeName == 'Contract') {
+            const contSD = new Date(editData.contractStartDate) || new Date()
+            const contED = new Date(editData.contractEndDate) || new Date()
+            setContractStart(contSD)
+            setContractEnd(contED)
+        } 
+        if(editData.employeeTypeName == 'Permanent') {
+            setValue('employmentDate', editData.employmentDate)
+        } 
+        const selectedType: any = employmentTypeOptions.find((obj: any) => obj.id === editData.employeeType);
+        setEmploymentTypeValue(selectedType.parameterName)
+        setBranch(editData.employeeBranch)
+        setWorkingDaysPeriod(editData.workingDays,)
+        setDepartment(editData.employeeDepartment)
+        setBranchObject(branches.filter((branch: any) => branch.id == editData.employeeBranch)[0])
+        setDepartmentObject(departments.filter((department: any) => department.id == editData.employeeDepartment)[0])
+
+    }
 
     const RowOptions = ({ id, employeeCode,
         contractStartDate,
@@ -301,7 +349,10 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
                             .map((row, index) => {
 
                                 return (
-                                    <TableRow
+                                  
+ <TableRow
+ style={{cursor: 'pointer'}}
+ hover
                                         tabIndex={index}
                                         key={row.name}
                                         sx={{
@@ -309,10 +360,10 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
                                             padding: 0
                                         }}
                                     >
-                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>{row.employeeCode}</TableCell>
-                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {`${row.employeeTitleName} ${row.firstName} ${row.middleName} ${row.lastName}`}</TableCell>
-                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}> {parseFloat(String(row.basicSalary)).toFixed(2)}</TableCell>
-                                        <TableCell sx={{ fontSize: 14, fontWeight: 600 }}>
+                                        <TableCell  onClick={() => handleEdit(row)} sx={{ fontSize: 14, fontWeight: 600 }}>{row.employeeCode}</TableCell>
+                                        <TableCell  onClick={() => handleEdit(row)} sx={{ fontSize: 14, fontWeight: 600 }}> {`${row.employeeTitleName} ${row.firstName} ${row.middleName} ${row.lastName}`}</TableCell>
+                                        <TableCell onClick={() => handleEdit(row)}  sx={{ fontSize: 14, fontWeight: 600 }}> {parseFloat(String(row.basicSalary)).toFixed(2)}</TableCell>
+                                        <TableCell  sx={{ fontSize: 14, fontWeight: 600 }}>
                                             <RowOptions
                                                 id={row.id}
                                                 employeeCode={row.employeeCode}
@@ -341,6 +392,7 @@ const EnhancedTable = ({ rows, formData, employmentTypeOptions, setBranch, setDe
                                                 middleName={row.middleName}
                                             /></TableCell>
                                     </TableRow>
+                                   
                                 )
                             })}
                         {emptyRows > 0 && (
