@@ -28,11 +28,9 @@ export const fetchData = createAsyncThunk('appPayTransactions/fetchData', async 
 // ** Add User
 export const addPayTransaction = createAsyncThunk(
   'appPayTransactions/addPayTransaction',
-  async (data: { [key: string]: number | string }) => {
+  async (data: any, { dispatch }) => {
     const response = await apiRequest.post(`tasks/pay-transaction`, { data })
-
-    //  const employee = response.data.employee_id
-    // dispatch(fetchData({employee}))
+    dispatch(fetchData({employee: data.employeeId, q: ''}))
 
     return response.data
   }
@@ -41,11 +39,11 @@ export const addPayTransaction = createAsyncThunk(
 // ** Delete User
 export const deletePayTransaction = createAsyncThunk(
   'appPayTransactions/deletePayTransaction',
-  async (id: number | string, { dispatch }: Redux) => {
+  async (data: any, { dispatch }) => {
+    const {id, employeeId} = data
     const response = await apiRequest.delete(`tasks/pay-transaction/${id}`)
-    const employee = response.data.employee_id
-    dispatch(fetchData({employee}))
-
+    dispatch(fetchData({employee: employeeId, q: ''}))
+   
     return response.data
   }
 )
@@ -55,8 +53,7 @@ export const editPayTransaction = createAsyncThunk(
   'appPayTransactions/editPayTransaction',
   async (data: { [key: string]: number | string }, { dispatch }: Redux) => {
     const response = await apiRequest.put(`tasks/pay-transaction`, { data })
-    const employee = response.data.employee_id
-    dispatch(fetchData({employee}))
+    dispatch(fetchData({employee: data.employeeId, q: ''}))
 
     return response.data
   }
