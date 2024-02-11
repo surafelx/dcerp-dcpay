@@ -119,7 +119,7 @@ function EnhancedTableHead(props: any) {
     )
 }
 
-const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, employeeCodeRef, setTransactionObject, setEmployeeObject, transactionDefinitionStore, setEmployee, setTransaction, reset, employee, }: any) => {
+const EnhancedTable = ({ rows, formData, setFormData, employeeObject, deletePayTransaction, transactionRef, setTransactionObject, setEmployeeObject, transactionDefinitionStore, setEmployee, setTransaction, reset, employee, }: any) => {
     // ** States
     const [page, setPage] = useState<number>(0)
     const [order, setOrder] = useState<Order>('asc')
@@ -186,20 +186,19 @@ const EnhancedTable = ({ rows, formData, setFormData, deletePayTransaction, empl
         }, []);
 
         const handleDelete = () => {
-            dispatch(deletePayTransaction(id))
-            setEmployee('')
-            setEmployeeObject({ id: '', firstName: '', employeeCode: '' })
-            setTransaction('')
+            const copyEmp = employeeObject
+            dispatch(deletePayTransaction({id, employeeId: employeeObject.id}))
+            setEmployeeObject({ id: copyEmp.id, firstName: copyEmp.firstName, employeeCode: copyEmp.employeeCode })
+            setEmployee(copyEmp.id)
             setTransactionObject({ id: '', transactionName: '', transactionCode: '' })
             reset(
                 {
                     id: '',
-                    employeeId: '',
                     transactionId: '',
                     transactionAmount: '',
                 }
             )
-            employeeCodeRef.current.focus()
+            transactionRef.current.focus()
         }
 
         return (

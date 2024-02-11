@@ -53,6 +53,7 @@ const schema = yup.object().shape({
 
 const UserList = () => {
     // ** State
+    const [loading, setLoading] = useState<boolean>(false)
     const [employee, setEmployee] = useState<string>('')
     const [employeeObject, setEmployeeObject] = useState<any>(null)
     const [transaction, setTransaction] = useState<string>('')
@@ -124,7 +125,7 @@ const UserList = () => {
             })
         )
 
-    }, [dispatch, employee, setEmployee, value])
+    }, [dispatch, employee, setEmployee, value, loading])
 
 
     useEffect(() => {
@@ -178,6 +179,8 @@ const UserList = () => {
     }
 
     const onSubmit = (data: any) => {
+        setLoading(true)
+        const copyEmp = employeeObject
         data.employeeId = employeeObject.id
         data.transactionId = transaction
         if (data.id) {
@@ -185,9 +188,11 @@ const UserList = () => {
         } else {
             dispatch(addPayTransaction({ ...data }))
         }
-        handleEmployeeChange('', { id: '', firstName: '', employeeCode: '' })
         clearAllFields()
-        employeeCodeRef.current.focus()
+        setEmployeeObject({ id: copyEmp.id, firstName: copyEmp.firstName, employeeCode: copyEmp.employeeCode })
+        setEmployee(copyEmp.id)
+        setLoading(false)
+        transactionRef.current.focus()
     }
 
 
@@ -271,7 +276,7 @@ const UserList = () => {
                                             id='autocomplete-controlled'
                                             isOptionEqualToValue={(option: any, value: any) => option.transactionName == value.transactionName}
                                             getOptionLabel={option => option.transactionName}
-                                            renderInput={params => <TextField {...params} inputRef={transactionRef} label='Select Transaction' />}
+                                            renderInput={params => <TextField {...params} label='Select Transaction' />}
                                         />
                                     </FormControl>
                                 </Grid>
@@ -325,12 +330,15 @@ const UserList = () => {
                     </Card>
                 </form>
             </Grid>
-            <Grid item xs={12} md={12} lg={6}>
+            {!loading && (
+<>
+<Grid item xs={12} md={12} lg={6}>
                 <Card>
                     <CardHeader title='Earnings' titleTypographyProps={{ variant: 'body2' }} />
                     <CardContent>
                         <PayTransactionTable
                             rows={earningStore}
+                            employee={employee}
                             formData={formData}
                             setFormData={setFormData}
                             deletePayTransaction={deletePayTransaction}
@@ -339,10 +347,11 @@ const UserList = () => {
                             setTransaction={setTransaction}
                             setTransactionObject={setTransactionObject}
                             reset={reset}
-                            employeeCodeRef={employeeCodeRef}
+                            transactionRef={transactionRef}
                             transaction={transaction}
                             transactionDefinitionStore={transactionDefinitionStore}
                             employeeStore={employeeStore}
+                            employeeObject={employeeObject}
                         />
                     </CardContent>
                 </Card>
@@ -352,8 +361,10 @@ const UserList = () => {
                     <CardHeader title='Deductions' titleTypographyProps={{ variant: 'body2' }} />
                     <CardContent>
                         <PayTransactionTable
+                        employeeObject={employeeObject}
                             rows={deductionStore}
                             formData={formData}
+                            employee={employee}
                             setFormData={setFormData}
                             deletePayTransaction={deletePayTransaction}
                             setEmployeeObject={setEmployeeObject}
@@ -364,11 +375,14 @@ const UserList = () => {
                             transaction={transaction}
                             transactionDefinitionStore={transactionDefinitionStore}
                             employeeStore={employeeStore}
-                            employeeCodeRef={employeeCodeRef}
+                            transactionRef={transactionRef}
                         />
                     </CardContent>
                 </Card>
             </Grid>
+</>
+            )}
+          
         </Grid>
     )
 }
