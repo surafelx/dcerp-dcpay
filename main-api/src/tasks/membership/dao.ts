@@ -54,6 +54,8 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
 export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
     const { periodId } = userInfo
 
+    console.log(periodId)
+
     let query = `
         SELECT 
         DISTINCT
