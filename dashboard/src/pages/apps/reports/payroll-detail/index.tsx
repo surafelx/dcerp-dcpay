@@ -178,8 +178,8 @@ export const generateExcelFile = (store: any) => {
         const leaveHours = transactions?.find((obj: any) => obj.transaction_name === "Leave Hours");
         const leaveAmount = transactions?.find((obj: any) => obj.transaction_name === "Leave Amount") || { transaction_amount: 0 };
         const workingHours = monthlyWorkingHours == 208 ? '8' : '7'
-        const hardship20 = transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 20%" || obj.transaction_name === "Hardship Allowance 20% Input") || { transaction_amount: 0 };
-        const hardship15 = transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 15%" || obj.transaction_name === "Hardship Allowance 15% Input") || { transaction_amount: 0 };
+        const hardship20 = transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 20%") ||  transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 20% Input") || { transaction_amount: 0 };
+        const hardship15 = transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 15%") ||  transactions?.find((obj: any) => obj.transaction_name === "Hardship Allowance 15% Input") ||{ transaction_amount: 0 };
         const overTime150 = transactions?.find((obj: any) => obj.transaction_name === "Overtime Hours 150%") || { transaction_amount: 0 };
         const overTime170 = transactions?.find((obj: any) => obj.transaction_name === "Overtime Hours 175%") || { transaction_amount: 0 };
         const overTime200 = transactions?.find((obj: any) => obj.transaction_name === "Overtime Hours 200%") || { transaction_amount: 0 };
