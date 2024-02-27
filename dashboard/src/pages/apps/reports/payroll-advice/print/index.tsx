@@ -280,20 +280,6 @@ const InvoicePrint = () => {
       }
 
 
-      <Grid container>
-        <table style={{ border: '0.12px solid #9C9FA4', width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
-          <thead>
-            <tr>
-              <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', fontWeight: '600', fontSize: '12px', textAlign: 'right' }}>Total</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', textAlign: 'right' }}>0</td>
-            </tr>
-          </tbody>
-        </table>
-      </Grid>
     </Box>
   )
 
