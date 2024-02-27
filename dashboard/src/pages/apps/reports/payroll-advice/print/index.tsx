@@ -145,7 +145,7 @@ const InvoicePrint = () => {
 
       </div>
 
-      <div style={{ fontSize: '22px', marginTop: '20px', backgroundColor: '#368FC8', color: 'white', padding: '5px', marginBottom: '5px', textTransform: 'uppercase', fontWeight: 700 }}>Payroll Sheet</div>
+      <div style={{ fontSize: '22px', marginTop: '20px', backgroundColor: '#368FC8', color: 'white', padding: '5px', marginBottom: '5px', textTransform: 'uppercase', fontWeight: 700 }}>Payroll Advice</div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div >
           <div style={{ display: 'flex', gap: '2px' }} >
