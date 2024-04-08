@@ -17,7 +17,6 @@ const newMainParameter = [
 const deleteMainParameter = [
     check('id').custom(async (value: string) => {
         const doesExist = await mainParameterService.parameterIsParent(value)
-        console.log(doesExist)
         if (doesExist)
         	throw new Error(`Parameter Name already exist.`)
     }),

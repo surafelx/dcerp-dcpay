@@ -31,7 +31,6 @@ const checkIfMainParameterExists = async (parameterId: any) => await subParamete
 const checkIfParameterExistsInOtherTables = async (parameterId: any) => {
     const doesExistInEmployee = await checkInEmployees(parameterId)
     const doesExistInTransactionDefinition = await checkInTransactionDefinition(parameterId)
-    console.log(doesExistInTransactionDefinition, doesExistInEmployee)
     if (doesExistInEmployee || doesExistInTransactionDefinition)
         return true
     return false

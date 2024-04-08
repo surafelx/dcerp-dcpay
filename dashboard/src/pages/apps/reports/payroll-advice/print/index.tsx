@@ -36,6 +36,7 @@ const InvoicePrint = () => {
   // get the id param from the route query object
   const { branch, department, branchn: branchName, departmentn: departmentName, } = router.query;
 
+  let rowCount = 0; 
 
   const dispatch = useDispatch<AppDispatch>()
 
@@ -179,12 +180,19 @@ const InvoicePrint = () => {
           const earnings = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Earning Amount" || transaction_type_name === "Earning Quantity")
           const deductions = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Deduction Amount" || transaction_type_name === "Deduction Quantity")
           const totalEarnings = earnings.reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
-          console.log(earnings)
           const totalDeductions = deductions.reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
+          rowCount++
+
+
+          if(rowCount > 2) {
+            rowCount = 0 
+          }
 
           return (
             <>
-              <div style={{ marginBottom: '10px' }}>
+            
+              <div style={{ marginBottom: '30px' }}>
+             
                 <div style={{ border: '0.5px solid #368FC8', padding: '5px', fontWeight: '600', fontSize: '10px', textAlign: 'center', backgroundColor: '#368FC8', color: 'white', textTransform: "uppercase" }}>{`${employeeCode} ${employeeName}`}</div>
                 <Grid container columnSpacing={0}>
                   <Grid item xs={6}>
@@ -199,16 +207,19 @@ const InvoicePrint = () => {
                           <td style={{ textTransform: 'uppercase', textAlign: 'center', color: 'white', fontSize: '12px', fontWeight: '600', padding: '5px' }}>Amount</td>
                         </tr>
                         {
-                          earnings.filter(({ transaction_amount }: any) => parseFloat(transaction_amount) != 0).map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
+                          earnings.filter(({ transaction_amount }: any) => parseFloat(transaction_amount) != 0).sort((a: any, b: any) => a.transaction_code - b.transaction_code).map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
+                            if (transaction_type_name === "Earning Quantity") {
 
-                            if (transaction_type_name === "Earning Quantity")
                               return (
                                 <tr key={index}>
                                   <td style={{ border: '0.5px solid  #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}>{`${transaction_name}`}</td>
                                   <td style={{ border: '0.5px solid  #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{`${Number(transaction_amount).toFixed(2)}`}</td>
                                 </tr>
                               )
-                            if (transaction_type_name === "Earning Amount")
+                            }
+                          
+                            if (transaction_type_name === "Earning Amount") {
+
                               return (
                                 <tr key={index}>
                                   <td style={{ border: '0.5px solid  #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}>{`${transaction_name}`}</td>
@@ -216,39 +227,53 @@ const InvoicePrint = () => {
                                   <td style={{ border: '0.5px solid  #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{`${Number(transaction_amount).toFixed(2)}`}</td>
                                 </tr>
                               )
+
+                            }
+                           
                           })
                         }
                       </tbody>
                     </table>
                   </Grid>
+                
                   <Grid item xs={6}>
                     <table style={{ border: '0.122px solid #9C9FA4', width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
                         <tr style={{ backgroundColor: '#C1272D', border: '0.5px solid #C1272D' }}>
                           <td style={{ textTransform: 'uppercase', textAlign: 'center', color: 'white', fontSize: '12px', fontWeight: '600', padding: '5px' }}>Deductions</td>
-                          <td style={{ textTransform: 'uppercase', textAlign: 'center', color: 'white', fontSize: '12px', fontWeight: '600', padding: '5px' }}>Quantity</td>
                           <td style={{ textTransform: 'uppercase', textAlign: 'center', color: 'white', fontSize: '12px', fontWeight: '600', padding: '5px' }}>Amount</td>
+                          <td style={{ textTransform: 'uppercase', textAlign: 'center', color: 'white', fontSize: '12px', fontWeight: '600', padding: '5px' }}>Other</td>
+                         
                         </tr>
+                       
                       </thead>
                       <tbody>
                         {
-                          deductions.filter(({ transaction_amount }: any) => parseFloat(transaction_amount) != 0).map(({ transaction_name, transaction_amount, transaction_type_name }: any, index: any) => {
+                          deductions.filter(({ transaction_amount }: any) => parseFloat(transaction_amount) != 0).sort((a: any, b: any) => a.transaction_code - b.transaction_code).map(({ transaction_name, transaction_amount, transaction_type_name, transaction_group_name, remaining_balance }: any, index: any) => {
+                            if (transaction_type_name === "Deduction Quantity" || ((transaction_type_name === "Deduction Amount" && transaction_group_name == 'Loan'))) {
 
-                            if (transaction_type_name === "Deduction Quantity")
+                              return (
+                                <tr key={index}>
+                                  <td style={{ border: '0.25px solid #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}>{`${transaction_name}`}</td>
+                                  <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{transaction_group_name == 'Loan' && (`${Number(transaction_amount).toFixed(2)}`)}</td>
+                                  <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{transaction_group_name == 'Loan' ? (`${Number(remaining_balance).toFixed(2)}`) : (`${Number(transaction_amount).toFixed(2)}`)}</td>
+                                  
+                                </tr>
+                              )
+                            }
+                          
+                            if (transaction_type_name === "Deduction Amount") {
+
                               return (
                                 <tr key={index}>
                                   <td style={{ border: '0.25px solid #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}>{`${transaction_name}`}</td>
                                   <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{`${Number(transaction_amount).toFixed(2)}`}</td>
-                                </tr>
-                              )
-                            if (transaction_type_name === "Deduction Amount")
-                              return (
-                                <tr key={index}>
-                                  <td style={{ border: '0.25px solid #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}>{`${transaction_name}`}</td>
                                   <td style={{ border: '0.25px solid #9C9FA4', paddingLeft: '5px', fontSize: '12px', }}></td>
-                                  <td style={{ border: '0.25px solid #9C9FA4', paddingRight: '5px', textAlign: 'right', fontSize: '12px', }}>{`${Number(transaction_amount).toFixed(2)}`}</td>
+                                
                                 </tr>
                               )
+                            }
+                             
                           })
                         }
                       </tbody>
@@ -274,11 +299,18 @@ const InvoicePrint = () => {
                   </tbody>
                 </table>
               </div>
+            
+              {(rowCount >= 2) && (
+                  <div style={{ pageBreakBefore: 'always', marginTop: '50px' }}></div>
+                )
+              }
+             
+             
+        
             </>
           )
         })
       }
-
 
     </Box>
   )

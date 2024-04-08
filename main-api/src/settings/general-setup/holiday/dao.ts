@@ -50,7 +50,7 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN branch ON holiday.branch_id = branch.id
     WHERE holiday.organization_id=$1`,
         [organizationId])
-    console.log(holidays)
+        
     return holidays
 }
 

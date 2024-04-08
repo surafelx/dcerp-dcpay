@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { execSync } from "child_process";
+import fs from 'fs';
+
 
 const router = Router();
+
+// Set the path to your database backup folder
+const backupFolderPath = '';
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,6 +14,26 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     let user = process.env.PGUSER;
     let dbname = process.env.PGDATABASE;
     let port = process.env.PGPORT;
+
+    fs.readdir(backupFolderPath, (err, files) => {
+      if (err) {
+          console.error('Error reading folder:', err);
+          res.status(500).send('Error reading folder');
+          return;
+      }
+
+      // Filter the files to include only database backup files
+      const backupFiles = files.filter(file => {
+          return file.endsWith('.sql') || file.endsWith('.sql') || file.endsWith('.sql');
+          // Add more file extensions as needed
+      });
+
+      console.log(backupFiles)
+
+      // Render the list of backup files using EJS template
+      res.render('backupList', { backupFiles });
+  });
+
     const currentDate = new Date();
 
     let day = ("0" + currentDate.getDate()).slice(-2);

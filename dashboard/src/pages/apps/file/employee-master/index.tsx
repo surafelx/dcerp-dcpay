@@ -166,7 +166,6 @@ const UserList = () => {
     }
 
 
-
     const bankOptions: any = filterSubParametersByName('Bank')
     const sexOptions = filterSubParametersByName('Sex')
     const employeeStatusOptions = filterSubParametersByName('Employee Status')
@@ -407,12 +406,7 @@ const UserList = () => {
                                                                 setFormDepartmentObject(departmentStore?.data.filter((department: any) => department.id == selectedEmployee?.employeeDepartment)[0])
                                                                 setEmploymentTypeValue(selectedEmployee.employeeTypeName)
                                                                
-                                                            } else {
-                                                                    setFormBranchObject({ id: '', branchName: '' })
-                                                                    setFormDepartmentObject({ id: '', departmentName: '' })
-                                                                    reset(emptyValues)
-                                                                    setValue('employeeCode', Number(e.target.value))
-                                                            }
+                                                            } 
                                                         }
                                                         }
                                                         onChange={(e) => {

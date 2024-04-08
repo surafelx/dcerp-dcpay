@@ -1,14 +1,10 @@
-import pool from '../../config/pool'
-import { v4 as uuid } from 'uuid'
+import pool from "../../config/pool";
+import { v4 as uuid } from "uuid";
 
 export const create = async (newMenu: any): Promise<any> => {
-    const id = uuid()
-    const {
-        organizationId,
-        employeeId,
-        transactionId
-    } = newMenu
-    const query = `
+  const id = uuid();
+  const { organizationId, employeeId, transactionId } = newMenu;
+  const query = `
 	INSERT INTO 
         membership 
         (
@@ -19,19 +15,21 @@ export const create = async (newMenu: any): Promise<any> => {
             ) 
     VALUES ($1, $2, $3, $4)
     RETURNING *;
+    `;
+  const res = await pool.query(query, [
+    id,
+    organizationId,
+    employeeId,
+    transactionId,
+  ]);
+  return res.rows[0];
+};
+
+export const getAllFromOrganization = async (
+  organizationId: string
+): Promise<any> => {
+  const { rows: memberships } = await pool.query(
     `
-    const res = await pool.query(query, [
-        id,
-        organizationId,
-        employeeId,
-        transactionId
-    ])
-    return res.rows[0]
-}
-
-
-export const getAllFromOrganization = async (organizationId: string): Promise<any> => {
-    const { rows: memberships } = await pool.query(`
     SELECT 
     ms.id,
     ms.employee_id,
@@ -45,18 +43,22 @@ export const getAllFromOrganization = async (organizationId: string): Promise<an
     INNER JOIN employee e1 ON ms.employee_id = e1.id
     INNER JOIN transaction_definition td ON ms.transaction_id = td.id
     WHERE e1.organization_id=$1`,
-        [organizationId])
+    [organizationId]
+  );
 
-    return memberships
-}
+  return memberships;
+};
 
+export const getAllFromOrganizationByEmployeeByPeriod = async (
+  organizationId: string,
+  employeeId: string,
+  userInfo: any
+): Promise<any> => {
+  const { periodId } = userInfo;
 
-export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: string, employeeId: string, userInfo: any): Promise<any> => {
-    const { periodId } = userInfo
+  console.log(periodId);
 
-    console.log(periodId)
-
-    let query = `
+  let query = `
         SELECT 
         DISTINCT
         ms.id,
@@ -71,23 +73,22 @@ export const getAllFromOrganizationByEmployeeByPeriod = async (organizationId: s
         INNER JOIN employee e1 ON ms.employee_id = e1.id
         INNER JOIN transaction_definition td ON ms.transaction_id = td.id
         WHERE e1.organization_id = $1
-    `
+    `;
 
-    const queryParams = [organizationId]
+  const queryParams = [organizationId];
 
-    if (employeeId) {
-        query += ` AND e1.id = $2`;
-        queryParams.push(employeeId);
-    }
+  if (employeeId) {
+    query += ` AND e1.id = $2`;
+    queryParams.push(employeeId);
+  }
 
-    const { rows: memberships } = await pool.query(query, queryParams);
-    return memberships
-
-}
-
+  const { rows: memberships } = await pool.query(query, queryParams);
+  return memberships;
+};
 
 export const getInfo = async (membershipId: string): Promise<any> => {
-    const { rows: memberships } = await pool.query(`
+  const { rows: memberships } = await pool.query(
+    `
     SELECT 
     ms.id,
     ms.employee_id,
@@ -96,49 +97,41 @@ export const getInfo = async (membershipId: string): Promise<any> => {
     FROM membership ms
     INNER JOIN period_transactions pt ON pt.transaction_id = ms.transaction_id
     WHERE ms.id = $1 AND pt.employee_id = ms.employee_id`,
-        [membershipId])
-    return memberships[0]
-}
-
+    [membershipId]
+  );
+  return memberships[0];
+};
 
 export const deleteMembership = async (branchId: string): Promise<any> => {
-    await pool.query('DELETE FROM membership WHERE id=$1', [branchId])
-}
-
+  await pool.query("DELETE FROM membership WHERE id=$1", [branchId]);
+};
 
 export const deleteByEmployeeId = async (employeeId: string): Promise<any> => {
-    await pool.query('DELETE FROM membership WHERE employee_id=$1', [employeeId])
-}
+  await pool.query("DELETE FROM membership WHERE employee_id=$1", [employeeId]);
+};
 
-export const updateMembership = async (updatedMembership: any): Promise<string> => {
-    const {
-        id,
-        employeeId,
-        transactionId
-    } = updatedMembership
-    const query = `
+export const updateMembership = async (
+  updatedMembership: any
+): Promise<string> => {
+  const { id, employeeId, transactionId } = updatedMembership;
+  const query = `
     UPDATE membership
     SET employee_id = $1,
     transaction_id = $2
     WHERE id = $3
     RETURNING *;
-    `
-    const res = await pool.query(query, [
-        employeeId,
-        transactionId,
-        id])
-    const branchId = res.rows[0]
-    return branchId
-}
-
-
+    `;
+  const res = await pool.query(query, [employeeId, transactionId, id]);
+  const branchId = res.rows[0];
+  return branchId;
+};
 
 export default {
-    create,
-    deleteMembership,
-    deleteByEmployeeId,
-    getAllFromOrganization,
-    getAllFromOrganizationByEmployeeByPeriod,
-    getInfo,
-    updateMembership
-}
+  create,
+  deleteMembership,
+  deleteByEmployeeId,
+  getAllFromOrganization,
+  getAllFromOrganizationByEmployeeByPeriod,
+  getInfo,
+  updateMembership,
+};

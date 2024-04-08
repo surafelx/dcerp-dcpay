@@ -32,7 +32,6 @@ const router = Router()
 //                 total: filteredData.length
 //             })
 //         } catch (e) {
-//             console.log(e)
 //             next(e)
 //         }
 //     })

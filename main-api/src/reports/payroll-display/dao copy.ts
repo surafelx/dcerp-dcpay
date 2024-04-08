@@ -320,7 +320,6 @@ const getAllFromOrganization = async (organizationId: string, employeeId: string
     // await createProcessedTransactions({ employeeId: employee.id, transactionId: td.id, transactionAmount: 0, userId, periodId, organizationId })
 
 
-    // console.log(grossTaxableSalary, netPay, tax, grossSalary,totalDeductions, taxableTransactionsAmount)
 
     return [...allTransactions]
 

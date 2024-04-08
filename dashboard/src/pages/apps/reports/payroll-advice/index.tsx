@@ -278,7 +278,7 @@ const PayrollAdvice = () => {
                             </TableHead>
                             <TableBody>
                                 {
-                                    store.data.map(({ employeeCode, employeeName, transactions, }: any, index) => {
+                                      store.data.filter(({ transactions }: any) => transactions.length > 3).filter(({ transactions, employeeStatusName }: any) => transactions.length > 3 && employeeStatusName === 'Active').map(({ employeeCode, employeeName, transactions }: any, index: any) => {
                                         const grossSalary = transactions?.filter(({ transaction_code }: any) => transaction_code == '52')[0]?.transaction_amount
                                         const netPay = transactions?.filter(({ transaction_code }: any) => transaction_code == '99')[0]?.transaction_amount
                                         const totalDeductions = grossSalary - netPay

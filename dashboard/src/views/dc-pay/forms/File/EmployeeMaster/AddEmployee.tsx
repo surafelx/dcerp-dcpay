@@ -294,7 +294,7 @@ const AddMenuLevelTwo = ({
     }
 
     return (
-        <Card><CardHeader title='Add Employee' titleTypographyProps={{ variant: 'h6' }} />
+        <Card><CardHeader title='Add Employees' titleTypographyProps={{ variant: 'h6' }} />
             <CardContent>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                     <Grid container spacing={3}>
@@ -313,6 +313,7 @@ const AddMenuLevelTwo = ({
                                             onBlur={(e) => {
                                                 onBlur()
                                                 const selectedEmployee = employees?.data?.filter(({ employeeCode }: any) => employeeCode == e.target.value)[0]
+                                                console.log(selectedEmployee)
                                                 if (selectedEmployee)
                                                     reset(selectedEmployee)
                                             }

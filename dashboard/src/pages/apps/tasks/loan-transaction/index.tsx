@@ -221,6 +221,8 @@ const UserList = () => {
     })
 
 
+    console.log(store.data)
+
     const handleEmployeeChange = (e: any, newValue: any) => {
         if (newValue?.id) {
             setEmployeeObject(newValue)
