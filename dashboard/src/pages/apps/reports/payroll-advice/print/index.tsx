@@ -179,8 +179,8 @@ const InvoicePrint = () => {
         store.data.filter(({ transactions }: any) => transactions.length > 3).filter(({ transactions, employeeStatusName }: any) => transactions.length > 3 && employeeStatusName === 'Active').map(({ employeeCode, employeeName, transactions }: any,) => {
           const earnings = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Earning Amount" || transaction_type_name === "Earning Quantity")
           const deductions = transactions.filter(({ transaction_type_name }: any) => transaction_type_name === "Deduction Amount" || transaction_type_name === "Deduction Quantity")
-          const totalEarnings = earnings.reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
-          const totalDeductions = deductions.reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
+          const totalEarnings = earnings.filter(({ transaction_type_name }: any) => transaction_type_name === "Earning Amount" ).reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
+          const totalDeductions = deductions.filter(({ transaction_type_name }: any) => transaction_type_name === "Deduction Amount" ).reduce((sum: any, transaction: any) => { return (sum + parseFloat(transaction.transaction_amount)) }, 0)
           rowCount++
 
 
