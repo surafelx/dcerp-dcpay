@@ -98,6 +98,7 @@ export const generateExcelFile = (store: any) => {
     const tableData: any = [uppercaseHeaders, [], []]
 
     let currentDepartment: any = null;
+    let totalOrganizationGrossSalary = 0
     let departmentBasicSalary = 0
     let departmentLeaveHours = 0
     let departmentLeaveAmount = 0
@@ -172,6 +173,8 @@ export const generateExcelFile = (store: any) => {
     let totalDepartmentTotalDeductions = 0
     let totalDepartmentNetPay = 0
 
+    
+
 
     store.data.filter(({ employeeStatusName }: any) => employeeStatusName == 'Active').forEach(({ employeeCode, employeeName, transactions, employeeDepartment, monthlyWorkingHours }: any, index: any) => {
         const basicSalary = transactions?.find((obj: any) => obj.transaction_name === "Basic Salary");
@@ -238,8 +241,8 @@ export const generateExcelFile = (store: any) => {
             totalDepartmentTaxiAllowance += Number(Number(departmentTaxiAllowance).toFixed(2));
             totalDepartmentAbsenceHour += Number(Number(departmentAbsenceHour).toFixed(2));
             totalDepartmentAbsenceAmount += Number(Number(departmentAbsenceAmount).toFixed(2));
-            totalDepartmentGrossPay += Number(Number(totalDepartmentLeaveHours).toFixed(2));
-            totalDepartmentGrossTaxableSalary += Number(Number(departmentLeaveHours).toFixed(2));
+            totalDepartmentGrossPay += Number(Number(departmentGrossPay).toFixed(2));
+            totalDepartmentGrossTaxableSalary += Number(Number(departmentGrossTaxableSalary).toFixed(2));
             totalDepartmentIncomeTax += Number(Number(departmentIncomeTax).toFixed(2));
             totalDepartmentPension7 += Number(Number(departmentPension7).toFixed(2));
             totalDepartmentLabourUnion += Number(Number(departmentLabourUnion).toFixed(2));
@@ -299,6 +302,8 @@ export const generateExcelFile = (store: any) => {
                 ]);
                 merges.push({ s: { r: tableData.length - 1, c: 0 }, e: { r: tableData.length - 1, c: 2 } });
             }
+
+          
             departmentBasicSalary = 0;
             departmentLeaveHours = 0;
             departmentLeaveAmount = 0;
@@ -324,6 +329,8 @@ export const generateExcelFile = (store: any) => {
             departmentIdir = 0;
             departmentCreditAssociation = 0;
             departmentCostSharing = 0;
+            departmentGrossPay = 0;
+            departmentGrossTaxableSalary = 0;
             departmentRedCross = 0;
             departmentBond = 0;
             departmentCreditSale = 0;
@@ -443,8 +450,8 @@ export const generateExcelFile = (store: any) => {
         totalDepartmentTaxiAllowance += Number(Number(departmentTaxiAllowance).toFixed(2));
         totalDepartmentAbsenceHour += Number(Number(departmentAbsenceHour).toFixed(2));
         totalDepartmentAbsenceAmount += Number(Number(departmentAbsenceAmount).toFixed(2));
-        totalDepartmentGrossPay += Number(Number(totalDepartmentLeaveHours).toFixed(2));
-        totalDepartmentGrossTaxableSalary += Number(Number(departmentLeaveHours).toFixed(2));
+        totalDepartmentGrossPay += Number(Number(departmentGrossPay).toFixed(2));
+        totalDepartmentGrossTaxableSalary += Number(Number(departmentGrossTaxableSalary).toFixed(2));
         totalDepartmentIncomeTax += Number(Number(departmentIncomeTax).toFixed(2));
         totalDepartmentPension7 += Number(Number(departmentPension7).toFixed(2));
         totalDepartmentLabourUnion += Number(Number(departmentLabourUnion).toFixed(2));
