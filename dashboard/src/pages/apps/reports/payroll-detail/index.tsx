@@ -98,7 +98,7 @@ export const generateExcelFile = (store: any) => {
     const tableData: any = [uppercaseHeaders, [], []]
 
     let currentDepartment: any = null;
-    let totalOrganizationGrossSalary = 0
+   
     let departmentBasicSalary = 0
     let departmentLeaveHours = 0
     let departmentLeaveAmount = 0
