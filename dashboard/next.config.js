@@ -10,7 +10,7 @@ const withTM = require('next-transpile-modules')([
   '@fullcalendar/daygrid',
   '@fullcalendar/list',
   '@fullcalendar/timegrid'
-a])
+])
 
 module.exports = withTM({
   trailingSlash: true,
