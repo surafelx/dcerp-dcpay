@@ -128,7 +128,7 @@ server {
 	}
 
 	location /api {
-		proxy_pass https://agrisunethiopia.com;
+		proxy_pass https://api.agrisunethiopia.com;
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection 'upgrade';
