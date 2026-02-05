@@ -249,6 +249,7 @@ export const generateExcelFile = (store: any) => {
             totalDepartmentGrossTaxableSalary += Number(Number(departmentGrossTaxableSalary).toFixed(2));
             totalDepartmentIncomeTax += Number(Number(departmentIncomeTax).toFixed(2));
             totalDepartmentPension7 += Number(Number(departmentPension7).toFixed(2));
+            totalDepartmentPension11 += Number(Number(departmentPension11).toFixed(2));
             totalDepartmentLabourUnion += Number(Number(departmentLabourUnion).toFixed(2));
             totalDepartmentIdir += Number(Number(departmentIdir).toFixed(2));
             totalDepartmentCreditAssociation += Number(Number(departmentCreditAssociation).toFixed(2));
@@ -288,6 +289,7 @@ export const generateExcelFile = (store: any) => {
                     Number(departmentGrossTaxableSalary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     Number(departmentIncomeTax).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     Number(departmentPension7).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                    Number(departmentPension11).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     Number(departmentLabourUnion).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     Number(departmentIdir).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                     Number(departmentCreditAssociation).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -588,6 +590,7 @@ export const generateExcelFile = (store: any) => {
         { wpx: 100 }, // Earnings
         { wpx: 100 }, // Net
         { wpx: 100 }, // Deductions
+       { wpx: 100 }, // Deductions
         { wpx: 100 }, // Earnings
         { wpx: 100 }, // Net
         { wpx: 100 }, // Name
