@@ -75,6 +75,7 @@ export const generateExcelFile = (store: any) => {
         'Gross Taxable Salary',
         'Income Tax',
         'Pension 7%',
+        'Pension Company',
         'Labour Union',
         'Idir',
         'Cr. Ass.',
@@ -120,6 +121,7 @@ export const generateExcelFile = (store: any) => {
     let departmentGrossTaxableSalary = 0
     let departmentIncomeTax = 0
     let departmentPension7 = 0
+      let departmentPension11 = 0
     let departmentLabourUnion = 0
     let departmentIdir = 0
     let departmentCreditAssociation = 0
@@ -157,6 +159,7 @@ export const generateExcelFile = (store: any) => {
     let totalDepartmentGrossTaxableSalary = 0
     let totalDepartmentIncomeTax = 0
     let totalDepartmentPension7 = 0
+      let totalDepartmentPension11 = 0
     let totalDepartmentLabourUnion = 0
     let totalDepartmentIdir = 0
     let totalDepartmentCreditAssociation = 0
@@ -204,6 +207,7 @@ export const generateExcelFile = (store: any) => {
         const grossTaxableSalary = transactions?.find((obj: any) => obj.transaction_name === "Gross Taxable Salary") || { transaction_amount: 0 };
         const incomeTax = transactions?.find((obj: any) => obj.transaction_name === "Income Tax") || { transaction_amount: 0 };
         const pension7 = transactions?.find((obj: any) => obj.transaction_name === "Pension Employee") || { transaction_amount: 0 };
+         const pension11 = transactions?.find((obj: any) => obj.transaction_name === "Pension Company") || { transaction_amount: 0 };
         const labourUnion = transactions?.find((obj: any) => obj.transaction_name === "Labour Union") || { transaction_amount: 0 };
         const idir = transactions?.find((obj: any) => obj.transaction_name === "Edir") || { transaction_amount: 0 };
         const creditAssociation = transactions?.find((obj: any) => obj.transaction_name === "Credit Ass. Vol. Saving Amount") || { transaction_amount: 0 };
@@ -325,6 +329,7 @@ export const generateExcelFile = (store: any) => {
             departmentLeaveHours = 0;
             departmentIncomeTax = 0;
             departmentPension7 = 0;
+            departmentPension11 = 0;
             departmentLabourUnion = 0;
             departmentIdir = 0;
             departmentCreditAssociation = 0;
@@ -372,6 +377,7 @@ export const generateExcelFile = (store: any) => {
         departmentGrossTaxableSalary += Number(Number(grossTaxableSalary?.transaction_amount).toFixed(2))
         departmentIncomeTax += Number(Number(incomeTax?.transaction_amount).toFixed(2))
         departmentPension7 += Number(Number(pension7?.transaction_amount).toFixed(2))
+         departmentPension11 += Number(Number(pension11?.transaction_amount).toFixed(2))
         departmentLabourUnion += Number(Number(labourUnion?.transaction_amount).toFixed(2))
         departmentIdir += Number(Number(idir?.transaction_amount).toFixed(2))
         departmentCreditAssociation += Number(Number(creditAssociation?.transaction_amount).toFixed(2))
@@ -413,6 +419,7 @@ export const generateExcelFile = (store: any) => {
             (Number(grossTaxableSalary?.transaction_amount).toFixed(2) !== '0.00' ? Number(grossTaxableSalary?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
             (Number(incomeTax?.transaction_amount).toFixed(2) !== '0.00' ? Number(incomeTax?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
             (Number(pension7?.transaction_amount).toFixed(2) !== '0.00' ? Number(pension7?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
+               (Number(pension11?.transaction_amount).toFixed(2) !== '0.00' ? Number(pension11?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
             (Number(labourUnion?.transaction_amount).toFixed(2) !== '0.00' ? Number(labourUnion?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
             (Number(idir?.transaction_amount).toFixed(2) !== '0.00' ? Number(idir?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
             (Number(creditAssociation?.transaction_amount).toFixed(2) !== '0.00' ? Number(creditAssociation?.transaction_amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
@@ -454,6 +461,7 @@ export const generateExcelFile = (store: any) => {
         totalDepartmentGrossTaxableSalary += Number(Number(departmentGrossTaxableSalary).toFixed(2));
         totalDepartmentIncomeTax += Number(Number(departmentIncomeTax).toFixed(2));
         totalDepartmentPension7 += Number(Number(departmentPension7).toFixed(2));
+           totalDepartmentPension11 += Number(Number(departmentPension11).toFixed(2));
         totalDepartmentLabourUnion += Number(Number(departmentLabourUnion).toFixed(2));
         totalDepartmentIdir += Number(Number(departmentIdir).toFixed(2));
         totalDepartmentCreditAssociation += Number(Number(departmentCreditAssociation).toFixed(2));
@@ -493,6 +501,7 @@ export const generateExcelFile = (store: any) => {
             Number(departmentGrossTaxableSalary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             Number(departmentIncomeTax).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             Number(departmentPension7).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+              Number(departmentPension11).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             Number(departmentLabourUnion).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             Number(departmentIdir).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             Number(departmentCreditAssociation).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -534,6 +543,7 @@ export const generateExcelFile = (store: any) => {
         Number(totalDepartmentGrossTaxableSalary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         Number(totalDepartmentIncomeTax).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         Number(totalDepartmentPension7).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          Number(totalDepartmentPension11).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         Number(totalDepartmentLabourUnion).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         Number(totalDepartmentIdir).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
         Number(totalDepartmentCreditAssociation).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
