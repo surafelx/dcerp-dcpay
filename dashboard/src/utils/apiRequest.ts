@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const apiRequest = axios.create({
-  baseURL: 'https://dcerp-dcpay.onrender.com/api/v1',
+  baseURL: 'https://dcerp-dcpay-ruot.onrender.com/api/v1',
 })
 
 interface userData {
